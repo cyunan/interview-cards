@@ -31,6 +31,7 @@ test("keeps plaintext locked and completes a touch-friendly study flow", async (
   await expect(progressiveSections).toHaveCount(4);
   await expect(page.locator(".answer-panel details[open]")).toHaveCount(0);
   for (const summary of await progressiveSections.locator("summary").all()) {
+    await expect(summary).toHaveCSS("display", "list-item");
     const size = await summary.evaluate((element) => {
       const rect = element.getBoundingClientRect();
       return { width: rect.width, height: rect.height };
@@ -46,6 +47,11 @@ test("keeps plaintext locked and completes a touch-friendly study flow", async (
   await expect(page.locator(".answer-panel details[open]")).toHaveCount(2);
   await detailSummary.press(" ");
   await expect(progressiveSections.nth(0)).not.toHaveAttribute("open", "");
+
+  await detailSummary.press("Enter");
+  await page.mouse.wheel(0, 1_800);
+  await expect(page.locator(".rating-dock")).toBeInViewport();
+  await expect(page.getByRole("button", { name: "掌握", exact: true })).toBeEnabled();
 
   await expect(page.locator(".rating-dock")).toBeVisible();
 

@@ -111,6 +111,30 @@ function submitPassword(password: string): void {
 }
 
 describe("App", () => {
+  it("resets progressive sections when a card is repeated after Again", async () => {
+    const store = new MemoryProgressStore();
+    const { container } = render(
+      <StudyScreen
+        deck="full"
+        initialQueue={[{ card: payload.cards[0], kind: "new" }]}
+        progress={new Map()}
+        store={store}
+        now={() => new Date(2026, 7, 31, 9)}
+        onProgress={() => undefined}
+        onExit={() => undefined}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "查看回答" }));
+    fireEvent.click(screen.getByText("深入理解", { selector: "summary" }));
+    expect(container.querySelector("details")!).toHaveAttribute("open");
+
+    fireEvent.click(screen.getByRole("button", { name: "不会" }));
+    expect(await screen.findByText("熵门是什么？")).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "查看回答" }));
+    expect(container.querySelectorAll("details[open]")).toHaveLength(0);
+  });
+
   it("keeps the quick answer visible and resets progressive sections for the next card", async () => {
     const secondCard = {
       ...payload.cards[0],

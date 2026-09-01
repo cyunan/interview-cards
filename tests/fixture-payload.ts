@@ -15,7 +15,10 @@ export const E2E_PAYLOAD: CardsPayloadV1 = {
       decks: ["sprint", "full"],
       priority: "P0",
       quickAnswerMd: "熵门使用**虚构量子锁**隔离测试状态。",
-      detailMd: "- 先登记虚构令牌。\n- 再验证测试相位。",
+      detailMd: Array.from(
+        { length: 32 },
+        (_, index) => `- 虚构校验步骤 ${index + 1}：记录测试相位与状态边界。`,
+      ).join("\n"),
       projectHookMd: "示例沙盒使用相同的虚构边界。",
       pitfallsMd: "不要把熵门当成真实平台 API。",
       followUps: [

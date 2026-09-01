@@ -79,4 +79,17 @@ describe("BrowseScreen", () => {
     expect(details[2]).toHaveAttribute("open");
     expect(details[3]).not.toHaveAttribute("open");
   });
+
+  it("resets detail state when the browse card is collapsed and reopened", () => {
+    const { container } = render(<BrowseScreen cards={[card]} progress={new Map()} />);
+    const cardButton = () => screen.getByRole("button", { name: /虚构装置如何校准/ });
+
+    fireEvent.click(cardButton());
+    fireEvent.click(screen.getByText("深入理解", { selector: "summary" }));
+    expect(container.querySelector("details")!).toHaveAttribute("open");
+    fireEvent.click(cardButton());
+    fireEvent.click(cardButton());
+
+    expect(container.querySelectorAll("details[open]")).toHaveLength(0);
+  });
 });

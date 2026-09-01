@@ -859,12 +859,13 @@ p {
 
 .answer-section summary {
   min-height: 44px;
-  display: flex;
-  align-items: center;
+  display: list-item;
   cursor: pointer;
+  padding: 12px 0;
   font-size: 0.72rem;
   font-weight: 900;
   letter-spacing: 0.08em;
+  line-height: 20px;
   list-style-position: outside;
 }
 
