@@ -83,12 +83,52 @@ class MemoryProgressStore implements ProgressStore {
   close(): void {}
 }
 
+class DelayedMigrationStore extends MemoryProgressStore {
+  private migrationRelease!: () => void;
+  readonly migrationFinished: Promise<void>;
+
+  constructor() {
+    super();
+    this.migrationFinished = new Promise((resolve) => {
+      this.migrationRelease = resolve;
+    });
+  }
+
+  override async migrateLegacyIds(cards: ReadonlyArray<ProgressCardIdentity>): Promise<void> {
+    this.migrationCards = cards;
+    await this.migrationFinished;
+  }
+
+  releaseMigration(): void {
+    this.migrationRelease();
+  }
+}
+
 function submitPassword(password: string): void {
   fireEvent.change(screen.getByLabelText("题库密码"), { target: { value: password } });
   fireEvent.click(screen.getByRole("button", { name: "解锁" }));
 }
 
 describe("App", () => {
+  it("does not show the workspace until progress migration finishes", async () => {
+    const store = new DelayedMigrationStore();
+
+    render(
+      <App
+        unlockCards={async () => payload}
+        createStore={async () => store}
+      />,
+    );
+
+    submitPassword("correct-password");
+    await waitFor(() => expect(store.migrationCards).toEqual(payload.cards));
+    expect(screen.queryByText("今日复习")).not.toBeInTheDocument();
+    expect(screen.getByText("正在读取本机进度…")).toBeInTheDocument();
+
+    store.releaseMigration();
+    expect(await screen.findByText("今日复习")).toBeInTheDocument();
+  });
+
   it("migrates progress before showing the unlocked workspace", async () => {
     const store = new MemoryProgressStore();
     const migratedPayload: ParsedCardsPayload = {

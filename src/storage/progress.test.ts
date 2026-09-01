@@ -194,12 +194,26 @@ describe("legacy progress migration", () => {
     const old = record("old-card-001", "2026-08-31T08:00:00.000Z", {
       level: 3,
       reviewCount: 4,
+      reviewedOn: ["2026-08-31", "2026-08-29", "2026-08-31"],
     });
     await store.put(old);
 
     await store.migrateLegacyIds([cardRef("new-card-001", ["old-card-001"])]);
 
     await expect(store.get("old-card-001")).resolves.toBeUndefined();
+    await expect(store.get("new-card-001")).resolves.toEqual({ ...old, cardId: "new-card-001" });
+    store.close();
+  });
+
+  it("preserves an empty reviewedOn array during a one-to-one migration", async () => {
+    const store = await createProgressStore("progress-test-migration-one-to-one-empty-dates");
+    const old = record("old-card-001", "2026-08-31T08:00:00.000Z", {
+      reviewedOn: [],
+    });
+    await store.put(old);
+
+    await store.migrateLegacyIds([cardRef("new-card-001", ["old-card-001"])]);
+
     await expect(store.get("new-card-001")).resolves.toEqual({ ...old, cardId: "new-card-001" });
     store.close();
   });

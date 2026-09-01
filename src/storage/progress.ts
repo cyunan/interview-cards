@@ -177,6 +177,12 @@ class IndexedDbProgressStore implements ProgressStore {
 
     for (const [canonicalId, legacyRecords] of legacyGroups) {
       const canonicalRecord = byId.get(canonicalId);
+      if (!canonicalRecord && legacyRecords.length === 1) {
+        const [legacyRecord] = legacyRecords;
+        await progressStore.delete(legacyRecord.cardId);
+        await progressStore.put({ ...legacyRecord, cardId: canonicalId });
+        continue;
+      }
       const merged = mergeLegacyProgressRecords(
         canonicalRecord ? [...legacyRecords, canonicalRecord] : legacyRecords,
         canonicalId,
