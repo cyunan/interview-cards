@@ -18,6 +18,22 @@ process.stdin.setRawMode = (mode) => {
   return originalSetRawMode(mode);
 };
 
+const mode = process.env.PTY_TEST_MODE;
+if (mode === "stdin-error" || mode === "stdin-end" || mode === "stdin-close") {
+  setImmediate(() => {
+    if (mode === "stdin-error") {
+      process.stdin.emit("error", new Error("fictional stdin failure"));
+    } else {
+      process.stdin.emit(mode === "stdin-end" ? "end" : "close");
+    }
+  });
+}
+if (mode === "pause-error") {
+  process.stdin.pause = () => {
+    throw new Error("fictional pause failure");
+  };
+}
+
 try {
   await readHiddenLine(${JSON.stringify(prompt)});
   process.stdout.write("\\nDONE\\n");
@@ -29,10 +45,11 @@ try {
   process.stdout.write(
     "STATE:" + String(process.stdin.isRaw) + ":" + String(process.stdin.isTTY) + "\\n",
   );
+  process.stdin.destroy();
 }
 `;
 
-async function runPty(input: string): Promise<string> {
+async function runPty(input: string, mode = "normal"): Promise<string> {
   const command = [
     process.execPath,
     "--import",
@@ -46,6 +63,7 @@ import os
 import pty
 import select
 import sys
+import termios
 
 pid, master = pty.fork()
 if pid == 0:
@@ -69,10 +87,23 @@ while True:
         os.write(master, data)
 
 _, status = os.waitpid(pid, 0)
-sys.exit(os.waitstatus_to_exitcode(status))
+try:
+    attrs = termios.tcgetattr(master)
+    echo = bool(attrs[3] & termios.ECHO)
+    icanon = bool(attrs[3] & termios.ICANON)
+    sys.stdout.write("TERMIOS:" + str(echo).lower() + ":" + str(icanon).lower() + "\\n")
+    sys.stdout.flush()
+except OSError:
+    pass
+if os.WIFEXITED(status):
+    sys.exit(os.WEXITSTATUS(status))
+if os.WIFSIGNALED(status):
+    sys.exit(128 + os.WTERMSIG(status))
+sys.exit(1)
 `;
-  const child = spawn("/usr/bin/python3", ["-c", ptyRelaySource, ...command], {
+  const child = spawn("python3", ["-c", ptyRelaySource, ...command], {
     cwd: path.resolve("."),
+    env: { ...process.env, PTY_TEST_MODE: mode },
     stdio: ["pipe", "pipe", "pipe"],
   });
 
@@ -87,7 +118,9 @@ sys.exit(os.waitstatus_to_exitcode(status))
       output += String(chunk);
       if (!sent && output.includes(prompt)) {
         sent = true;
-        child.stdin.write(input);
+        if (input) {
+          child.stdin.write(input);
+        }
       }
     };
     child.stdout.on("data", onOutput);
@@ -113,6 +146,7 @@ describe("readHiddenLine in a real PTY", () => {
 
     expect(output).toContain("DONE");
     expect(output).toContain("STATE:false:true");
+    expect(output).toContain("TERMIOS:true:true");
     expect(output).not.toContain(ptyPassword);
   });
 
@@ -121,5 +155,29 @@ describe("readHiddenLine in a real PTY", () => {
 
     expect(output).toContain("CANCELLED:已取消发布");
     expect(output).toContain("STATE:false:true");
+    expect(output).toContain("TERMIOS:true:true");
+  });
+
+  it.each([
+    { mode: "stdin-error", error: "fictional stdin failure" },
+    { mode: "stdin-end", error: "输入流已结束" },
+    { mode: "stdin-close", error: "输入流已关闭" },
+  ])(
+    "settles and restores TTY state on $mode",
+    async ({ mode, error }) => {
+      const output = await runPty("", mode);
+
+      expect(output).toContain(`CANCELLED:${error}`);
+      expect(output).toContain("STATE:false:true");
+      expect(output).toContain("TERMIOS:true:true");
+    },
+  );
+
+  it("settles and restores TTY state when pause throws", async () => {
+    const output = await runPty("\n", "pause-error");
+
+    expect(output).toContain("CANCELLED:fictional pause failure");
+    expect(output).toContain("STATE:false:true");
+    expect(output).toContain("TERMIOS:true:true");
   });
 });
