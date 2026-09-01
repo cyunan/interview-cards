@@ -1,9 +1,11 @@
 import { useRef, useState, type ChangeEvent } from "react";
 
+import type { CardV2 } from "../content/types";
 import type { DailyLimit, ProgressStore } from "../storage/progress";
 import { toLocalDateKey } from "../study/scheduler";
 
 interface SettingsScreenProps {
+  cards: ReadonlyArray<Pick<CardV2, "id" | "legacyIds">>;
   dailyLimit: DailyLimit;
   store: ProgressStore;
   now(): Date;
@@ -15,6 +17,7 @@ interface SettingsScreenProps {
 const DAILY_LIMITS: DailyLimit[] = [10, 20, 30, 50];
 
 export function SettingsScreen({
+  cards,
   dailyLimit,
   store,
   now,
@@ -55,6 +58,7 @@ export function SettingsScreen({
     }
     try {
       await store.importJson(await file.text());
+      await store.migrateLegacyIds(cards);
       await onProgressChanged();
       setStatus("进度已合并导入");
     } catch (error) {

@@ -2,6 +2,7 @@ import { openDB, type DBSchema, type IDBPDatabase } from "idb";
 import { z } from "zod";
 
 import { CARD_ID_PATTERN } from "../content/card-id";
+import type { CardV2 } from "../content/types";
 import { toLocalDateKey, type CardProgress } from "../study/scheduler";
 
 const DAILY_LIMITS = [10, 20, 30, 50] as const;
@@ -34,6 +35,8 @@ export interface ProgressExportV1 {
   dailyLimit: DailyLimit;
   records: CardProgress[];
 }
+
+export type ProgressCardIdentity = Pick<CardV2, "id" | "legacyIds">;
 
 interface SettingRecord {
   key: "dailyLimit";
@@ -90,6 +93,7 @@ export interface ProgressStore {
   setDailyLimit(limit: DailyLimit): Promise<void>;
   exportJson(exportedAt?: string): Promise<string>;
   importJson(json: string): Promise<void>;
+  migrateLegacyIds(cards: ReadonlyArray<ProgressCardIdentity>): Promise<void>;
   close(): void;
 }
 
@@ -151,9 +155,82 @@ class IndexedDbProgressStore implements ProgressStore {
     await transaction.done;
   }
 
+  async migrateLegacyIds(cards: ReadonlyArray<ProgressCardIdentity>): Promise<void> {
+    const legacyToCanonical = buildLegacyIdMap(cards);
+    if (legacyToCanonical.size === 0) {
+      return;
+    }
+
+    const transaction = this.database.transaction("progress", "readwrite");
+    const progressStore = transaction.objectStore("progress");
+    const records = await progressStore.getAll();
+    const byId = new Map(records.map((record) => [record.cardId, record]));
+    const legacyGroups = new Map<string, CardProgress[]>();
+
+    for (const record of records) {
+      const canonicalId = legacyToCanonical.get(record.cardId);
+      if (!canonicalId) continue;
+      const group = legacyGroups.get(canonicalId) ?? [];
+      group.push(record);
+      legacyGroups.set(canonicalId, group);
+    }
+
+    for (const [canonicalId, legacyRecords] of legacyGroups) {
+      const canonicalRecord = byId.get(canonicalId);
+      const merged = mergeLegacyProgressRecords(
+        canonicalRecord ? [...legacyRecords, canonicalRecord] : legacyRecords,
+        canonicalId,
+      );
+      for (const record of legacyRecords) {
+        await progressStore.delete(record.cardId);
+      }
+      await progressStore.put(merged);
+    }
+    await transaction.done;
+  }
+
   close(): void {
     this.database.close();
   }
+}
+
+function buildLegacyIdMap(cards: ReadonlyArray<ProgressCardIdentity>): Map<string, string> {
+  const canonicalIds = new Set(cards.map((card) => card.id));
+  const legacyToCanonical = new Map<string, string>();
+  for (const card of cards) {
+    for (const legacyId of card.legacyIds) {
+      if (canonicalIds.has(legacyId)) {
+        throw new Error("legacy ID 不能指向现有 canonical ID");
+      }
+      const existing = legacyToCanonical.get(legacyId);
+      if (existing && existing !== card.id) {
+        throw new Error("legacy ID 不能指向多张卡片");
+      }
+      legacyToCanonical.set(legacyId, card.id);
+    }
+  }
+  return legacyToCanonical;
+}
+
+export function mergeLegacyProgressRecords(
+  records: ReadonlyArray<CardProgress>,
+  canonicalId: string,
+): CardProgress {
+  if (records.length === 0) {
+    throw new Error("没有可合并的进度记录");
+  }
+  const latest = records.reduce((current, record) =>
+    Date.parse(record.lastReviewedAt) >= Date.parse(current.lastReviewedAt) ? record : current,
+  );
+  const reviewedOn = [...new Set(records.flatMap((record) => record.reviewedOn ?? []))].sort();
+  return {
+    cardId: canonicalId,
+    level: Math.min(...records.map((record) => record.level)) as CardProgress["level"],
+    reviewCount: Math.max(...records.map((record) => record.reviewCount)),
+    lastReviewedAt: latest.lastReviewedAt,
+    dueOn: records.map((record) => record.dueOn).sort()[0],
+    ...(reviewedOn.length > 0 ? { reviewedOn } : {}),
+  };
 }
 
 export async function createProgressStore(

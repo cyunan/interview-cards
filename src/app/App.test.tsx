@@ -7,7 +7,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import type { ParsedCardsPayload } from "../content/payload";
 import { UnlockError } from "../crypto/envelope";
-import type { DailyLimit, ProgressStore } from "../storage/progress";
+import type { DailyLimit, ProgressCardIdentity, ProgressStore } from "../storage/progress";
 import type { CardProgress } from "../study/scheduler";
 import { App } from "./App";
 
@@ -44,6 +44,7 @@ const payload: ParsedCardsPayload = {
 class MemoryProgressStore implements ProgressStore {
   readonly records = new Map<string, CardProgress>();
   limit: DailyLimit = 20;
+  migrationCards?: ReadonlyArray<ProgressCardIdentity>;
 
   async get(cardId: string): Promise<CardProgress | undefined> {
     return this.records.get(cardId);
@@ -75,6 +76,10 @@ class MemoryProgressStore implements ProgressStore {
 
   async importJson(): Promise<void> {}
 
+  async migrateLegacyIds(cards: ReadonlyArray<ProgressCardIdentity>): Promise<void> {
+    this.migrationCards = cards;
+  }
+
   close(): void {}
 }
 
@@ -84,6 +89,25 @@ function submitPassword(password: string): void {
 }
 
 describe("App", () => {
+  it("migrates progress before showing the unlocked workspace", async () => {
+    const store = new MemoryProgressStore();
+    const migratedPayload: ParsedCardsPayload = {
+      ...payload,
+      cards: [{ ...payload.cards[0], legacyIds: ["old-quantum-widget-001"] }],
+    };
+
+    render(
+      <App
+        unlockCards={async () => migratedPayload}
+        createStore={async () => store}
+      />,
+    );
+
+    submitPassword("correct-password");
+    expect(await screen.findByText("今日复习")).toBeInTheDocument();
+    expect(store.migrationCards).toEqual(migratedPayload.cards);
+  });
+
   it("keeps card plaintext hidden until unlock and uses a generic failure message", async () => {
     const unlockCards = vi.fn(async (password: string) => {
       if (password !== "correct-password") {

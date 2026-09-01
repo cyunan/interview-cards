@@ -2,6 +2,7 @@ import "fake-indexeddb/auto";
 
 import { describe, expect, it } from "vitest";
 
+import type { CardV2 } from "../content/types";
 import type { CardProgress } from "../study/scheduler";
 import {
   calculateStudyStreak,
@@ -24,6 +25,10 @@ function record(
     reviewedOn: [lastReviewedAt.slice(0, 10)],
     ...overrides,
   };
+}
+
+function cardRef(id: string, legacyIds: string[]): Pick<CardV2, "id" | "legacyIds"> {
+  return { id, legacyIds };
 }
 
 describe("progress store", () => {
@@ -164,6 +169,108 @@ describe("progress import validation", () => {
       level: 1,
       lastReviewedAt: newer.lastReviewedAt,
     });
+  });
+});
+
+describe("legacy progress migration", () => {
+  it("leaves records unchanged when no legacy mapping applies", async () => {
+    const store = await createProgressStore("progress-test-migration-noop");
+    const current = record("current-card-001", "2026-08-31T08:00:00.000Z");
+    const orphan = record("removed-card-001", "2026-08-30T08:00:00.000Z");
+    await store.put(current);
+    await store.put(orphan);
+
+    await store.migrateLegacyIds([
+      cardRef("current-card-001", []),
+      cardRef("new-card-001", ["different-old-card"]),
+    ]);
+
+    await expect(store.getAll()).resolves.toEqual([current, orphan]);
+    store.close();
+  });
+
+  it("moves a one-to-one legacy record to the canonical ID and deletes the old key", async () => {
+    const store = await createProgressStore("progress-test-migration-one-to-one");
+    const old = record("old-card-001", "2026-08-31T08:00:00.000Z", {
+      level: 3,
+      reviewCount: 4,
+    });
+    await store.put(old);
+
+    await store.migrateLegacyIds([cardRef("new-card-001", ["old-card-001"])]);
+
+    await expect(store.get("old-card-001")).resolves.toBeUndefined();
+    await expect(store.get("new-card-001")).resolves.toEqual({ ...old, cardId: "new-card-001" });
+    store.close();
+  });
+
+  it("merges all legacy records with an existing canonical record using migration rules", async () => {
+    const store = await createProgressStore("progress-test-migration-many-to-one");
+    await store.put(record("new-card-001", "2026-08-31T12:00:00+08:00", {
+      level: 4,
+      dueOn: "2026-09-10",
+      reviewCount: 3,
+      reviewedOn: ["2026-08-31"],
+    }));
+    await store.put(record("old-card-001", "2026-08-31T05:00:00+00:00", {
+      level: 2,
+      dueOn: "2026-09-04",
+      reviewCount: 7,
+      reviewedOn: ["2026-08-29", "2026-08-31"],
+    }));
+    await store.put(record("old-card-002", "2026-08-31T04:00:00+00:00", {
+      level: 1,
+      dueOn: "2026-09-02",
+      reviewCount: 5,
+      reviewedOn: ["2026-08-30"],
+    }));
+
+    await store.migrateLegacyIds([cardRef("new-card-001", ["old-card-001", "old-card-002"])]);
+
+    await expect(store.get("new-card-001")).resolves.toEqual({
+      cardId: "new-card-001",
+      level: 1,
+      dueOn: "2026-09-02",
+      lastReviewedAt: "2026-08-31T05:00:00+00:00",
+      reviewCount: 7,
+      reviewedOn: ["2026-08-29", "2026-08-30", "2026-08-31"],
+    });
+    await expect(store.get("old-card-001")).resolves.toBeUndefined();
+    await expect(store.get("old-card-002")).resolves.toBeUndefined();
+    store.close();
+  });
+
+  it("preserves orphans and is idempotent when run repeatedly", async () => {
+    const store = await createProgressStore("progress-test-migration-idempotent");
+    const orphan = record("removed-card-001", "2026-08-31T08:00:00.000Z");
+    await store.put(orphan);
+    await store.put(record("old-card-001", "2026-08-31T08:00:00.000Z"));
+    const mapping = [cardRef("new-card-001", ["old-card-001"])] as const;
+
+    await store.migrateLegacyIds(mapping);
+    const afterFirstRun = await store.getAll();
+    await store.migrateLegacyIds(mapping);
+
+    await expect(store.getAll()).resolves.toEqual(afterFirstRun);
+    await expect(store.get("removed-card-001")).resolves.toEqual(orphan);
+    store.close();
+  });
+
+  it("migrates legacy IDs after importing progress data", async () => {
+    const store = await createProgressStore("progress-test-migration-after-import");
+    const imported = JSON.stringify({
+      schema: "progress-export-v1",
+      exportedAt: "2026-08-31T09:00:00.000Z",
+      dailyLimit: 20,
+      records: [record("old-card-001", "2026-08-31T08:00:00.000Z")],
+    });
+
+    await store.importJson(imported);
+    await store.migrateLegacyIds([cardRef("new-card-001", ["old-card-001"])]);
+
+    await expect(store.get("old-card-001")).resolves.toBeUndefined();
+    await expect(store.get("new-card-001")).resolves.toMatchObject({ cardId: "new-card-001" });
+    store.close();
   });
 });
 

@@ -98,6 +98,7 @@ function Workspace({ payload, createStore, now, onLock }: WorkspaceProps) {
           nextStore.close();
           return;
         }
+        await nextStore.migrateLegacyIds(payload.cards);
         await reloadProgress(nextStore);
         if (active) {
           setStore(nextStore);
@@ -195,6 +196,7 @@ function Workspace({ payload, createStore, now, onLock }: WorkspaceProps) {
       {view === "browse" ? <BrowseScreen cards={payload.cards} progress={progress} /> : null}
       {view === "settings" ? (
         <SettingsScreen
+          cards={payload.cards}
           dailyLimit={dailyLimit}
           store={store}
           now={now}
