@@ -1,0 +1,10 @@
+node_modules/
+dist/
+coverage/
+playwright-report/
+test-results/
+.cards.local.json
+.env*
+*.plaintext.json
+public/data/*.tmp
+public/.cards.enc.json.*.tmp

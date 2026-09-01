@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="面试卡片">
+  <rect width="512" height="512" fill="#132a24"/>
+  <path d="M148 157h216v57H148z" fill="#e7c86c"/>
+  <path d="M148 233h216v57H148z" fill="#f3efe4"/>
+  <path d="M148 309h138v57H148z" fill="#71b49e"/>
+  <circle cx="336" cy="338" r="29" fill="#e46c4c"/>
+</svg>
