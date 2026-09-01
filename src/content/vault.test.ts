@@ -74,4 +74,19 @@ describe("compileVault schema v2", () => {
     await writeFile(path.join(root, "09-面试题整理", "99-虚构分类", "second-面试题清单.md"), cardDocument("fictional-quantum-widget-002", "full", "%%legacy-card-ids: fictional-quantum-widget-001%%"));
     await expect(compileVault(root)).rejects.toThrow("fictional-quantum-widget-001");
   });
+
+  it.each([
+    "![inline](image.png)",
+    "![[embedded-image.png]]",
+    "![reference][image-ref]",
+    "![collapsed][]",
+    "![shortcut]",
+  ])("rejects every valid Markdown image syntax in a target document: %s", async (image) => {
+    const root = await makeVault();
+    await writeFile(
+      path.join(root, "09-面试题整理", "99-虚构分类", "images-面试题清单.md"),
+      `${cardDocument("fictional-image-widget-001")}\n${image}\n`,
+    );
+    await expect(compileVault(root)).rejects.toThrow("卡片文档不能包含图片");
+  });
 });

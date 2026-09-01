@@ -108,6 +108,17 @@ describe("parseCardDocument schema v2", () => {
     expect(() => parseCardDocument({ path: "long-summary.md", source: long })).toThrow("超过 220");
   });
 
+  it.each([
+    "![inline](image.png)",
+    "![[embedded-image.png]]",
+    "![reference][image-ref]",
+    "![collapsed][]",
+    "![shortcut]",
+  ])("rejects every valid Markdown image syntax: %s", (image) => {
+    const source = DOCUMENT.replace("#### 深入理解", `${image}\n\n#### 深入理解`);
+    expect(() => parseCardDocument({ path: "image.md", source })).toThrow("卡片内容不能包含图片");
+  });
+
   it("reports malformed card metadata at its source line", () => {
     const source = DOCUMENT.replace(
       "%%card-id: fictional-quantum-widget-001; priority: P0; decks: sprint,full%%",

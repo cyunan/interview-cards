@@ -15,9 +15,10 @@ const report: CompileReport = {
 describe("assertReportMatchesBaseline", () => {
   it("computes a stable UTF-8 digest from sorted memberships", () => {
     expect(computeMembershipDigest([
-      { id: "b", decks: ["sprint", "full"] },
-      { id: "a", decks: ["full"] },
-    ])).toBe("4fa2d2eee1690f8df1f15763f0e266cafdd0f9b281254e4cb4568a106de15788");
+      { id: "card-10", decks: ["sprint", "full"] },
+      { id: "card-2", decks: ["full"] },
+      { id: "card-1", decks: ["full"] },
+    ])).toBe("d1670dde53c2f912bfbb89e507479d556669053b5b9c06e9c85ed6745c00e71f");
   });
 
   it("accepts an exact v2 baseline", () => {

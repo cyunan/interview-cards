@@ -5,7 +5,7 @@ import type { CompileReport } from "./vault";
 
 export function computeMembershipDigest(cards: Pick<CardV2, "id" | "decks">[]): string {
   const lines = [...cards]
-    .sort((left, right) => left.id.localeCompare(right.id))
+    .sort((left, right) => left.id < right.id ? -1 : left.id > right.id ? 1 : 0)
     .map((card) => `${card.id}\t${card.decks.join(",")}\n`)
     .join("");
   return createHash("sha256").update(Buffer.from(lines, "utf8")).digest("hex");

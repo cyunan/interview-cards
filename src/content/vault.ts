@@ -2,7 +2,7 @@ import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
 
 import { computeMembershipDigest } from "./baseline";
-import { CardFormatError, parseCardDocument } from "./parser";
+import { CardFormatError, containsMarkdownImage, parseCardDocument } from "./parser";
 import { normalizeObsidianMarkdown } from "./markdown";
 import type { CardPriority, CardV2, ParsedCard, ParsedCardDocument } from "./types";
 
@@ -34,7 +34,7 @@ function inspectDocumentSource(relativePath: string, source: string): SourceRefe
   const lines = source.split(/\r?\n/);
   for (let index = 0; index < lines.length; index += 1) {
     const line = lines[index];
-    if (/!\[\[[^\]]+\]\]|!\[[^\]]*\]\([^)]+\)/.test(line)) throw new CardFormatError(relativePath, index + 1, "卡片文档不能包含图片");
+    if (containsMarkdownImage(line)) throw new CardFormatError(relativePath, index + 1, "卡片文档不能包含图片");
     const withoutValidWikilinks = line.replace(/\[\[[^\]\r\n]+\]\]/g, "");
     if (withoutValidWikilinks.includes("[[") || withoutValidWikilinks.includes("]]")) throw new CardFormatError(relativePath, index + 1, "存在未解析的 Obsidian 双链");
     if (!line.trim().startsWith("%%card-ref:")) continue;

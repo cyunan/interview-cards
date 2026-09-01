@@ -26,12 +26,17 @@ const CARD_META_PATTERN =
   /^%%card-id:\s*([a-z0-9][a-z0-9-]{2,79});\s*priority:\s*(P[0-2]);\s*decks:\s*(full|sprint,full)%%$/;
 const LEGACY_META_PATTERN = /^%%legacy-card-ids:\s*(.*?)%%$/;
 const IGNORED_SECTION_PATTERN = /^(使用说明|参考资料|导航|附：?相关资料)/;
+const MARKDOWN_IMAGE_PATTERN = /!\[(?:\\.|[^\]])*\]/;
 
 export class CardFormatError extends Error {
   constructor(path: string, line: number, reason: string) {
     super(`${path}:${line} ${reason}`);
     this.name = "CardFormatError";
   }
+}
+
+export function containsMarkdownImage(value: string): boolean {
+  return MARKDOWN_IMAGE_PATTERN.test(value);
 }
 
 function frontmatterLineCount(source: string): number {
@@ -123,7 +128,7 @@ function parseCardBody(
   lines: string[],
   context: { path: string; line: number; metadata: CardMetadata; question: string; category: string; topic: string },
 ): ParsedCard {
-  if (lines.some((line) => /!\[\[|!\[[^\]]*\]\(/.test(line))) {
+  if (lines.some(containsMarkdownImage)) {
     throw new CardFormatError(context.path, context.line, "卡片内容不能包含图片");
   }
   const summary = extractCallout(lines, "summary");
