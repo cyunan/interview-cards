@@ -10,7 +10,7 @@ import {
   type QueueItem,
   type Rating,
 } from "../study/scheduler";
-import { Markdown } from "./Markdown";
+import { ProgressiveAnswer } from "./ProgressiveAnswer";
 
 interface StudyScreenProps {
   deck: Deck;
@@ -71,26 +71,6 @@ function SourceAction({ card }: { card: CardV2 }) {
     <button className="text-button source-button" type="button" onClick={() => void copySource()}>
       {copied ? "来源路径已复制" : "复制来源路径"}
     </button>
-  );
-}
-
-function AnswerSection({
-  label,
-  tone,
-  markdown,
-}: {
-  label: string;
-  tone: string;
-  markdown?: string;
-}) {
-  if (!markdown) {
-    return null;
-  }
-  return (
-    <section className={`answer-section ${tone}`}>
-      <h3>{label}</h3>
-      <Markdown>{markdown}</Markdown>
-    </section>
   );
 }
 
@@ -185,27 +165,12 @@ export function StudyScreen({
 
         {revealed ? (
           <div className="answer-panel">
-            <AnswerSection label="30 秒回答" tone="quick-answer" markdown={card.quickAnswerMd} />
-            <AnswerSection label="展开要点" tone="detail-answer" markdown={card.detailMd} />
-            <AnswerSection label="项目挂钩" tone="project-answer" markdown={card.projectHookMd} />
-            <AnswerSection label="易错点" tone="pitfall-answer" markdown={card.pitfallsMd} />
-            {card.followUps.length > 0 ? (
-              <section className="answer-section followup-answer">
-                <h3>高频追问</h3>
-                <div className="followup-list">
-                  {card.followUps.map((followUp, index) => (
-                    <div key={`${followUp.question}-${index}`}>
-                      <h4>{followUp.question}</h4>
-                      {followUp.answerMd ? <Markdown>{followUp.answerMd}</Markdown> : null}
-                    </div>
-                  ))}
-                </div>
-              </section>
-            ) : null}
-            <div className="source-row">
-              <span title={card.source.path}>{card.source.heading}</span>
-              <SourceAction card={card} />
-            </div>
+            <ProgressiveAnswer key={`${card.id}:${currentIndex}`} card={card}>
+              <div className="source-row">
+                <span title={card.source.path}>{card.source.heading}</span>
+                <SourceAction card={card} />
+              </div>
+            </ProgressiveAnswer>
           </div>
         ) : null}
       </article>

@@ -10,6 +10,7 @@ import { UnlockError } from "../crypto/envelope";
 import type { DailyLimit, ProgressCardIdentity, ProgressStore } from "../storage/progress";
 import type { CardProgress } from "../study/scheduler";
 import { App } from "./App";
+import { StudyScreen } from "./StudyScreen";
 
 beforeEach(() => {
   vi.spyOn(window, "scrollTo").mockImplementation(() => undefined);
@@ -110,6 +111,45 @@ function submitPassword(password: string): void {
 }
 
 describe("App", () => {
+  it("keeps the quick answer visible and resets progressive sections for the next card", async () => {
+    const secondCard = {
+      ...payload.cards[0],
+      id: "fictional-entropy-gate-002",
+      question: "第二张虚构题目是什么？",
+      quickAnswerMd: "第二张题目的 30 秒回答。",
+      detailMd: "第二张题目的深入理解。",
+    };
+    const store = new MemoryProgressStore();
+    const { container } = render(
+      <StudyScreen
+        deck="full"
+        initialQueue={[
+          { card: payload.cards[0], kind: "new" },
+          { card: secondCard, kind: "new" },
+        ]}
+        progress={new Map()}
+        store={store}
+        now={() => new Date(2026, 7, 31, 9)}
+        onProgress={() => undefined}
+        onExit={() => undefined}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "查看回答" }));
+    expect(screen.getByText("30 秒回答", { selector: "h3" })).toBeInTheDocument();
+    expect(screen.getByText("深入理解", { selector: "summary" })).toBeInTheDocument();
+    expect(container.querySelectorAll("details[open]")).toHaveLength(0);
+    fireEvent.click(screen.getByText("深入理解", { selector: "summary" }));
+    expect(container.querySelector("details")!).toHaveAttribute("open");
+
+    fireEvent.click(screen.getByRole("button", { name: "掌握" }));
+    expect(await screen.findByText("第二张虚构题目是什么？")).toBeInTheDocument();
+    expect(container.querySelectorAll("details")).toHaveLength(0);
+
+    fireEvent.click(screen.getByRole("button", { name: "查看回答" }));
+    expect(container.querySelectorAll("details[open]")).toHaveLength(0);
+  });
+
   it("does not show the workspace until progress migration finishes", async () => {
     const store = new DelayedMigrationStore();
 

@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 
 import type { CardV2 } from "../content/types";
 import type { CardProgress } from "../study/scheduler";
-import { Markdown } from "./Markdown";
+import { ProgressiveAnswer } from "./ProgressiveAnswer";
 
 type MasteryFilter = "all" | "new" | "weak" | "learning" | "mastered";
 
@@ -33,24 +33,6 @@ function matchesMastery(
     return record.level >= 2 && record.level <= 3;
   }
   return record.level >= 4;
-}
-
-function BrowseAnswerSection({
-  title,
-  markdown,
-}: {
-  title: string;
-  markdown?: string;
-}) {
-  if (!markdown) {
-    return null;
-  }
-  return (
-    <>
-      <h3>{title}</h3>
-      <Markdown>{markdown}</Markdown>
-    </>
-  );
 }
 
 export function BrowseScreen({ cards, progress }: BrowseScreenProps) {
@@ -193,22 +175,9 @@ export function BrowseScreen({ cards, progress }: BrowseScreenProps) {
               </button>
               {expanded ? (
                 <div className="browse-answer">
-                  <BrowseAnswerSection title="30 秒回答" markdown={card.quickAnswerMd} />
-                  <BrowseAnswerSection title="展开要点" markdown={card.detailMd} />
-                  <BrowseAnswerSection title="项目挂钩" markdown={card.projectHookMd} />
-                  <BrowseAnswerSection title="易错点" markdown={card.pitfallsMd} />
-                  {card.followUps.length > 0 ? (
-                    <section className="browse-followups">
-                      <h3>高频追问</h3>
-                      {card.followUps.map((followUp, followUpIndex) => (
-                        <div key={`${followUp.question}-${followUpIndex}`}>
-                          <h4>{followUp.question}</h4>
-                          {followUp.answerMd ? <Markdown>{followUp.answerMd}</Markdown> : null}
-                        </div>
-                      ))}
-                    </section>
-                  ) : null}
-                  <p className="free-mode-note">自由浏览模式 · 本次查看不计入进度</p>
+                  <ProgressiveAnswer key={card.id} card={card}>
+                    <p className="free-mode-note">自由浏览模式 · 本次查看不计入进度</p>
+                  </ProgressiveAnswer>
                 </div>
               ) : null}
             </article>

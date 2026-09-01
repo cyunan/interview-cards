@@ -29,8 +29,8 @@ const card: CardV2 = {
 };
 
 describe("BrowseScreen", () => {
-  it("searches every answer section and shows the complete card without changing progress", () => {
-    render(<BrowseScreen cards={[card]} progress={new Map()} />);
+  it("searches every answer section and keeps the complete answer available", () => {
+    const { container } = render(<BrowseScreen cards={[card]} progress={new Map()} />);
 
     fireEvent.change(screen.getByLabelText("关键词"), {
       target: { value: "蓝色偏移" },
@@ -38,9 +38,45 @@ describe("BrowseScreen", () => {
     expect(screen.getByText("虚构装置如何校准？")).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole("button", { name: /虚构装置如何校准/ }));
-    expect(screen.getByRole("heading", { name: "项目挂钩" })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: "易错点" })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: "高频追问" })).toBeInTheDocument();
+    expect(screen.getByText("30 秒回答", { selector: "h3" })).toBeInTheDocument();
+    expect(container.querySelectorAll("details")).toHaveLength(4);
+    expect(container.querySelectorAll("details[open]")).toHaveLength(0);
+    expect(screen.getByText("深入理解", { selector: "summary" })).toBeInTheDocument();
+    expect(screen.getByText("项目怎么讲", { selector: "summary" })).toBeInTheDocument();
+    expect(screen.getByText("易错点", { selector: "summary" })).toBeInTheDocument();
+    expect(screen.getByText("高频追问 · 1", { selector: "summary" })).toBeInTheDocument();
     expect(screen.getByText("为了消除虚构噪声。")).toBeInTheDocument();
+  });
+
+  it("does not render empty detail sections", () => {
+    const sparseCard: CardV2 = {
+      ...card,
+      id: "fictional-browse-card-002",
+      detailMd: undefined,
+      projectHookMd: undefined,
+      pitfallsMd: undefined,
+      followUps: [],
+    };
+
+    const { container } = render(<BrowseScreen cards={[sparseCard]} progress={new Map()} />);
+    fireEvent.click(screen.getByRole("button", { name: /虚构装置如何校准/ }));
+
+    expect(screen.getByText("30 秒回答", { selector: "h3" })).toBeInTheDocument();
+    expect(container.querySelectorAll("details")).toHaveLength(0);
+  });
+
+  it("allows each progressive section to be opened independently", () => {
+    const { container } = render(<BrowseScreen cards={[card]} progress={new Map()} />);
+    fireEvent.click(screen.getByRole("button", { name: /虚构装置如何校准/ }));
+
+    const details = [...container.querySelectorAll("details")];
+    const summaries = details.map((detail) => detail.querySelector("summary"));
+    fireEvent.click(summaries[0]!);
+    fireEvent.click(summaries[2]!);
+
+    expect(details[0]).toHaveAttribute("open");
+    expect(details[1]).not.toHaveAttribute("open");
+    expect(details[2]).toHaveAttribute("open");
+    expect(details[3]).not.toHaveAttribute("open");
   });
 });

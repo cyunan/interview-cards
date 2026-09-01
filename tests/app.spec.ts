@@ -27,6 +27,28 @@ test("keeps plaintext locked and completes a touch-friendly study flow", async (
   await page.getByRole("button", { name: "查看回答" }).click();
   await expect(page.getByRole("heading", { name: "30 秒回答" })).toBeVisible();
 
+  const progressiveSections = page.locator(".answer-panel details");
+  await expect(progressiveSections).toHaveCount(4);
+  await expect(page.locator(".answer-panel details[open]")).toHaveCount(0);
+  for (const summary of await progressiveSections.locator("summary").all()) {
+    const size = await summary.evaluate((element) => {
+      const rect = element.getBoundingClientRect();
+      return { width: rect.width, height: rect.height };
+    });
+    expect(size.height).toBeGreaterThanOrEqual(44);
+    expect(size.width).toBeGreaterThanOrEqual(44);
+  }
+
+  const detailSummary = page.getByText("深入理解", { exact: true });
+  await detailSummary.press("Enter");
+  await expect(progressiveSections.nth(0)).toHaveAttribute("open", "");
+  await page.getByText("项目怎么讲", { exact: true }).click();
+  await expect(page.locator(".answer-panel details[open]")).toHaveCount(2);
+  await detailSummary.press(" ");
+  await expect(progressiveSections.nth(0)).not.toHaveAttribute("open", "");
+
+  await expect(page.locator(".rating-dock")).toBeVisible();
+
   const ratingButtons = page.locator(".rating-dock button");
   for (const button of await ratingButtons.all()) {
     const size = await button.evaluate((element) => {

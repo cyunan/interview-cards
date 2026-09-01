@@ -57,7 +57,8 @@ button:disabled {
 button:focus-visible,
 input:focus-visible,
 select:focus-visible,
-a:focus-visible {
+a:focus-visible,
+summary:focus-visible {
   outline: 3px solid var(--gold);
   outline-offset: 3px;
 }
@@ -839,6 +840,10 @@ p {
   padding: 28px 20px 42px;
 }
 
+.progressive-answer {
+  display: grid;
+}
+
 .answer-section {
   margin-bottom: 28px;
   border-left: 5px solid var(--ink);
@@ -850,6 +855,26 @@ p {
   font-size: 0.72rem;
   font-weight: 900;
   letter-spacing: 0.08em;
+}
+
+.answer-section summary {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  list-style-position: outside;
+}
+
+.answer-section summary::marker {
+  color: var(--muted);
+}
+
+.answer-section > .markdown,
+.answer-section > .followup-list {
+  padding-top: 12px;
 }
 
 .quick-answer {
@@ -1228,18 +1253,6 @@ p {
 .browse-answer {
   border-top: 1px solid var(--line);
   padding: 22px 18px;
-}
-
-.browse-answer h3 {
-  margin-top: 24px;
-  margin-bottom: 9px;
-  color: var(--coral);
-  font-size: 0.7rem;
-  letter-spacing: 0.08em;
-}
-
-.browse-answer h3:first-child {
-  margin-top: 0;
 }
 
 .free-mode-note {
