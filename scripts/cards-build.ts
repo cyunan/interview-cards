@@ -8,7 +8,10 @@ import { compileVault, type CompileReport } from "../src/content/vault";
 import { parseVaultArgument } from "../src/publish/args";
 import { buildEncryptedCards } from "../src/publish/build";
 import { readHiddenLine } from "../src/publish/hidden-input";
-import { validatePublicationPasswords } from "../src/publish/password";
+import {
+  formatWeakPublicationPasswordWarning,
+  validatePublicationPasswords,
+} from "../src/publish/password";
 
 async function main(): Promise<void> {
   const vaultRoot = path.resolve(parseVaultArgument(process.argv.slice(2)));
@@ -23,7 +26,9 @@ async function main(): Promise<void> {
   );
   const first = await readHiddenLine("发布密码：");
   const second = await readHiddenLine("再次输入：");
-  const password = validatePublicationPasswords(first, second);
+  const password = validatePublicationPasswords(first, second, (length) => {
+    process.stdout.write(`${formatWeakPublicationPasswordWarning(length)}\n`);
+  });
   const builtAt = new Date().toISOString();
   const buildId = `${builtAt.replace(/[-:.TZ]/g, "").slice(0, 14)}-${randomUUID().slice(0, 8)}`;
   const outputPath = fileURLToPath(
