@@ -130,7 +130,8 @@ describe("App", () => {
     expect(container.querySelector("details")!).toHaveAttribute("open");
 
     fireEvent.click(screen.getByRole("button", { name: "不会" }));
-    expect(await screen.findByText("熵门是什么？")).toBeInTheDocument();
+    expect(await screen.findByRole("button", { name: "查看回答" })).toBeInTheDocument();
+    expect(screen.getByText("已完成 1 / 2")).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "查看回答" }));
     expect(container.querySelectorAll("details[open]")).toHaveLength(0);
   });

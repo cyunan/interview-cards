@@ -49,7 +49,8 @@ test("keeps plaintext locked and completes a touch-friendly study flow", async (
   await expect(progressiveSections.nth(0)).not.toHaveAttribute("open", "");
 
   await detailSummary.press("Enter");
-  await page.mouse.wheel(0, 1_800);
+  await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(0);
   await expect(page.locator(".rating-dock")).toBeInViewport();
   await expect(page.getByRole("button", { name: "掌握", exact: true })).toBeEnabled();
 
