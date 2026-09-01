@@ -64,8 +64,8 @@ async function readReachableHistory(
 async function main(): Promise<void> {
   const repositoryRoot = path.resolve(fileURLToPath(new URL("..", import.meta.url)));
   const vaultRoot = path.resolve(parseVaultArgument(process.argv.slice(2)));
-  const { cards, sourceVariants } = await compileVault(vaultRoot);
-  const leakCorpus = buildLeakCorpus(sourceVariants, cards);
+  const { cards, sourceCards } = await compileVault(vaultRoot);
+  const leakCorpus = buildLeakCorpus(sourceCards, cards);
   const workingTreeFindings = await scanForPlaintextLeaks(
     [repositoryRoot, path.join(repositoryRoot, "dist")],
     leakCorpus,

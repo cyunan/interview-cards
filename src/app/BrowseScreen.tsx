@@ -1,18 +1,18 @@
 import { useMemo, useState } from "react";
 
-import type { CardV1 } from "../content/types";
+import type { CardV2 } from "../content/types";
 import type { CardProgress } from "../study/scheduler";
 import { Markdown } from "./Markdown";
 
 type MasteryFilter = "all" | "new" | "weak" | "learning" | "mastered";
 
 interface BrowseScreenProps {
-  cards: CardV1[];
+  cards: CardV2[];
   progress: ReadonlyMap<string, CardProgress>;
 }
 
 function matchesMastery(
-  card: CardV1,
+  card: CardV2,
   progress: ReadonlyMap<string, CardProgress>,
   filter: MasteryFilter,
 ): boolean {

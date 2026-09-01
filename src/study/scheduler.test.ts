@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import type { CardV1 } from "../content/types";
+import type { CardV2 } from "../content/types";
 import {
   applyRating,
   buildDailyQueue,
@@ -10,9 +10,10 @@ import {
   type CardProgress,
 } from "./scheduler";
 
-function card(index: number, decks: CardV1["decks"] = ["full"]): CardV1 {
+function card(index: number, decks: CardV2["decks"] = ["full"]): CardV2 {
   return {
     id: `fictional-card-${String(index).padStart(3, "0")}`,
+    legacyIds: [],
     question: `虚构问题 ${index}？`,
     category: index % 2 === 0 ? "甲类" : "乙类",
     topic: "QuantumWidget",

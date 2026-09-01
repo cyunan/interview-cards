@@ -4,7 +4,7 @@ import path from "node:path";
 
 import { afterEach, describe, expect, it } from "vitest";
 
-import type { CardV1, ParsedCardVariant } from "../content/types";
+import type { CardV2, ParsedCard } from "../content/types";
 import {
   buildLeakCorpus,
   scanForPlaintextLeaks,
@@ -13,8 +13,9 @@ import {
 } from "./leak-scan";
 
 const roots: string[] = [];
-const card: CardV1 = {
+const card: CardV2 = {
   id: "android-quantum-widget-001",
+  legacyIds: [],
   question: "QuantumWidget 的熵门如何工作？",
   category: "02-Android",
   topic: "QuantumWidget",
@@ -147,12 +148,13 @@ describe("scanForPlaintextLeaks", () => {
   });
 
   it("detects plaintext from a source variant that the published merge drops", () => {
-    const droppedVariant: ParsedCardVariant = {
+    const droppedVariant: ParsedCard = {
       id: card.id,
+      legacyIds: [],
       question: "完整版本独有的虚构问题是什么？",
       category: card.category,
       topic: card.topic,
-      variant: "full",
+      decks: ["full"],
       priority: card.priority,
       quickAnswerMd: "这是合并后不会发布的完整版本独有回答。",
       followUps: [
@@ -189,18 +191,19 @@ describe("scanForPlaintextLeaks", () => {
   });
 
   it("detects normalized merged text as well as raw source wikilinks", () => {
-    const linkedVariant: ParsedCardVariant = {
+    const linkedVariant: ParsedCard = {
       id: card.id,
+      legacyIds: [],
       question: "[[私有路径/熵门|熵门]]如何工作？",
       category: card.category,
       topic: card.topic,
-      variant: "full",
+      decks: ["full"],
       priority: card.priority,
       quickAnswerMd: "通过[[私有路径/量子锁|量子锁]]保护完整的虚构测试状态。",
       followUps: [],
       source: { ...card.source, line: 12 },
     };
-    const normalizedCard: CardV1 = {
+    const normalizedCard: CardV2 = {
       ...card,
       question: "熵门如何工作？",
       quickAnswerMd: "通过量子锁保护完整的虚构测试状态。",
@@ -223,7 +226,7 @@ describe("scanForPlaintextLeaks", () => {
   });
 
   it("fingerprints short complete questions and answers at the corpus boundary", () => {
-    const shortCard: CardV1 = {
+    const shortCard: CardV2 = {
       ...card,
       id: "android-short-boundary-001",
       question: "为何会卡顿",

@@ -18,14 +18,13 @@ async function makeVault(): Promise<{ root: string; output: string }> {
   await writeFile(
     path.join(directory, "Widget-面试题清单.md"),
     `---
-card_schema: 1
+card_schema: 2
 card_category: 02-Android
 card_topic: Widget
-card_variant: full
 verified_at: 2026-08-31
 ---
 ## 一、机制
-%%card-id: android-widget-001; priority: P1%%
+%%card-id: android-widget-001; priority: P1; decks: full%%
 ### QuantumWidget 如何工作？
 > [!summary] 30 秒回答
 > 这是仅用于测试的虚构结论。
@@ -42,13 +41,12 @@ describe("buildEncryptedCards", () => {
   it("writes an envelope that decrypts to the complete payload", async () => {
     const { root, output } = await makeVault();
     const baseline = {
-      documents: 1,
-      documentsByVariant: { sprint: 0, full: 1 },
-      variants: 1,
+      sourceDocuments: 1,
       cards: 1,
       byDeck: { sprint: 0, full: 1 },
       byPriority: { P0: 0, P1: 1, P2: 0 },
       byCategory: { "02-Android": 1 },
+      membershipDigest: "ac00e9bf85298ecb82704e8abfaa1c32210f914ab9a1b1baaa6551b81a5ee1c9",
     };
 
     await buildEncryptedCards({
@@ -66,7 +64,7 @@ describe("buildEncryptedCards", () => {
       cards: Array<{ id: string }>;
     }>(envelope, password);
     expect(payload).toMatchObject({
-      schema: "cards-v1",
+      schema: "cards-v2",
       buildId: "test-build",
       cards: [{ id: "android-widget-001" }],
     });
@@ -82,13 +80,12 @@ describe("buildEncryptedCards", () => {
         vaultRoot: root,
         outputPath: output,
         baseline: {
-          documents: 46,
-          documentsByVariant: { sprint: 15, full: 31 },
-          variants: 0,
+          sourceDocuments: 31,
           cards: 0,
           byDeck: { sprint: 0, full: 0 },
           byPriority: { P0: 0, P1: 0, P2: 0 },
           byCategory: {},
+          membershipDigest: "wrong",
         },
         password,
         buildId: "bad-build",

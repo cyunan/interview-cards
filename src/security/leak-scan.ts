@@ -1,10 +1,10 @@
 import { readdir, readFile, stat } from "node:fs/promises";
 import path from "node:path";
 
-import type { CardV1, ParsedCardVariant } from "../content/types";
+import type { CardV2, ParsedCard } from "../content/types";
 
 export type LeakSource = Pick<
-  CardV1 | ParsedCardVariant,
+  CardV2 | ParsedCard,
   | "id"
   | "question"
   | "quickAnswerMd"
@@ -16,10 +16,10 @@ export type LeakSource = Pick<
 >;
 
 export function buildLeakCorpus(
-  sourceVariants: ParsedCardVariant[],
-  cards: CardV1[],
+  sourceCards: ParsedCard[],
+  cards: CardV2[],
 ): LeakSource[] {
-  return [...sourceVariants, ...cards];
+  return [...sourceCards, ...cards];
 }
 
 export type LeakKind =
@@ -156,7 +156,7 @@ async function listTextFiles(root: string): Promise<string[]> {
       if (entry.isDirectory()) {
         return SKIPPED_DIRECTORIES.has(entry.name) ? [] : listTextFiles(absolute);
       }
-      return entry.isFile() &&
+      return entry.name !== ".git" && entry.isFile() &&
         isScannableTextPath(entry.name)
         ? [absolute]
         : [];

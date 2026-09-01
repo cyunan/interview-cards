@@ -3,7 +3,7 @@ import { randomUUID } from "node:crypto";
 import path from "node:path";
 
 import { assertReportMatchesBaseline } from "../content/baseline";
-import type { CardsPayloadV1 } from "../content/payload";
+import type { CardsPayloadV2 } from "../content/payload";
 import { compileVault, type CompileReport } from "../content/vault";
 import { encryptEnvelope, type EncryptedEnvelopeV1 } from "../crypto/envelope";
 
@@ -54,8 +54,8 @@ export async function buildEncryptedCards({
 }: BuildEncryptedCardsInput): Promise<EncryptedCardsBuild> {
   const compiled = await compileVault(vaultRoot);
   assertReportMatchesBaseline(compiled.report, baseline);
-  const payload: CardsPayloadV1 = {
-    schema: "cards-v1",
+  const payload: CardsPayloadV2 = {
+    schema: "cards-v2",
     buildId,
     builtAt,
     cards: compiled.cards,

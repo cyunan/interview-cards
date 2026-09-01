@@ -1,4 +1,4 @@
-export type CardVariant = "full" | "sprint";
+export type CardDeck = "sprint" | "full";
 export type CardPriority = "P0" | "P1" | "P2";
 
 export interface FollowUpV1 {
@@ -6,48 +6,63 @@ export interface FollowUpV1 {
   answerMd?: string;
 }
 
-export interface ParsedCardVariant {
+export interface CardSource {
+  path: string;
+  heading: string;
+}
+
+export interface ParsedCard {
   id: string;
+  legacyIds: string[];
   question: string;
   category: string;
   topic: string;
-  variant: CardVariant;
+  decks: CardDeck[];
   priority: CardPriority;
   quickAnswerMd: string;
   detailMd?: string;
   projectHookMd?: string;
   pitfallsMd?: string;
   followUps: FollowUpV1[];
-  source: {
-    path: string;
-    heading: string;
-    line: number;
-  };
+  source: CardSource & { line: number };
 }
 
 export interface ParsedCardDocument {
-  schema: 1;
+  schema: 2;
   category: string;
   topic: string;
-  variant: CardVariant;
   verifiedAt: string;
-  cards: ParsedCardVariant[];
+  cards: ParsedCard[];
 }
 
+export interface CardV2 {
+  id: string;
+  legacyIds: string[];
+  question: string;
+  category: string;
+  topic: string;
+  decks: CardDeck[];
+  priority: CardPriority;
+  quickAnswerMd: string;
+  detailMd?: string;
+  projectHookMd?: string;
+  pitfallsMd?: string;
+  followUps: FollowUpV1[];
+  source: CardSource;
+}
+
+/** Raw card shape accepted only while normalizing cards-v1 payloads. */
 export interface CardV1 {
   id: string;
   question: string;
   category: string;
   topic: string;
-  decks: Array<"sprint" | "full">;
+  decks: CardDeck[];
   priority: CardPriority;
   quickAnswerMd: string;
   detailMd?: string;
   projectHookMd?: string;
   pitfallsMd?: string;
   followUps: FollowUpV1[];
-  source: {
-    path: string;
-    heading: string;
-  };
+  source: CardSource;
 }

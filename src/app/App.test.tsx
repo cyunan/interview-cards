@@ -5,7 +5,7 @@ import "@testing-library/jest-dom/vitest";
 import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import type { CardsPayloadV1 } from "../content/payload";
+import type { ParsedCardsPayload } from "../content/payload";
 import { UnlockError } from "../crypto/envelope";
 import type { DailyLimit, ProgressStore } from "../storage/progress";
 import type { CardProgress } from "../study/scheduler";
@@ -20,13 +20,14 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
-const payload: CardsPayloadV1 = {
-  schema: "cards-v1",
+const payload: ParsedCardsPayload = {
+  schema: "cards-v2",
   buildId: "build-fictional-001",
   builtAt: "2026-08-31T08:00:00.000Z",
   cards: [
     {
       id: "fictional-quantum-widget-001",
+      legacyIds: [],
       question: "熵门是什么？",
       category: "99-虚构分类",
       topic: "QuantumWidget",

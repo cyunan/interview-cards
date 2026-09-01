@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 
-import type { CardsPayloadV1 } from "../content/payload";
+import type { ParsedCardsPayload } from "../content/payload";
 import { UnlockError } from "../crypto/envelope";
 import {
   createProgressStore,
@@ -25,7 +25,7 @@ import { UnlockScreen } from "./UnlockScreen";
 type View = "home" | "browse" | "settings";
 
 export interface AppProps {
-  unlockCards?: (password: string) => Promise<CardsPayloadV1>;
+  unlockCards?: (password: string) => Promise<ParsedCardsPayload>;
   createStore?: () => Promise<ProgressStore>;
   now?: () => Date;
 }
@@ -64,7 +64,7 @@ function BottomNavigation({ view, onView }: { view: View; onView(view: View): vo
 }
 
 interface WorkspaceProps {
-  payload: CardsPayloadV1;
+  payload: ParsedCardsPayload;
   createStore(): Promise<ProgressStore>;
   now(): Date;
   onLock(): void;
@@ -213,7 +213,7 @@ export function App({
   createStore = createProgressStore,
   now = () => new Date(),
 }: AppProps) {
-  const [payload, setPayload] = useState<CardsPayloadV1>();
+  const [payload, setPayload] = useState<ParsedCardsPayload>();
 
   async function unlock(password: string): Promise<void> {
     try {

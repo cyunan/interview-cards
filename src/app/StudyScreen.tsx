@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 
-import type { CardV1 } from "../content/types";
+import type { CardV2 } from "../content/types";
 import type { ProgressStore } from "../storage/progress";
 import {
   applyRating,
@@ -54,7 +54,7 @@ function Countdown({ cardKey }: { cardKey: string }) {
   );
 }
 
-function SourceAction({ card }: { card: CardV1 }) {
+function SourceAction({ card }: { card: CardV2 }) {
   const [copied, setCopied] = useState(false);
 
   async function copySource(): Promise<void> {

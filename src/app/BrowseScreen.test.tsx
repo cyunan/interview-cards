@@ -5,13 +5,14 @@ import "@testing-library/jest-dom/vitest";
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 
-import type { CardV1 } from "../content/types";
+import type { CardV2 } from "../content/types";
 import { BrowseScreen } from "./BrowseScreen";
 
 afterEach(cleanup);
 
-const card: CardV1 = {
+const card: CardV2 = {
   id: "fictional-browse-card-001",
+  legacyIds: [],
   question: "虚构装置如何校准？",
   category: "99-虚构分类",
   topic: "QuantumWidget",

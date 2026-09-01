@@ -1,33 +1,41 @@
 import { describe, expect, it } from "vitest";
 
-import { assertReportMatchesBaseline } from "./baseline";
+import { assertReportMatchesBaseline, computeMembershipDigest } from "./baseline";
 import type { CompileReport } from "./vault";
 
 const report: CompileReport = {
-  documents: 46,
-  documentsByVariant: { sprint: 15, full: 31 },
-  variants: 716,
-  cards: 700,
-  byDeck: { sprint: 120, full: 596 },
-  byPriority: { P0: 120, P1: 580, P2: 0 },
-  byCategory: { "01-Kotlin": 128, "02-Android": 281 },
+  sourceDocuments: 2,
+  cards: 2,
+  byDeck: { sprint: 1, full: 2 },
+  byPriority: { P0: 1, P1: 1, P2: 0 },
+  byCategory: { "01-Kotlin": 1, "02-Android": 1 },
+  membershipDigest: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
 };
 
 describe("assertReportMatchesBaseline", () => {
-  it("accepts an exact baseline", () => {
+  it("computes a stable UTF-8 digest from sorted memberships", () => {
+    expect(computeMembershipDigest([
+      { id: "b", decks: ["sprint", "full"] },
+      { id: "a", decks: ["full"] },
+    ])).toBe("4fa2d2eee1690f8df1f15763f0e266cafdd0f9b281254e4cb4568a106de15788");
+  });
+
+  it("accepts an exact v2 baseline", () => {
     expect(() => assertReportMatchesBaseline(report, report)).not.toThrow();
   });
 
-  it("reports every changed count", () => {
-    expect(() =>
-      assertReportMatchesBaseline(report, {
-        ...report,
-        cards: 699,
-        documentsByVariant: { ...report.documentsByVariant, sprint: 14 },
-        byDeck: { ...report.byDeck, sprint: 119 },
-      }),
-    ).toThrow(
-      "cards: 期望 699，实际 700; documentsByVariant.sprint: 期望 14，实际 15; byDeck.sprint: 期望 119，实际 120",
-    );
+  it("detects membership changes even when all counts stay unchanged", () => {
+    expect(() => assertReportMatchesBaseline(report, {
+      ...report,
+      membershipDigest: "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    })).toThrow("membershipDigest");
+  });
+
+  it("reports changed source documents and aggregates", () => {
+    expect(() => assertReportMatchesBaseline(report, {
+      ...report,
+      sourceDocuments: 1,
+      byDeck: { sprint: 0, full: 2 },
+    })).toThrow("sourceDocuments");
   });
 });

@@ -1,14 +1,9 @@
 {
-  "documents": 46,
-  "documentsByVariant": {
-    "sprint": 15,
-    "full": 31
-  },
-  "variants": 716,
+  "sourceDocuments": 31,
   "cards": 700,
   "byDeck": {
     "sprint": 120,
-    "full": 596
+    "full": 700
   },
   "byPriority": {
     "P0": 120,
@@ -26,5 +21,6 @@
     "08-跨端与扩展技术": 22,
     "09-场景题": 29,
     "09-岗位专项": 1
-  }
+  },
+  "membershipDigest": "fb97cef7eabac038b457f9b20ebb385a06661d2dab0de7f3a46e17a94ab491d7"
 }

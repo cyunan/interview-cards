@@ -1,16 +1,16 @@
-import type { CardV1 } from "../content/types";
+import type { CardV2 } from "../content/types";
 import { calculateStudyStreak } from "../storage/progress";
 import type { CardProgress, Deck } from "../study/scheduler";
 
 interface DashboardProps {
-  cards: CardV1[];
+  cards: CardV2[];
   progress: ReadonlyMap<string, CardProgress>;
   today: string;
   onStart(deck: Deck): void;
 }
 
 function weakCategories(
-  cards: CardV1[],
+  cards: CardV2[],
   progress: ReadonlyMap<string, CardProgress>,
 ): Array<{ name: string; count: number }> {
   const cardById = new Map(cards.map((card) => [card.id, card]));

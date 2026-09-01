@@ -1,4 +1,4 @@
-import type { CardV1 } from "../content/types";
+import type { CardV2 } from "../content/types";
 
 export type LeitnerLevel = 0 | 1 | 2 | 3 | 4 | 5;
 export type Rating = "again" | "fuzzy" | "mastered";
@@ -14,12 +14,12 @@ export interface CardProgress {
 }
 
 export interface QueueItem {
-  card: CardV1;
+  card: CardV2;
   kind: "review" | "new";
 }
 
 interface DailyQueueOptions {
-  cards: CardV1[];
+  cards: CardV2[];
   progress: ReadonlyMap<string, CardProgress>;
   deck: Deck;
   limit: number;
@@ -123,7 +123,7 @@ function stableDailyOrder<T extends { id: string }>(items: T[], seed: string): T
   });
 }
 
-function priorityRank(priority: CardV1["priority"]): number {
+function priorityRank(priority: CardV2["priority"]): number {
   return priority === "P0" ? 0 : priority === "P1" ? 1 : 2;
 }
 

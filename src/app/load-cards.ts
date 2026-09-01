@@ -1,4 +1,4 @@
-import { parseCardsPayload, type CardsPayloadV1 } from "../content/payload";
+import { parseCardsPayload, type ParsedCardsPayload } from "../content/payload";
 import {
   decryptEnvelope,
   UnlockError,
@@ -39,7 +39,7 @@ async function loadEnvelopeResponse(url: string): Promise<Response> {
   throw new CardBankUnavailableError();
 }
 
-export async function loadEncryptedCards(password: string): Promise<CardsPayloadV1> {
+export async function loadEncryptedCards(password: string): Promise<ParsedCardsPayload> {
   const url = `${import.meta.env.BASE_URL}cards.enc.json`;
   const response = await loadEnvelopeResponse(url);
   try {

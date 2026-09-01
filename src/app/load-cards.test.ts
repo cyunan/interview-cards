@@ -40,7 +40,10 @@ describe("loadEncryptedCards", () => {
       match: cacheMatch,
     });
 
-    await expect(loadEncryptedCards(password)).resolves.toEqual(payload);
+    await expect(loadEncryptedCards(password)).resolves.toEqual({
+      ...payload,
+      cards: [{ ...payload.cards[0], legacyIds: [] }],
+    });
     expect(cacheMatch).toHaveBeenCalledWith(
       "/cards.enc.json",
       { ignoreSearch: true },
