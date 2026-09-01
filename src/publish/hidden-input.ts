@@ -5,27 +5,34 @@ export async function readHiddenLine(prompt: string): Promise<string> {
     throw new Error("发布密码必须在交互终端中输入");
   }
 
-  output.write(prompt);
-  input.setEncoding("utf8");
-  input.setRawMode(true);
-  input.resume();
-
   return new Promise<string>((resolve, reject) => {
     let value = "";
+    let rawModeEnabled = false;
     const cleanup = () => {
       input.off("data", onData);
-      input.setRawMode(false);
       input.pause();
+      if (rawModeEnabled) {
+        rawModeEnabled = false;
+        input.setRawMode(false);
+      }
     };
     const finish = () => {
-      cleanup();
-      output.write("\n");
-      resolve(value);
+      try {
+        cleanup();
+        output.write("\n");
+        resolve(value);
+      } catch (error) {
+        reject(error);
+      }
     };
     const cancel = () => {
-      cleanup();
-      output.write("\n");
-      reject(new Error("已取消发布"));
+      try {
+        cleanup();
+        output.write("\n");
+        reject(new Error("已取消发布"));
+      } catch (error) {
+        reject(error);
+      }
     };
     const onData = (chunk: string | Buffer) => {
       for (const character of String(chunk)) {
@@ -44,6 +51,20 @@ export async function readHiddenLine(prompt: string): Promise<string> {
         value += character;
       }
     };
-    input.on("data", onData);
+    try {
+      input.setEncoding("utf8");
+      input.setRawMode(true);
+      rawModeEnabled = true;
+      input.on("data", onData);
+      input.resume();
+      output.write(prompt);
+    } catch (error) {
+      try {
+        cleanup();
+      } catch {
+        // Preserve the original setup error while making a best effort to restore the TTY.
+      }
+      reject(error);
+    }
   });
 }
