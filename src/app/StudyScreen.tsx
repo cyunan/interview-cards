@@ -130,17 +130,20 @@ export function StudyScreen({
     );
   }
 
+  const total = queueIds.length;
+  const completed = currentIndex;
+
   return (
     <main className="study-screen">
       <header className="study-header">
         <button className="icon-button" type="button" onClick={onExit} aria-label="退出本轮学习">×</button>
         <div className="study-progress">
           <progress
-            aria-label={`本轮已完成 ${currentIndex} / ${queueIds.length}`}
-            max={Math.max(queueIds.length, 1)}
-            value={currentIndex}
+            aria-label={`本轮已完成 ${completed} / ${total}`}
+            max={Math.max(total, 1)}
+            value={completed}
           />
-          <small>已完成 {currentIndex} / {queueIds.length}</small>
+          <small>已完成 {completed} / {total}</small>
         </div>
         <span className="deck-pill">{deck === "sprint" ? "冲刺" : "完整"}</span>
       </header>

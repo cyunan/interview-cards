@@ -131,6 +131,8 @@ describe("App", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "不会" }));
     expect(await screen.findByRole("button", { name: "查看回答" })).toBeInTheDocument();
+    const repeatedProgress = screen.getByRole("progressbar", { name: "本轮已完成 1 / 2" });
+    expect(repeatedProgress).toHaveValue(1);
     expect(screen.getByText("已完成 1 / 2")).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "查看回答" }));
     expect(container.querySelectorAll("details[open]")).toHaveLength(0);
@@ -251,9 +253,8 @@ describe("App", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "开始完整题库" }));
     expect(await screen.findByText("熵门是什么？")).toBeInTheDocument();
-    expect(
-      screen.getByRole("progressbar", { name: "本轮已完成 0 / 1" }),
-    ).toHaveValue(0);
+    const initialProgress = screen.getByRole("progressbar", { name: "本轮已完成 0 / 1" });
+    expect(initialProgress).toHaveValue(0);
     expect(screen.getByText("已完成 0 / 1")).toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: "30 秒回答" })).not.toBeInTheDocument();
 
@@ -274,6 +275,26 @@ describe("App", () => {
     fireEvent.click(screen.getByRole("button", { name: "返回首页" }));
     fireEvent.click(screen.getByRole("button", { name: "锁定" }));
     expect(await screen.findByText("解锁题库")).toBeInTheDocument();
+    expect(screen.queryByText("熵门是什么？")).not.toBeInTheDocument();
+  });
+
+  it("starts locked again when the unlocked app is refreshed", async () => {
+    const store = new MemoryProgressStore();
+    const appProps = {
+      unlockCards: async () => payload,
+      createStore: async () => store,
+      now: () => new Date(2026, 7, 31, 9),
+    };
+
+    const firstRender = render(<App {...appProps} />);
+    submitPassword("correct-password");
+    expect(await screen.findByText("今日复习")).toBeInTheDocument();
+
+    firstRender.unmount();
+    render(<App {...appProps} />);
+
+    expect(await screen.findByRole("heading", { name: "解锁题库" })).toBeInTheDocument();
+    expect(screen.getByLabelText("题库密码")).toBeInTheDocument();
     expect(screen.queryByText("熵门是什么？")).not.toBeInTheDocument();
   });
 });

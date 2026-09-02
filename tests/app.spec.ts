@@ -87,3 +87,13 @@ test("restarts locked and unlocks from cached ciphertext while offline", async (
   await unlock(page);
   await expect(page.getByRole("heading", { name: "今日复习" })).toBeVisible();
 });
+
+test("refreshes directly from an unlocked session back to the lock screen", async ({ page }) => {
+  await page.goto("./");
+  await unlock(page);
+
+  await page.reload();
+
+  await expect(page.getByRole("heading", { name: "解锁题库" })).toBeVisible();
+  await expect(page.getByText("熵门如何保护测试状态？")).toHaveCount(0);
+});
