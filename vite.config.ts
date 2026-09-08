@@ -1,10 +1,24 @@
 import react from "@vitejs/plugin-react";
+import { randomBytes } from "node:crypto";
 import { defineConfig } from "vite";
 import { VitePWA } from "vite-plugin-pwa";
 
-export default defineConfig({
+export default defineConfig(({ command }) => {
+  const nonce = command === "serve" ? randomBytes(24).toString("base64") : undefined;
+  return {
+  html: { cspNonce: nonce },
   base: "/interview-cards/",
   plugins: [
+    {
+      name: "development-csp-nonce",
+      apply: "serve",
+      transformIndexHtml: {
+        order: "pre",
+        handler: (html) => html
+          .replace("script-src 'self'", `script-src 'self' 'nonce-${nonce}'`)
+          .replace("style-src 'self'", `style-src 'self' 'nonce-${nonce}'`),
+      },
+    },
     react(),
     VitePWA({
       registerType: "autoUpdate",
@@ -20,8 +34,8 @@ export default defineConfig({
         name: "私有面试卡片",
         short_name: "面试卡片",
         description: "本机解密、离线可用的私有面试复习卡片",
-        theme_color: "#132a24",
-        background_color: "#f3efe4",
+        theme_color: "#167d71",
+        background_color: "#f7f8fa",
         display: "standalone",
         orientation: "portrait-primary",
         scope: "/interview-cards/",
@@ -72,4 +86,5 @@ export default defineConfig({
       },
     }),
   ],
+  };
 });
