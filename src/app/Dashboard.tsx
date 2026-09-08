@@ -43,13 +43,13 @@ export function Dashboard({ cards, progress, today, onStart }: DashboardProps) {
     <main className="screen dashboard-screen">
       <section className="hero-panel">
         <div>
-          <p className="eyebrow">TODAY · {today}</p>
+          <p className="eyebrow">{today} · 每天进步一点</p>
           <h1>今日复习</h1>
           <p>先说结论，再看展开。每天把最薄弱的部分往前推一点。</p>
         </div>
-        <div className="streak-orbit" aria-label={`连续学习 ${streak} 天`}>
-          <strong>{streak}</strong>
-          <span>连续天数</span>
+        <div className="daily-action">
+          <button className="primary-button" onClick={() => onStart("full")} disabled={fullCount === 0}>开始今日复习 <span aria-hidden="true">→</span></button>
+          <small>按今日计划安排 · 随时可以结束</small>
         </div>
       </section>
 
@@ -63,15 +63,14 @@ export function Dashboard({ cards, progress, today, onStart }: DashboardProps) {
           <strong>{newCount}</strong>
         </article>
         <article>
-          <span>已建立进度</span>
-          <strong>{records.filter((record) => knownIds.has(record.cardId)).length}</strong>
+          <span>连续学习 / 天</span>
+          <strong>{streak}</strong>
         </article>
       </section>
 
       <section className="section-block" aria-labelledby="deck-title">
         <div className="section-heading">
           <div>
-            <p className="eyebrow">CHOOSE A DECK</p>
             <h2 id="deck-title">选择题库</h2>
           </div>
         </div>
@@ -100,7 +99,6 @@ export function Dashboard({ cards, progress, today, onStart }: DashboardProps) {
       <section className="section-block weak-section" aria-labelledby="weak-title">
         <div className="section-heading">
           <div>
-            <p className="eyebrow">WEAK SPOTS</p>
             <h2 id="weak-title">薄弱分类</h2>
           </div>
         </div>

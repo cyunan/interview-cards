@@ -5,6 +5,7 @@ import type { DailyLimit, ProgressStore } from "../storage/progress";
 import { toLocalDateKey } from "../study/scheduler";
 
 interface SettingsScreenProps {
+  buildId?: string;
   cards: ReadonlyArray<Pick<CardV2, "id" | "legacyIds">>;
   dailyLimit: DailyLimit;
   store: ProgressStore;
@@ -17,6 +18,7 @@ interface SettingsScreenProps {
 const DAILY_LIMITS: DailyLimit[] = [10, 20, 30, 50];
 
 export function SettingsScreen({
+  buildId,
   cards,
   dailyLimit,
   store,
@@ -130,6 +132,7 @@ export function SettingsScreen({
         <button className="danger-button" type="button" onClick={() => void clearProgress()}>清空进度</button>
       </section>
 
+      {buildId ? <p className="empty-copy">题库版本 · {buildId}</p> : null}
       {status ? <p className="settings-status" role="status">{status}</p> : null}
     </main>
   );

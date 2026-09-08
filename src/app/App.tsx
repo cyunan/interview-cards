@@ -30,14 +30,13 @@ export interface AppProps {
   now?: () => Date;
 }
 
-function AppHeader({ buildId, onLock }: { buildId: string; onLock(): void }) {
+function AppHeader({ onLock }: { onLock(): void }) {
   return (
     <header className="app-header">
       <div className="mini-brand">
         <div className="mini-mark" aria-hidden="true"><span /><span /><span /></div>
         <div>
           <strong>面试卡片</strong>
-          <small>BUILD {buildId.slice(0, 8).toUpperCase()}</small>
         </div>
       </div>
       <button className="lock-button" type="button" onClick={onLock}>
@@ -183,7 +182,7 @@ function Workspace({ payload, createStore, now, onLock }: WorkspaceProps) {
 
   return (
     <div className="app-shell">
-      <AppHeader buildId={payload.buildId} onLock={onLock} />
+      <AppHeader onLock={onLock} />
       {notice ? <p className="app-notice" role="status">{notice}</p> : null}
       {view === "home" ? (
         <Dashboard
@@ -196,6 +195,7 @@ function Workspace({ payload, createStore, now, onLock }: WorkspaceProps) {
       {view === "browse" ? <BrowseScreen cards={payload.cards} progress={progress} /> : null}
       {view === "settings" ? (
         <SettingsScreen
+          buildId={payload.buildId}
           cards={payload.cards}
           dailyLimit={dailyLimit}
           store={store}

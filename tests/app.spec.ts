@@ -2,6 +2,31 @@ import { expect, test } from "@playwright/test";
 
 import { E2E_PASSWORD } from "./fixture-payload";
 
+test("reading layout preserves production CSP and daily navigation", async ({ page }, testInfo) => {
+  await page.goto("./");
+  const policy = await page.locator('meta[http-equiv="Content-Security-Policy"]').getAttribute("content");
+  expect(policy).toContain("script-src 'self'; style-src 'self';");
+  expect(policy).not.toMatch(/unsafe-inline|nonce-/);
+  await expect(page.locator("body")).toHaveCSS("background-color", "rgb(247, 248, 250)");
+  await unlock(page);
+  for (const width of [320, 390, 1280]) {
+    await page.setViewportSize({ width, height: 900 });
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    await page.screenshot({ path: testInfo.outputPath(`home-${width}.png`), fullPage: true });
+  }
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.getByRole("button", { name: "开始今日复习" }).click();
+  await page.getByRole("button", { name: "查看回答" }).click();
+  await page.screenshot({ path: testInfo.outputPath("study-mobile.png"), fullPage: true });
+  await page.getByRole("button", { name: "退出本轮学习" }).click();
+  await page.getByRole("button", { name: "浏览", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "自由浏览" })).toBeVisible();
+  await page.screenshot({ path: testInfo.outputPath("browse-mobile.png"), fullPage: true });
+  await page.getByRole("button", { name: "设置", exact: true }).click();
+  await expect(page.getByText("题库版本 · fictional-e2e-build")).toBeVisible();
+  await page.screenshot({ path: testInfo.outputPath("settings-mobile.png"), fullPage: true });
+});
+
 async function unlock(page: import("@playwright/test").Page): Promise<void> {
   await page.getByLabel("题库密码").fill(E2E_PASSWORD);
   await page.getByRole("button", { name: "解锁", exact: true }).click();
