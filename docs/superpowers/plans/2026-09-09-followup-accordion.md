@@ -86,7 +86,7 @@ it("clears the open follow-up when the card id changes", () => {
 
 - [ ] **Step 2: 运行测试确认当前实现失败**
 
-Run: `PATH=/Users/a37/.nvm/versions/node/v24.20.0/bin:$PATH npm test -- --run src/app/ProgressiveAnswer.test.tsx`
+Run: `npm test -- --run src/app/ProgressiveAnswer.test.tsx`
 
 Expected: FAIL，因为当前组件没有追问问题按钮和逐题折叠状态。
 
@@ -143,7 +143,7 @@ function FollowUpAccordion({
 
 - [ ] **Step 2: 运行组件测试**
 
-Run: `PATH=/Users/a37/.nvm/versions/node/v24.20.0/bin:$PATH npm test -- --run src/app/ProgressiveAnswer.test.tsx`
+Run: `npm test -- --run src/app/ProgressiveAnswer.test.tsx`
 
 Expected: PASS，三个追问折叠测试全部通过。
 
@@ -181,7 +181,7 @@ git commit -m "feat: collapse follow-up answers individually"
 
 - [ ] **Step 2: 运行类型检查和组件测试**
 
-Run: `PATH=/Users/a37/.nvm/versions/node/v24.20.0/bin:$PATH npm run typecheck && PATH=/Users/a37/.nvm/versions/node/v24.20.0/bin:$PATH npm test -- --run src/app/ProgressiveAnswer.test.tsx`
+Run: `npm run typecheck && npm test -- --run src/app/ProgressiveAnswer.test.tsx`
 
 Expected: typecheck 和组件测试通过；320px 宽度下问题文本可换行且页面不横向溢出。
 
@@ -248,7 +248,7 @@ await expect(page.locator(".rating-dock")).toBeInViewport();
 
 - [ ] **Step 4: 运行页面测试**
 
-Run: `PATH=/Users/a37/.nvm/versions/node/v24.20.0/bin:$PATH npm test -- --run src/app/BrowseScreen.test.tsx src/app/App.test.tsx`
+Run: `npm test -- --run src/app/BrowseScreen.test.tsx src/app/App.test.tsx`
 
 Expected: PASS，页面测试覆盖外层关闭、内层单题展开和换卡重置。
 
@@ -260,16 +260,16 @@ Expected: PASS，页面测试覆盖外层关闭、内层单题展开和换卡重
 - [ ] **Step 1: 运行单元测试、类型检查和生产构建**
 
 ```bash
-PATH=/Users/a37/.nvm/versions/node/v24.20.0/bin:$PATH npm test -- --run
-PATH=/Users/a37/.nvm/versions/node/v24.20.0/bin:$PATH npm run typecheck
-PATH=/Users/a37/.nvm/versions/node/v24.20.0/bin:$PATH npm run build
+npm test -- --run
+npm run typecheck
+npm run build
 ```
 
 Expected: Vitest、TypeScript 和 Vite build 全部退出码为 0。
 
 - [ ] **Step 2: 运行 Playwright E2E**
 
-Run: `PATH=/Users/a37/.nvm/versions/node/v24.20.0/bin:$PATH npm run test:e2e`
+Run: `npm run test:e2e`
 
 Expected: 320px、390px 与桌面宽度流程通过；无页面横向溢出；切换卡片后无残留展开内容。
 
