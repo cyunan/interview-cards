@@ -45,6 +45,13 @@ describe("BrowseScreen", () => {
     expect(screen.getByText("项目怎么讲", { selector: "summary" })).toBeInTheDocument();
     expect(screen.getByText("易错点", { selector: "summary" })).toBeInTheDocument();
     expect(screen.getByText("高频追问 · 1", { selector: "summary" })).toBeInTheDocument();
+    fireEvent.click(screen.getByText("高频追问 · 1", { selector: "summary" }));
+    expect(screen.getByRole("button", { name: /为什么要重试/ })).toHaveAttribute(
+      "aria-expanded",
+      "false",
+    );
+    expect(screen.queryByText("为了消除虚构噪声。")).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: /为什么要重试/ }));
     expect(screen.getByText("为了消除虚构噪声。")).toBeInTheDocument();
   });
 
