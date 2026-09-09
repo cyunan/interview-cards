@@ -65,6 +65,17 @@ test("keeps plaintext locked and completes a touch-friendly study flow", async (
     expect(size.width).toBeGreaterThanOrEqual(44);
   }
 
+  const followupSummary = page.getByText("高频追问 · 1", { exact: true });
+  await followupSummary.click();
+  const followupQuestion = page.getByRole("button", { name: "相位失配时怎么办？" });
+  await expect(followupQuestion).toHaveAttribute("aria-expanded", "false");
+  await expect(page.getByText("丢弃虚构令牌并重新进入测试轮次。")).toHaveCount(0);
+  await followupQuestion.press("Enter");
+  await expect(followupQuestion).toHaveAttribute("aria-expanded", "true");
+  await expect(page.getByText("丢弃虚构令牌并重新进入测试轮次。")).toBeVisible();
+  await followupSummary.click();
+  await expect(page.locator(".answer-panel details[open]")).toHaveCount(0);
+
   const detailSummary = page.getByText("深入理解", { exact: true });
   await detailSummary.press("Enter");
   await expect(progressiveSections.nth(0)).toHaveAttribute("open", "");

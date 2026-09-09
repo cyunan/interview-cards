@@ -139,19 +139,27 @@ describe("App", () => {
   });
 
   it("keeps the quick answer visible and resets progressive sections for the next card", async () => {
+    const firstCard = {
+      ...payload.cards[0],
+      followUps: [
+        { question: "第一张追问是什么？", answerMd: "第一张追问答案。" },
+        { question: "第一张第二个追问是什么？", answerMd: "第二个追问答案。" },
+      ],
+    };
     const secondCard = {
       ...payload.cards[0],
       id: "fictional-entropy-gate-002",
       question: "第二张虚构题目是什么？",
       quickAnswerMd: "第二张题目的 30 秒回答。",
       detailMd: "第二张题目的深入理解。",
+      followUps: [{ question: "新卡追问是什么？", answerMd: "新卡追问答案。" }],
     };
     const store = new MemoryProgressStore();
     const { container } = render(
       <StudyScreen
         deck="full"
         initialQueue={[
-          { card: payload.cards[0], kind: "new" },
+          { card: firstCard, kind: "new" },
           { card: secondCard, kind: "new" },
         ]}
         progress={new Map()}
@@ -168,6 +176,9 @@ describe("App", () => {
     expect(container.querySelectorAll("details[open]")).toHaveLength(0);
     fireEvent.click(screen.getByText("深入理解", { selector: "summary" }));
     expect(container.querySelector("details")!).toHaveAttribute("open");
+    fireEvent.click(screen.getByText("高频追问 · 2", { selector: "summary" }));
+    fireEvent.click(screen.getByRole("button", { name: /第一张追问是什么/ }));
+    expect(screen.getByText("第一张追问答案。")).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole("button", { name: "掌握" }));
     expect(await screen.findByText("第二张虚构题目是什么？")).toBeInTheDocument();
@@ -175,6 +186,10 @@ describe("App", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "查看回答" }));
     expect(container.querySelectorAll("details[open]")).toHaveLength(0);
+    expect(screen.getByRole("button", { name: /新卡追问是什么/ })).toHaveAttribute(
+      "aria-expanded",
+      "false",
+    );
   });
 
   it("does not show the workspace until progress migration finishes", async () => {
