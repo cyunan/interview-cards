@@ -30,7 +30,7 @@
 - Consumes: 现有 `StudyScreen` 测试 fixture、`payload.cards[0]`、Playwright 的解锁 helper。
 - Produces: 后续实现必须满足的 `.study-flow`、`.study-card`、`.answer-panel` 和 `.rating-dock` 结构契约。
 
-- [ ] **Step 1: 写失败的组件测试**
+- [x] **Step 1: 写失败的组件测试**
 
 将 `src/app/App.test.tsx` 中首次翻面测试的断言改为：
 
@@ -44,7 +44,7 @@ expect(flow?.querySelector(":scope > .rating-dock")).toBeInTheDocument();
 expect(flow?.children).toHaveLength(3);
 ```
 
-- [ ] **Step 2: 运行测试确认失败**
+- [x] **Step 2: 运行测试确认失败**
 
 运行：
 
@@ -54,7 +54,7 @@ npm test -- src/app/App.test.tsx
 
 预期：失败，当前 DOM 使用 `.study-layout`，且评分栏仍在学习流外部。
 
-- [ ] **Step 3: 写失败的桌面布局 E2E 断言**
+- [x] **Step 3: 写失败的桌面布局 E2E 断言**
 
 将 `tests/app.spec.ts` 原有的 `keeps study content stacked on mobile and splits it on desktop` 测试替换为：
 
@@ -93,7 +93,7 @@ test("keeps study content in one focus flow on every viewport", async ({ page })
 });
 ```
 
-- [ ] **Step 4: 运行 E2E 确认失败**
+- [x] **Step 4: 运行 E2E 确认失败**
 
 运行：
 
@@ -103,7 +103,7 @@ npx playwright test tests/app.spec.ts --project=mobile-chrome --grep "one focus 
 
 预期：失败，`.study-flow` 尚不存在。
 
-- [ ] **Step 5: 提交测试契约**
+- [x] **Step 5: 提交测试契约**
 
 ```bash
 git add src/app/App.test.tsx tests/app.spec.ts
@@ -120,7 +120,7 @@ git commit -m "test: define single-focus study flow contract"
 - Consumes: Task 1 的 `.study-flow` DOM 契约、现有 `ProgressiveAnswer` 和 `Rating` 流程。
 - Produces: `StudyScreen` 输出 `study-flow > study-card + answer-panel + rating-dock`，评分成功后下一张卡回到流顶部。
 
-- [ ] **Step 1: 写换卡滚动失败测试**
+- [x] **Step 1: 写换卡滚动失败测试**
 
 在 `src/app/App.test.tsx` 的“resets progressive sections when a card is repeated after Again”测试中，评分前记录滚动容器并断言下一张卡仍由同一 `study-flow` 承载：
 
@@ -132,7 +132,7 @@ expect(await screen.findByRole("button", { name: "查看回答" })).toBeInTheDoc
 expect(container.querySelector(".study-flow")).toBe(flowBeforeRating);
 ```
 
-- [ ] **Step 2: 运行组件测试确认当前结构不满足**
+- [x] **Step 2: 运行组件测试确认当前结构不满足**
 
 运行：
 
@@ -142,7 +142,7 @@ npm test -- src/app/App.test.tsx
 
 预期：Task 1 的 `.study-flow` 断言失败。
 
-- [ ] **Step 3: 在 StudyScreen 中实现单流容器**
+- [x] **Step 3: 在 StudyScreen 中实现单流容器**
 
 在 `src/app/StudyScreen.tsx` 的 import 中加入 `useEffect` 已有依赖，新增 `useRef`，并将状态区替换为：
 
@@ -206,7 +206,7 @@ useEffect(() => {
 
 删除原来位于 `study-layout` 外部的评分 `<footer>`，保证评分是单焦点流的第三段。
 
-- [ ] **Step 4: 运行组件测试确认通过**
+- [x] **Step 4: 运行组件测试确认通过**
 
 运行：
 
@@ -216,7 +216,7 @@ npm test -- src/app/App.test.tsx
 
 预期：StudyScreen 相关测试全部通过，评分、重试和展开状态行为不变。
 
-- [ ] **Step 5: 提交结构改动**
+- [x] **Step 5: 提交结构改动**
 
 ```bash
 git add src/app/StudyScreen.tsx src/app/App.test.tsx
@@ -233,7 +233,7 @@ git commit -m "feat: make study screen a single vertical flow"
 - Consumes: Task 2 生成的 `.study-flow` DOM。
 - Produces: 320px～1440px 下的一致单列布局，以及设备相关评分策略。
 
-- [ ] **Step 1: 增加响应式样式失败断言**
+- [x] **Step 1: 增加响应式样式失败断言**
 
 在 `tests/dev/styles.spec.ts` 的 layout probe 中加入 `.study-flow` 与 `.rating-dock`，并把断言改为：
 
@@ -272,7 +272,7 @@ if (width < 768) {
 }
 ```
 
-- [ ] **Step 2: 运行样式测试确认失败**
+- [x] **Step 2: 运行样式测试确认失败**
 
 运行：
 
@@ -282,7 +282,7 @@ npx playwright test --config playwright.dev.config.ts tests/dev/styles.spec.ts
 
 预期：失败，当前样式没有 `.study-flow` 规则。
 
-- [ ] **Step 3: 实现基础单列样式**
+- [x] **Step 3: 实现基础单列样式**
 
 将学习区域基础样式替换为：
 
@@ -323,7 +323,7 @@ npx playwright test --config playwright.dev.config.ts tests/dev/styles.spec.ts
 
 桌面和大平板不再使用 `.study-layout` 的两列规则；删除 `@media (min-width: 1200px)` 中的 `grid-template-columns: minmax(340px, .78fr) minmax(0, 1.22fr)`、`.study-card { position: sticky; }` 和整条窗口底部评分样式。
 
-- [ ] **Step 4: 实现手机固定评分栏**
+- [x] **Step 4: 实现手机固定评分栏**
 
 在基础样式后加入：
 
@@ -345,7 +345,7 @@ npx playwright test --config playwright.dev.config.ts tests/dev/styles.spec.ts
 }
 ```
 
-- [ ] **Step 5: 实现平板和桌面阅读宽度**
+- [x] **Step 5: 实现平板和桌面阅读宽度**
 
 在现有断点中替换学习页规则：
 
@@ -365,7 +365,7 @@ npx playwright test --config playwright.dev.config.ts tests/dev/styles.spec.ts
 }
 ```
 
-- [ ] **Step 6: 运行样式测试确认通过**
+- [x] **Step 6: 运行样式测试确认通过**
 
 运行：
 
@@ -375,7 +375,7 @@ npx playwright test --config playwright.dev.config.ts tests/dev/styles.spec.ts
 
 预期：1 个样式测试通过，六个宽度均无横向溢出。
 
-- [ ] **Step 7: 提交样式改动**
+- [x] **Step 7: 提交样式改动**
 
 ```bash
 git add src/app/app.css tests/dev/styles.spec.ts
@@ -392,7 +392,7 @@ git commit -m "style: make study flow responsive and single-column"
 - Consumes: Task 3 的 CSS 断点、Task 2 的 DOM 结构。
 - Produces: 覆盖解锁、翻面、折叠、评分、换卡和六个屏幕宽度的回归证据。
 
-- [ ] **Step 1: 增加评分不横跨窗口的 E2E 断言**
+- [x] **Step 1: 增加评分不横跨窗口的 E2E 断言**
 
 在单焦点 E2E 中加入：
 
@@ -405,7 +405,7 @@ expect(ratingRect.left).toBeGreaterThan(0);
 expect(ratingRect.width).toBeLessThan(1440);
 ```
 
-- [ ] **Step 2: 运行完整生产 E2E**
+- [x] **Step 2: 运行完整生产 E2E**
 
 运行：
 
@@ -415,7 +415,7 @@ npm run test:e2e
 
 预期：Chrome 与 Safari 的 10 个测试全部通过，覆盖离线解锁、回答折叠、触控评分和单焦点布局。
 
-- [ ] **Step 3: 运行单元、类型和生产构建**
+- [x] **Step 3: 运行单元、类型和生产构建**
 
 运行：
 
@@ -428,7 +428,7 @@ git diff --check
 
 预期：Vitest 全部通过，TypeScript 无错误，Vite 生产构建成功，差异无空白错误。
 
-- [ ] **Step 4: 提交并检查工作树**
+- [x] **Step 4: 提交并检查工作树**
 
 ```bash
 git status --short --branch
