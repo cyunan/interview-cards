@@ -1,8 +1,13 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import type { CardsPayloadV1 } from "../content/payload";
-import { encryptEnvelope } from "../crypto/envelope";
-import { loadEncryptedCards } from "./load-cards";
+import { decryptEnvelopeWithKey, encryptEnvelope, deriveEnvelopeKey } from "../crypto/envelope";
+import type { RememberedUnlockRecord, RememberedUnlockStore } from "../security/remembered-unlock";
+import {
+  loadEncryptedCards,
+  loadEncryptedCardsSession,
+  restoreRememberedCards,
+} from "./load-cards";
 
 const password = "fictional-cache-password-2026";
 const payload: CardsPayloadV1 = {
@@ -26,6 +31,26 @@ const payload: CardsPayloadV1 = {
 
 afterEach(() => vi.unstubAllGlobals());
 
+class MemoryRememberedUnlockStore implements RememberedUnlockStore {
+  constructor(public record?: RememberedUnlockRecord) {}
+  clearCount = 0;
+
+  async get(): Promise<RememberedUnlockRecord | undefined> {
+    return this.record;
+  }
+
+  async put(record: RememberedUnlockRecord): Promise<void> {
+    this.record = record;
+  }
+
+  async clear(): Promise<void> {
+    this.clearCount += 1;
+    this.record = undefined;
+  }
+
+  close(): void {}
+}
+
 describe("loadEncryptedCards", () => {
   it("falls back to cached ciphertext when the network request fails", async () => {
     const envelope = await encryptEnvelope(payload, password, payload.buildId);
@@ -48,5 +73,57 @@ describe("loadEncryptedCards", () => {
       "/cards.enc.json",
       { ignoreSearch: true },
     );
+  });
+
+  it("returns a non-exportable session key together with the decrypted payload", async () => {
+    const envelope = await encryptEnvelope(payload, password, payload.buildId);
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(
+      new Response(JSON.stringify(envelope), { status: 200 }),
+    ));
+
+    const session = await loadEncryptedCardsSession(password);
+
+    expect(session.payload).toMatchObject({ buildId: payload.buildId });
+    expect(session.key.extractable).toBe(false);
+    await expect(decryptEnvelopeWithKey(envelope, session.key)).resolves.toEqual(
+      expect.objectContaining({ buildId: payload.buildId }),
+    );
+    expect(await deriveEnvelopeKey(envelope, password)).toBeInstanceOf(CryptoKey);
+  });
+
+  it("restores the current envelope with a matching remembered key", async () => {
+    const envelope = await encryptEnvelope(payload, password, payload.buildId);
+    const key = await deriveEnvelopeKey(envelope, password);
+    const store = new MemoryRememberedUnlockStore({
+      buildId: envelope.buildId,
+      salt: envelope.kdf.salt,
+      key,
+      savedAt: "2026-09-10T09:00:00.000Z",
+    });
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(
+      new Response(JSON.stringify(envelope), { status: 200 }),
+    ));
+
+    await expect(restoreRememberedCards(store)).resolves.toMatchObject({
+      buildId: payload.buildId,
+    });
+    expect(store.clearCount).toBe(0);
+  });
+
+  it("clears a remembered key when the publication salt changes", async () => {
+    const envelope = await encryptEnvelope(payload, password, payload.buildId);
+    const key = await deriveEnvelopeKey(envelope, password);
+    const store = new MemoryRememberedUnlockStore({
+      buildId: envelope.buildId,
+      salt: "stale-salt",
+      key,
+      savedAt: "2026-09-10T09:00:00.000Z",
+    });
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(
+      new Response(JSON.stringify(envelope), { status: 200 }),
+    ));
+
+    await expect(restoreRememberedCards(store)).resolves.toBeUndefined();
+    expect(store.clearCount).toBe(1);
   });
 });

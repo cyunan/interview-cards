@@ -195,8 +195,36 @@ export async function decryptEnvelope<T>(
   password: string,
 ): Promise<T> {
   try {
-    const { envelope, salt, iv, ciphertext } = parseEnvelope(value);
-    const key = await deriveKey(password, salt);
+    return await decryptEnvelopeWithKey(value, await deriveEnvelopeKey(value, password));
+  } catch {
+    throw new UnlockError();
+  }
+}
+
+/**
+ * Derive the non-exportable content key for one encrypted publication.
+ * The caller may keep the CryptoKey in IndexedDB to avoid persisting the
+ * password itself.
+ */
+export async function deriveEnvelopeKey(
+  value: unknown,
+  password: string,
+): Promise<CryptoKey> {
+  try {
+    const { salt } = parseEnvelope(value);
+    return await deriveKey(password, salt);
+  } catch {
+    throw new UnlockError();
+  }
+}
+
+/** Decrypt one envelope with a previously derived, non-exportable key. */
+export async function decryptEnvelopeWithKey<T>(
+  value: unknown,
+  key: CryptoKey,
+): Promise<T> {
+  try {
+    const { envelope, iv, ciphertext } = parseEnvelope(value);
     const plaintext = await crypto.subtle.decrypt(
       {
         name: "AES-GCM",

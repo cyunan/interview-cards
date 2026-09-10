@@ -1,9 +1,12 @@
 import { parseCardsPayload, type ParsedCardsPayload } from "../content/payload";
 import {
-  decryptEnvelope,
+  decryptEnvelopeWithKey,
+  deriveEnvelopeKey,
   UnlockError,
   type EncryptedEnvelopeV1,
+  validateEncryptedEnvelope,
 } from "../crypto/envelope";
+import type { RememberedUnlockStore } from "../security/remembered-unlock";
 
 export class CardBankUnavailableError extends Error {
   constructor() {
@@ -39,13 +42,65 @@ async function loadEnvelopeResponse(url: string): Promise<Response> {
   throw new CardBankUnavailableError();
 }
 
-export async function loadEncryptedCards(password: string): Promise<ParsedCardsPayload> {
+export interface DecryptedCardsSession {
+  payload: ParsedCardsPayload;
+  envelope: EncryptedEnvelopeV1;
+  key: CryptoKey;
+}
+
+export async function loadEncryptedEnvelope(): Promise<EncryptedEnvelopeV1> {
   const url = `${import.meta.env.BASE_URL}cards.enc.json`;
   const response = await loadEnvelopeResponse(url);
   try {
-    const envelope = (await response.json()) as EncryptedEnvelopeV1;
-    return parseCardsPayload(await decryptEnvelope<unknown>(envelope, password));
+    return validateEncryptedEnvelope(await response.json());
   } catch {
     throw new UnlockError();
+  }
+}
+
+export async function loadEncryptedCardsSession(
+  password: string,
+): Promise<DecryptedCardsSession> {
+  const envelope = await loadEncryptedEnvelope();
+  const key = await deriveEnvelopeKey(envelope, password);
+  const payload = parseCardsPayload(
+    await decryptEnvelopeWithKey<unknown>(envelope, key),
+  );
+  return { payload, envelope, key };
+}
+
+export async function loadEncryptedCards(password: string): Promise<ParsedCardsPayload> {
+  return (await loadEncryptedCardsSession(password)).payload;
+}
+
+export async function restoreRememberedCards(
+  store: RememberedUnlockStore,
+): Promise<ParsedCardsPayload | undefined> {
+  const record = await store.get();
+  if (!record) return undefined;
+
+  let envelope: EncryptedEnvelopeV1;
+  try {
+    envelope = await loadEncryptedEnvelope();
+  } catch (error) {
+    if (error instanceof CardBankUnavailableError) {
+      return undefined;
+    }
+    await store.clear();
+    return undefined;
+  }
+
+  if (record.buildId !== envelope.buildId || record.salt !== envelope.kdf.salt) {
+    await store.clear();
+    return undefined;
+  }
+
+  try {
+    return parseCardsPayload(
+      await decryptEnvelopeWithKey<unknown>(envelope, record.key),
+    );
+  } catch {
+    await store.clear();
+    return undefined;
   }
 }
