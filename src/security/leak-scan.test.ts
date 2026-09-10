@@ -60,6 +60,14 @@ describe("scanForPlaintextLeaks", () => {
     );
   });
 
+  it("ignores local worktree state that is excluded from the public repository", async () => {
+    const root = await makeRoot();
+    await mkdir(path.join(root, ".worktrees", "scratch"), { recursive: true });
+    await writeFile(path.join(root, ".worktrees", "scratch", "server-info"), card.question);
+
+    await expect(scanForPlaintextLeaks([root], [card])).resolves.toEqual([]);
+  });
+
   it("detects questions, answers, source filenames, contact data, and local paths", async () => {
     const root = await makeRoot();
     await writeFile(

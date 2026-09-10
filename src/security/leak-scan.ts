@@ -48,6 +48,8 @@ const SKIPPED_DIRECTORIES = new Set([
   "coverage",
   "playwright-report",
   "test-results",
+  ".worktrees",
+  "worktrees",
 ]);
 const CONTACT_EXEMPT_FILENAMES = new Set([
   "package-lock.json",
