@@ -146,7 +146,7 @@ input, select { min-width: 0; width: 100%; min-height: 48px; padding: 10px 12px;
 .followup-index, .followup-toggle { color: var(--muted); font-size: 12px; }
 .followup-question-text { min-width: 0; overflow-wrap: anywhere; font-size: 14px; line-height: 1.55; font-weight: 600; }
 .followup-toggle { text-align: center; font-size: 20px; line-height: 1; }
-.followup-answer { padding: 4px 14px 16px 50px; border-top: 1px solid var(--line); }
+.followup-item-answer { padding: 4px 14px 16px 50px; border-top: 1px solid var(--line); }
 .markdown { min-width: 0; overflow-wrap: anywhere; font-size: 15px; line-height: 1.8; color: #35443f; }
 .markdown > :first-child { margin-top: 0; }
 .markdown > :last-child { margin-bottom: 0; }

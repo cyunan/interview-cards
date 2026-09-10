@@ -68,7 +68,7 @@ function FollowUpAccordion({
               </span>
             </button>
             {open && followUp.answerMd ? (
-              <div id={answerId} className="followup-answer">
+              <div id={answerId} className="followup-item-answer">
                 <Markdown>{followUp.answerMd}</Markdown>
               </div>
             ) : null}
@@ -102,7 +102,7 @@ export function ProgressiveAnswer({ card, children }: ProgressiveAnswerProps) {
         markdown={card.pitfallsMd}
       />
       {card.followUps.length > 0 ? (
-        <details className="answer-section followup-answer">
+        <details className="answer-section followup-section">
           <summary>高频追问 · {card.followUps.length}</summary>
           <FollowUpAccordion followUps={card.followUps} cardId={card.id} />
         </details>

@@ -62,4 +62,16 @@ describe("ProgressiveAnswer follow-ups", () => {
 
     expect(screen.getByRole("button", { name: /追问一/ })).toHaveAttribute("aria-expanded", "false");
   });
+
+  it("keeps the outer follow-up section free of inner answer indentation", () => {
+    const { container } = render(<ProgressiveAnswer card={card} />);
+
+    const section = container.querySelector("details.followup-answer, details.followup-section");
+    expect(section).toHaveClass("followup-section");
+    expect(section).not.toHaveClass("followup-item-answer");
+
+    fireEvent.click(screen.getByText("高频追问 · 2"));
+    fireEvent.click(screen.getByRole("button", { name: /追问一/ }));
+    expect(container.querySelector(".followup-item-answer")).toBeInTheDocument();
+  });
 });
