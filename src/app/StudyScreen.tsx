@@ -148,35 +148,37 @@ export function StudyScreen({
         <span className="deck-pill">{deck === "sprint" ? "冲刺" : "完整"}</span>
       </header>
 
-      <article className={revealed ? "study-card is-revealed" : "study-card"}>
-        <div className="question-meta">
-          <span>{card.category}</span>
-          <span>{card.topic}</span>
-          <span className={`priority priority-${card.priority.toLowerCase()}`}>{card.priority}</span>
-        </div>
-        <div className="question-panel">
-          <Countdown cardKey={`${card.id}:${currentIndex}`} />
-          <p className="eyebrow">QUESTION</p>
-          <h1>{card.question}</h1>
-          {!revealed ? (
-            <button aria-label="查看回答" className="reveal-button" type="button" onClick={() => setRevealed(true)}>
-              <span>查看回答</span>
-              <small>想好后随时翻面，不必等计时结束</small>
-            </button>
-          ) : null}
-        </div>
+      <div className={revealed ? "study-layout is-revealed" : "study-layout"}>
+        <article className={revealed ? "study-card is-revealed" : "study-card"}>
+          <div className="question-meta">
+            <span>{card.category}</span>
+            <span>{card.topic}</span>
+            <span className={`priority priority-${card.priority.toLowerCase()}`}>{card.priority}</span>
+          </div>
+          <div className="question-panel">
+            <Countdown cardKey={`${card.id}:${currentIndex}`} />
+            <p className="eyebrow">QUESTION</p>
+            <h1>{card.question}</h1>
+            {!revealed ? (
+              <button aria-label="查看回答" className="reveal-button" type="button" onClick={() => setRevealed(true)}>
+                <span>查看回答</span>
+                <small>想好后随时翻面，不必等计时结束</small>
+              </button>
+            ) : null}
+          </div>
+        </article>
 
         {revealed ? (
-          <div className="answer-panel">
+          <section className="answer-panel" aria-label="回答">
             <ProgressiveAnswer key={`${card.id}:${currentIndex}`} card={card}>
               <div className="source-row">
                 <span title={card.source.path}>{card.source.heading}</span>
                 <SourceAction card={card} />
               </div>
             </ProgressiveAnswer>
-          </div>
+          </section>
         ) : null}
-      </article>
+      </div>
 
       {revealed ? (
         <footer className="rating-dock">

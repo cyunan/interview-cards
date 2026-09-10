@@ -126,6 +126,7 @@ describe("App", () => {
     );
 
     fireEvent.click(screen.getByRole("button", { name: "查看回答" }));
+    expect(container.querySelector(".study-layout.is-revealed > .answer-panel")).toBeInTheDocument();
     fireEvent.click(screen.getByText("深入理解", { selector: "summary" }));
     expect(container.querySelector("details")!).toHaveAttribute("open");
 
@@ -228,6 +229,10 @@ describe("App", () => {
     submitPassword("correct-password");
     expect(await screen.findByText("今日复习")).toBeInTheDocument();
     expect(store.migrationCards).toEqual(migratedPayload.cards);
+    const navigation = screen.getByRole("navigation", { name: "主导航" });
+    expect(navigation).toHaveClass("main-nav");
+    expect(navigation.querySelectorAll("button")).toHaveLength(3);
+    expect(navigation.nextElementSibling).toHaveClass("app-content");
   });
 
   it("keeps card plaintext hidden until unlock and uses a generic failure message", async () => {

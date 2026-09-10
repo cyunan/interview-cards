@@ -46,9 +46,9 @@ function AppHeader({ onLock }: { onLock(): void }) {
   );
 }
 
-function BottomNavigation({ view, onView }: { view: View; onView(view: View): void }) {
+function MainNavigation({ view, onView }: { view: View; onView(view: View): void }) {
   return (
-    <nav className="bottom-nav" aria-label="主导航">
+    <nav className="main-nav" aria-label="主导航">
       <button aria-current={view === "home" ? "page" : undefined} onClick={() => onView("home")}>
         <span aria-hidden="true">⌂</span><small>首页</small>
       </button>
@@ -183,29 +183,31 @@ function Workspace({ payload, createStore, now, onLock }: WorkspaceProps) {
   return (
     <div className="app-shell">
       <AppHeader onLock={onLock} />
-      {notice ? <p className="app-notice" role="status">{notice}</p> : null}
-      {view === "home" ? (
-        <Dashboard
-          cards={payload.cards}
-          progress={progress}
-          today={toLocalDateKey(now())}
-          onStart={startSession}
-        />
-      ) : null}
-      {view === "browse" ? <BrowseScreen cards={payload.cards} progress={progress} /> : null}
-      {view === "settings" ? (
-        <SettingsScreen
-          buildId={payload.buildId}
-          cards={payload.cards}
-          dailyLimit={dailyLimit}
-          store={store}
-          now={now}
-          onDailyLimit={setDailyLimit}
-          onProgressChanged={() => reloadProgress(store)}
-          onLock={onLock}
-        />
-      ) : null}
-      <BottomNavigation view={view} onView={setView} />
+      <MainNavigation view={view} onView={setView} />
+      <div className="app-content">
+        {notice ? <p className="app-notice" role="status">{notice}</p> : null}
+        {view === "home" ? (
+          <Dashboard
+            cards={payload.cards}
+            progress={progress}
+            today={toLocalDateKey(now())}
+            onStart={startSession}
+          />
+        ) : null}
+        {view === "browse" ? <BrowseScreen cards={payload.cards} progress={progress} /> : null}
+        {view === "settings" ? (
+          <SettingsScreen
+            buildId={payload.buildId}
+            cards={payload.cards}
+            dailyLimit={dailyLimit}
+            store={store}
+            now={now}
+            onDailyLimit={setDailyLimit}
+            onProgressChanged={() => reloadProgress(store)}
+            onLock={onLock}
+          />
+        ) : null}
+      </div>
     </div>
   );
 }
