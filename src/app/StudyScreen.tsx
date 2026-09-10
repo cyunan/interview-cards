@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import type { CardV2 } from "../content/types";
 import type { ProgressStore } from "../storage/progress";
@@ -92,7 +92,15 @@ export function StudyScreen({
   const [revealed, setRevealed] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string>();
+  const flowRef = useRef<HTMLDivElement>(null);
   const card = cardsById.get(queueIds[currentIndex] ?? "");
+
+  useEffect(() => {
+    const flow = flowRef.current;
+    if (currentIndex > 0 && flow && typeof flow.scrollIntoView === "function") {
+      flow.scrollIntoView({ block: "start", behavior: "auto" });
+    }
+  }, [currentIndex]);
 
   async function rate(rating: Rating): Promise<void> {
     if (!card || saving) {
@@ -148,47 +156,49 @@ export function StudyScreen({
         <span className="deck-pill">{deck === "sprint" ? "冲刺" : "完整"}</span>
       </header>
 
-      <article className={revealed ? "study-card is-revealed" : "study-card"}>
-        <div className="question-meta">
-          <span>{card.category}</span>
-          <span>{card.topic}</span>
-          <span className={`priority priority-${card.priority.toLowerCase()}`}>{card.priority}</span>
-        </div>
-        <div className="question-panel">
-          <Countdown cardKey={`${card.id}:${currentIndex}`} />
-          <p className="eyebrow">QUESTION</p>
-          <h1>{card.question}</h1>
-          {!revealed ? (
-            <button aria-label="查看回答" className="reveal-button" type="button" onClick={() => setRevealed(true)}>
-              <span>查看回答</span>
-              <small>想好后随时翻面，不必等计时结束</small>
-            </button>
-          ) : null}
-        </div>
+      <div ref={flowRef} className={revealed ? "study-flow is-revealed" : "study-flow"}>
+        <article className={revealed ? "study-card is-revealed" : "study-card"}>
+          <div className="question-meta">
+            <span>{card.category}</span>
+            <span>{card.topic}</span>
+            <span className={`priority priority-${card.priority.toLowerCase()}`}>{card.priority}</span>
+          </div>
+          <div className="question-panel">
+            <Countdown cardKey={`${card.id}:${currentIndex}`} />
+            <p className="eyebrow">QUESTION</p>
+            <h1>{card.question}</h1>
+            {!revealed ? (
+              <button aria-label="查看回答" className="reveal-button" type="button" onClick={() => setRevealed(true)}>
+                <span>查看回答</span>
+                <small>想好后随时翻面，不必等计时结束</small>
+              </button>
+            ) : null}
+          </div>
+        </article>
 
         {revealed ? (
-          <div className="answer-panel">
+          <section className="answer-panel" aria-label="回答">
             <ProgressiveAnswer key={`${card.id}:${currentIndex}`} card={card}>
               <div className="source-row">
                 <span title={card.source.path}>{card.source.heading}</span>
                 <SourceAction card={card} />
               </div>
             </ProgressiveAnswer>
-          </div>
+          </section>
         ) : null}
-      </article>
 
-      {revealed ? (
-        <footer className="rating-dock">
-          <p>这次答得怎么样？</p>
-          {error ? <p role="alert" className="form-error">{error}</p> : null}
-          <div>
-            <button className="rating-again" disabled={saving} onClick={() => void rate("again")}>不会</button>
-            <button className="rating-fuzzy" disabled={saving} onClick={() => void rate("fuzzy")}>模糊</button>
-            <button className="rating-mastered" disabled={saving} onClick={() => void rate("mastered")}>掌握</button>
-          </div>
-        </footer>
-      ) : null}
+        {revealed ? (
+          <footer className="rating-dock">
+            <p>这次答得怎么样？</p>
+            {error ? <p role="alert" className="form-error">{error}</p> : null}
+            <div>
+              <button className="rating-again" disabled={saving} onClick={() => void rate("again")}>不会</button>
+              <button className="rating-fuzzy" disabled={saving} onClick={() => void rate("fuzzy")}>模糊</button>
+              <button className="rating-mastered" disabled={saving} onClick={() => void rate("mastered")}>掌握</button>
+            </div>
+          </footer>
+        ) : null}
+      </div>
     </main>
   );
 }

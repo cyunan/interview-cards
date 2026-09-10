@@ -68,7 +68,7 @@ export function Dashboard({ cards, progress, today, onStart }: DashboardProps) {
         </article>
       </section>
 
-      <section className="section-block" aria-labelledby="deck-title">
+      <section className="section-block deck-section" aria-labelledby="deck-title">
         <div className="section-heading">
           <div>
             <h2 id="deck-title">选择题库</h2>

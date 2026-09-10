@@ -9,7 +9,7 @@ test("reading layout preserves production CSP and daily navigation", async ({ pa
   expect(policy).not.toMatch(/unsafe-inline|nonce-/);
   await expect(page.locator("body")).toHaveCSS("background-color", "rgb(247, 248, 250)");
   await unlock(page);
-  for (const width of [320, 390, 1280]) {
+  for (const width of [320, 390, 768, 1024, 1280, 1440]) {
     await page.setViewportSize({ width, height: 900 });
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
     await page.screenshot({ path: testInfo.outputPath(`home-${width}.png`), fullPage: true });
@@ -132,4 +132,45 @@ test("refreshes directly from an unlocked session back to the lock screen", asyn
 
   await expect(page.getByRole("heading", { name: "解锁题库" })).toBeVisible();
   await expect(page.getByText("熵门如何保护测试状态？")).toHaveCount(0);
+});
+
+test("keeps study content in one focus flow on every viewport", async ({ page }) => {
+  await page.goto("./");
+  await unlock(page);
+
+  await page.getByRole("button", { name: "开始完整题库" }).click();
+  await page.getByRole("button", { name: "查看回答" }).click();
+
+  for (const width of [390, 768, 1024, 1280, 1440]) {
+    await page.setViewportSize({ width, height: 900 });
+    const layout = await page.locator(".study-flow").evaluate((element) => {
+      const flow = element.getBoundingClientRect();
+      const question = element.querySelector(".study-card")!.getBoundingClientRect();
+      const answer = element.querySelector(".answer-panel")!.getBoundingClientRect();
+      const rating = element.querySelector(".rating-dock")!.getBoundingClientRect();
+      return {
+        flowLeft: flow.left,
+        flowWidth: flow.width,
+        questionLeft: question.left,
+        answerLeft: answer.left,
+        questionBottom: question.bottom,
+        answerTop: answer.top,
+        ratingWidth: rating.width,
+      };
+    });
+
+    expect(Math.abs(layout.questionLeft - layout.answerLeft)).toBeLessThanOrEqual(1);
+    expect(layout.answerTop).toBeGreaterThanOrEqual(layout.questionBottom - 1);
+    if (width >= 768) {
+      expect(layout.ratingWidth).toBeLessThan(width * 0.95);
+    }
+    expect(layout.flowWidth).toBeLessThan(width);
+  }
+
+  const ratingRect = await page.locator(".rating-dock").evaluate((element) => {
+    const rect = element.getBoundingClientRect();
+    return { left: rect.left, width: rect.width };
+  });
+  expect(ratingRect.left).toBeGreaterThan(0);
+  expect(ratingRect.width).toBeLessThan(1440);
 });
