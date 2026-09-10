@@ -135,8 +135,11 @@ describe("App", () => {
     fireEvent.click(screen.getByText("深入理解", { selector: "summary" }));
     expect(container.querySelector("details")!).toHaveAttribute("open");
 
+    const flowBeforeRating = container.querySelector(".study-flow");
+    expect(flowBeforeRating).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "不会" }));
     expect(await screen.findByRole("button", { name: "查看回答" })).toBeInTheDocument();
+    expect(container.querySelector(".study-flow")).toBe(flowBeforeRating);
     const repeatedProgress = screen.getByRole("progressbar", { name: "本轮已完成 1 / 2" });
     expect(repeatedProgress).toHaveValue(1);
     expect(screen.getByText("已完成 1 / 2")).toBeInTheDocument();
