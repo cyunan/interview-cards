@@ -166,4 +166,11 @@ test("keeps study content in one focus flow on every viewport", async ({ page })
     }
     expect(layout.flowWidth).toBeLessThan(width);
   }
+
+  const ratingRect = await page.locator(".rating-dock").evaluate((element) => {
+    const rect = element.getBoundingClientRect();
+    return { left: rect.left, width: rect.width };
+  });
+  expect(ratingRect.left).toBeGreaterThan(0);
+  expect(ratingRect.width).toBeLessThan(1440);
 });
