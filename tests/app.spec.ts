@@ -134,27 +134,36 @@ test("refreshes directly from an unlocked session back to the lock screen", asyn
   await expect(page.getByText("熵门如何保护测试状态？")).toHaveCount(0);
 });
 
-test("keeps study content stacked on mobile and splits it on desktop", async ({ page }) => {
+test("keeps study content in one focus flow on every viewport", async ({ page }) => {
   await page.goto("./");
   await unlock(page);
 
-  await page.setViewportSize({ width: 390, height: 844 });
   await page.getByRole("button", { name: "开始完整题库" }).click();
   await page.getByRole("button", { name: "查看回答" }).click();
-  const mobileLayout = await page.locator(".study-layout").evaluate((element) => {
-    const card = element.querySelector(".study-card")!.getBoundingClientRect();
-    const answer = element.querySelector(".answer-panel")!.getBoundingClientRect();
-    return { cardLeft: card.left, answerLeft: answer.left, cardWidth: card.width, answerWidth: answer.width };
-  });
-  expect(Math.abs(mobileLayout.cardLeft - mobileLayout.answerLeft)).toBeLessThanOrEqual(1);
-  expect(Math.abs(mobileLayout.cardWidth - mobileLayout.answerWidth)).toBeLessThanOrEqual(1);
 
-  await page.setViewportSize({ width: 1280, height: 900 });
-  const desktopLayout = await page.locator(".study-layout").evaluate((element) => {
-    const card = element.querySelector(".study-card")!.getBoundingClientRect();
-    const answer = element.querySelector(".answer-panel")!.getBoundingClientRect();
-    return { cardRight: card.right, answerLeft: answer.left, columns: getComputedStyle(element).gridTemplateColumns };
-  });
-  expect(desktopLayout.answerLeft).toBeGreaterThan(desktopLayout.cardRight);
-  expect(desktopLayout.columns.split(" ")).toHaveLength(2);
+  for (const width of [390, 768, 1024, 1280, 1440]) {
+    await page.setViewportSize({ width, height: 900 });
+    const layout = await page.locator(".study-flow").evaluate((element) => {
+      const flow = element.getBoundingClientRect();
+      const question = element.querySelector(".study-card")!.getBoundingClientRect();
+      const answer = element.querySelector(".answer-panel")!.getBoundingClientRect();
+      const rating = element.querySelector(".rating-dock")!.getBoundingClientRect();
+      return {
+        flowLeft: flow.left,
+        flowWidth: flow.width,
+        questionLeft: question.left,
+        answerLeft: answer.left,
+        questionBottom: question.bottom,
+        answerTop: answer.top,
+        ratingWidth: rating.width,
+      };
+    });
+
+    expect(Math.abs(layout.questionLeft - layout.answerLeft)).toBeLessThanOrEqual(1);
+    expect(layout.answerTop).toBeGreaterThanOrEqual(layout.questionBottom - 1);
+    if (width >= 768) {
+      expect(layout.ratingWidth).toBeLessThan(width * 0.95);
+    }
+    expect(layout.flowWidth).toBeLessThan(width);
+  }
 });

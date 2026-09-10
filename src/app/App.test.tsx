@@ -126,7 +126,12 @@ describe("App", () => {
     );
 
     fireEvent.click(screen.getByRole("button", { name: "查看回答" }));
-    expect(container.querySelector(".study-layout.is-revealed > .answer-panel")).toBeInTheDocument();
+    const flow = container.querySelector(".study-flow");
+    expect(flow).toBeInTheDocument();
+    expect(flow?.querySelector(":scope > .study-card")).toBeInTheDocument();
+    expect(flow?.querySelector(":scope > .answer-panel")).toBeInTheDocument();
+    expect(flow?.querySelector(":scope > .rating-dock")).toBeInTheDocument();
+    expect(flow?.children).toHaveLength(3);
     fireEvent.click(screen.getByText("深入理解", { selector: "summary" }));
     expect(container.querySelector("details")!).toHaveAttribute("open");
 
