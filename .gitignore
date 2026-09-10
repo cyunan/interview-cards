@@ -8,3 +8,4 @@ test-results/
 *.plaintext.json
 public/data/*.tmp
 public/.cards.enc.json.*.tmp
+.superpowers/
