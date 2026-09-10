@@ -27,8 +27,14 @@ test("reading layout preserves production CSP and daily navigation", async ({ pa
   await page.screenshot({ path: testInfo.outputPath("settings-mobile.png"), fullPage: true });
 });
 
-async function unlock(page: import("@playwright/test").Page): Promise<void> {
+async function unlock(
+  page: import("@playwright/test").Page,
+  rememberDevice = false,
+): Promise<void> {
   await page.getByLabel("题库密码").fill(E2E_PASSWORD);
+  if (rememberDevice) {
+    await page.getByRole("checkbox", { name: "记住此设备" }).check();
+  }
   await page.getByRole("button", { name: "解锁", exact: true }).click();
   await expect(page.getByRole("heading", { name: "今日复习" })).toBeVisible();
 }
@@ -132,6 +138,16 @@ test("refreshes directly from an unlocked session back to the lock screen", asyn
 
   await expect(page.getByRole("heading", { name: "解锁题库" })).toBeVisible();
   await expect(page.getByText("熵门如何保护测试状态？")).toHaveCount(0);
+});
+
+test("restores an opted-in device unlock after refresh", async ({ page }) => {
+  await page.goto("./");
+  await unlock(page, true);
+
+  await page.reload();
+
+  await expect(page.getByRole("heading", { name: "今日复习" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "解锁题库" })).toHaveCount(0);
 });
 
 test("keeps study content in one focus flow on every viewport", async ({ page }) => {

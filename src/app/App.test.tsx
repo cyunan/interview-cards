@@ -6,7 +6,8 @@ import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/re
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import type { ParsedCardsPayload } from "../content/payload";
-import { UnlockError } from "../crypto/envelope";
+import { deriveEnvelopeKey, encryptEnvelope, UnlockError } from "../crypto/envelope";
+import type { RememberedUnlockRecord, RememberedUnlockStore } from "../security/remembered-unlock";
 import type { DailyLimit, ProgressCardIdentity, ProgressStore } from "../storage/progress";
 import type { CardProgress } from "../study/scheduler";
 import { App } from "./App";
@@ -84,6 +85,26 @@ class MemoryProgressStore implements ProgressStore {
   close(): void {}
 }
 
+class MemoryRememberedUnlockStore implements RememberedUnlockStore {
+  record?: RememberedUnlockRecord;
+  clearCount = 0;
+
+  async get(): Promise<RememberedUnlockRecord | undefined> {
+    return this.record;
+  }
+
+  async put(record: RememberedUnlockRecord): Promise<void> {
+    this.record = record;
+  }
+
+  async clear(): Promise<void> {
+    this.record = undefined;
+    this.clearCount += 1;
+  }
+
+  close(): void {}
+}
+
 class DelayedMigrationStore extends MemoryProgressStore {
   private migrationRelease!: () => void;
   readonly migrationFinished: Promise<void>;
@@ -105,8 +126,12 @@ class DelayedMigrationStore extends MemoryProgressStore {
   }
 }
 
-function submitPassword(password: string): void {
+async function submitPassword(password: string, rememberDevice = false): Promise<void> {
+  await screen.findByLabelText("题库密码");
   fireEvent.change(screen.getByLabelText("题库密码"), { target: { value: password } });
+  if (rememberDevice) {
+    fireEvent.click(screen.getByRole("checkbox", { name: "记住此设备" }));
+  }
   fireEvent.click(screen.getByRole("button", { name: "解锁" }));
 }
 
@@ -208,10 +233,11 @@ describe("App", () => {
       <App
         unlockCards={async () => payload}
         createStore={async () => store}
+        createRememberedUnlockStore={async () => new MemoryRememberedUnlockStore()}
       />,
     );
 
-    submitPassword("correct-password");
+    await submitPassword("correct-password");
     await waitFor(() => expect(store.migrationCards).toEqual(payload.cards));
     expect(screen.queryByText("今日复习")).not.toBeInTheDocument();
     expect(screen.getByText("正在读取本机进度…")).toBeInTheDocument();
@@ -231,10 +257,11 @@ describe("App", () => {
       <App
         unlockCards={async () => migratedPayload}
         createStore={async () => store}
+        createRememberedUnlockStore={async () => new MemoryRememberedUnlockStore()}
       />,
     );
 
-    submitPassword("correct-password");
+    await submitPassword("correct-password");
     expect(await screen.findByText("今日复习")).toBeInTheDocument();
     expect(store.migrationCards).toEqual(migratedPayload.cards);
     const navigation = screen.getByRole("navigation", { name: "主导航" });
@@ -254,13 +281,14 @@ describe("App", () => {
       <App
         unlockCards={unlockCards}
         createStore={async () => new MemoryProgressStore()}
+        createRememberedUnlockStore={async () => new MemoryRememberedUnlockStore()}
         now={() => new Date(2026, 7, 31, 9)}
       />,
     );
 
     expect(screen.queryByText("熵门是什么？")).not.toBeInTheDocument();
-    expect(screen.getByLabelText("题库密码")).toHaveAttribute("autocomplete", "off");
-    submitPassword("wrong-password");
+    expect(await screen.findByLabelText("题库密码")).toHaveAttribute("autocomplete", "current-password");
+    await submitPassword("wrong-password");
     expect(await screen.findByRole("alert")).toHaveTextContent("解锁失败");
     expect(screen.queryByText("熵门是什么？")).not.toBeInTheDocument();
   });
@@ -271,11 +299,12 @@ describe("App", () => {
       <App
         unlockCards={async () => payload}
         createStore={async () => store}
+        createRememberedUnlockStore={async () => new MemoryRememberedUnlockStore()}
         now={() => new Date(2026, 7, 31, 9)}
       />,
     );
 
-    submitPassword("correct-password");
+    await submitPassword("correct-password");
     expect(await screen.findByText("今日复习")).toBeInTheDocument();
     expect(screen.queryByText("熵门是什么？")).not.toBeInTheDocument();
 
@@ -311,11 +340,12 @@ describe("App", () => {
     const appProps = {
       unlockCards: async () => payload,
       createStore: async () => store,
+      createRememberedUnlockStore: async () => new MemoryRememberedUnlockStore(),
       now: () => new Date(2026, 7, 31, 9),
     };
 
     const firstRender = render(<App {...appProps} />);
-    submitPassword("correct-password");
+    await submitPassword("correct-password");
     expect(await screen.findByText("今日复习")).toBeInTheDocument();
 
     firstRender.unmount();
@@ -324,5 +354,48 @@ describe("App", () => {
     expect(await screen.findByRole("heading", { name: "解锁题库" })).toBeInTheDocument();
     expect(screen.getByLabelText("题库密码")).toBeInTheDocument();
     expect(screen.queryByText("熵门是什么？")).not.toBeInTheDocument();
+  });
+
+  it("restores remembered cards before showing the password form", async () => {
+    const store = new MemoryProgressStore();
+    const rememberedStore = new MemoryRememberedUnlockStore();
+
+    render(
+      <App
+        unlockCards={async () => payload}
+        createStore={async () => store}
+        createRememberedUnlockStore={async () => rememberedStore}
+        restoreRememberedCards={async () => payload}
+      />,
+    );
+
+    expect(screen.getByText("正在检查本机解锁…")).toBeInTheDocument();
+    expect(await screen.findByText("今日复习")).toBeInTheDocument();
+    expect(screen.queryByLabelText("题库密码")).not.toBeInTheDocument();
+  });
+
+  it("saves a session key only when the device-memory option is checked", async () => {
+    const envelope = await encryptEnvelope(payload, "correct-password", payload.buildId);
+    const key = await deriveEnvelopeKey(envelope, "correct-password");
+    const rememberedStore = new MemoryRememberedUnlockStore();
+
+    render(
+      <App
+        unlockCards={async () => ({ payload, envelope, key })}
+        createStore={async () => new MemoryProgressStore()}
+        createRememberedUnlockStore={async () => rememberedStore}
+      />,
+    );
+
+    await submitPassword("correct-password", true);
+    expect(await screen.findByText("今日复习")).toBeInTheDocument();
+    expect(rememberedStore.record).toMatchObject({
+      buildId: payload.buildId,
+      salt: envelope.kdf.salt,
+    });
+
+    fireEvent.click(screen.getByRole("button", { name: "锁定" }));
+    expect(await screen.findByText("解锁题库")).toBeInTheDocument();
+    expect(rememberedStore.clearCount).toBe(1);
   });
 });

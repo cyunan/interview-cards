@@ -51,6 +51,10 @@ a { color: var(--forest-soft); }
 .unlock-card form { display: grid; }
 .field-label { font-size: 13px; margin-bottom: 10px; font-weight: 600; }
 input, select { min-width: 0; width: 100%; min-height: 48px; padding: 10px 12px; border: 1px solid #d3ddd8; border-radius: 10px; color: var(--ink); background: white; }
+.remember-device { display: flex; align-items: flex-start; gap: 10px; margin-top: 16px; color: var(--ink); font-size: 13px; line-height: 1.5; }
+.remember-device input { flex: 0 0 auto; width: 18px; min-height: 18px; margin: 2px 0 0; accent-color: var(--forest); }
+.remember-device span { display: grid; gap: 2px; }
+.remember-device small { color: var(--muted); font-size: 11px; line-height: 1.5; }
 .unlock-button { margin-top: 16px; }
 .security-note { display: flex; gap: 10px; border-top: 1px solid var(--line); margin-top: 28px; padding-top: 20px; color: var(--muted); font-size: 12px; line-height: 1.7; }
 .security-note p { margin: 0; }

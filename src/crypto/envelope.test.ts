@@ -1,7 +1,9 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  decryptEnvelopeWithKey,
   decryptEnvelope,
+  deriveEnvelopeKey,
   encryptEnvelope,
   UnlockError,
   validateEncryptedEnvelope,
@@ -53,6 +55,14 @@ describe("encrypted card envelope", () => {
     await expect(decryptEnvelope(tampered, password)).rejects.toEqual(
       new UnlockError(),
     );
+  });
+
+  it("derives a non-exportable key that can unlock the same envelope after reload", async () => {
+    const envelope = await encryptEnvelope(payload, password, "build-001");
+    const key = await deriveEnvelopeKey(envelope, password);
+
+    expect(key.extractable).toBe(false);
+    await expect(decryptEnvelopeWithKey(envelope, key)).resolves.toEqual(payload);
   });
 
   it("strictly rejects extra fields and malformed encoded parameters", async () => {
