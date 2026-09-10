@@ -244,4 +244,21 @@ describe("scanForPlaintextLeaks", () => {
       expect.arrayContaining(["card-question", "card-answer"]),
     );
   });
+
+  it("does not treat generic short code lines as answer leaks", () => {
+    const codeCard: CardV2 = {
+      ...card,
+      id: "android-generic-code-001",
+      quickAnswerMd: "这是一个不会出现在源码里的完整回答。",
+      detailMd: "return true;\nreturn false;",
+    };
+
+    const findings = scanTextForPlaintextLeaks(
+      "src/normal-code.ts",
+      "return true;",
+      [codeCard],
+    );
+
+    expect(findings).toEqual([]);
+  });
 });

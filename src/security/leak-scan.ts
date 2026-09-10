@@ -100,7 +100,10 @@ function answerLines(card: LeakSource): string[] {
   const lineFragments = fields
     .flatMap((value) => value.split(/\r?\n/))
     .map(normalize)
-    .filter((value) => value.length >= 12);
+    // Very short code fragments such as `return true;` are common in the
+    // application itself and are not useful plaintext fingerprints. Complete
+    // answer fields remain fingerprints even when they are short.
+    .filter((value) => value.length >= 24);
   return [...new Set([...completeFields, ...lineFragments])];
 }
 
