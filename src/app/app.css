@@ -101,7 +101,7 @@ input, select { min-width: 0; width: 100%; min-height: 48px; padding: 10px 12px;
 .weak-list > div { display: grid; grid-template-columns: 24px 1fr auto; align-items: center; gap: 12px; min-height: 52px; border-top: 1px solid var(--line); }
 .weak-list span, .weak-list small { color: var(--muted); font-size: 12px; }
 .weak-list strong { font-size: 14px; overflow-wrap: anywhere; }
-.study-screen { min-height: 100dvh; padding-bottom: calc(160px + env(safe-area-inset-bottom)); }
+.study-screen { min-height: 100dvh; padding-bottom: calc(32px + env(safe-area-inset-bottom)); }
 .study-header { position: sticky; top: 0; z-index: 20; display: grid; grid-template-columns: 44px 1fr 56px; gap: 16px; align-items: center; background: #f7f8faf5; border-bottom: 1px solid var(--line); padding: max(12px, env(safe-area-inset-top)) var(--page-gutter) 12px; }
 .icon-button { padding: 0; font-size: 23px; }
 .study-progress { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 14px; }
@@ -111,7 +111,15 @@ input, select { min-width: 0; width: 100%; min-height: 48px; padding: 10px 12px;
 .study-progress progress::-moz-progress-bar { background: var(--forest); }
 .study-progress small { color: var(--muted); font-size: 12px; }
 .deck-pill, .level-badge { padding: 6px 8px; border-radius: 8px; color: var(--forest-soft); background: #eaf5f0; font-size: 11px; text-align: center; }
-.study-layout { width: min(calc(100% - 32px), 960px); margin: 24px auto 0; display: grid; gap: 0; }
+.study-flow {
+  width: min(calc(100% - 32px), 900px);
+  margin: 32px auto 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
+  align-content: start;
+  scroll-margin-top: 92px;
+}
 .study-card { width: 100%; margin: 0; background: white; border: 1px solid var(--line); border-radius: 20px; }
 .question-meta { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding: 20px 24px 0; color: var(--muted); }
 .question-meta span { max-width: 100%; overflow-wrap: anywhere; font-size: 11px; padding: 4px 8px; background: #f4f6f5; border-radius: 6px; }
@@ -130,7 +138,7 @@ input, select { min-width: 0; width: 100%; min-height: 48px; padding: 10px 12px;
 .is-revealed .question-panel { min-height: auto; padding-bottom: 0; }
 .is-revealed .question-panel h1 { margin-bottom: 24px; }
 .answer-panel { min-width: 0; padding: 0 24px 28px; background: white; border: 1px solid var(--line); border-top: 0; border-radius: 0 0 20px 20px; }
-.study-layout.is-revealed .study-card { border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+.study-card.is-revealed { border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
 .progressive-answer { display: grid; min-width: 0; gap: 12px; }
 .answer-section { min-width: 0; border: 1px solid var(--line); border-radius: 12px; padding: 0 18px; }
 .answer-section summary { display: list-item; list-style-position: inside; min-height: 52px; padding: 15px 0; line-height: 22px; font-size: 14px; font-weight: 600; }
@@ -168,7 +176,18 @@ input, select { min-width: 0; width: 100%; min-height: 48px; padding: 10px 12px;
 .source-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: 24px; padding-top: 12px; border-top: 1px solid var(--line); font-size: 12px; color: var(--muted); }
 .source-row > span { min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 .source-button { flex: none; font-size: 12px; }
-.rating-dock { position: fixed; z-index: 30; bottom: 0; left: 0; right: 0; padding: 12px 16px max(16px, env(safe-area-inset-bottom)); background: #fffffff5; border-top: 1px solid var(--line); }
+.rating-dock {
+  position: sticky;
+  bottom: 16px;
+  z-index: 10;
+  width: 100%;
+  margin-top: 16px;
+  padding: 12px 16px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: #fffffff5;
+  box-shadow: 0 8px 28px #25312f12;
+}
 .rating-dock > p { text-align: center; color: var(--muted); font-size: 12px; margin-bottom: 10px; }
 .rating-dock > div { width: min(100%, 712px); margin: auto; display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; }
 .rating-dock button { min-height: 52px; border: 1px solid var(--line); border-radius: 12px; background: white; color: var(--ink); font-weight: 600; }
@@ -220,7 +239,7 @@ input, select { min-width: 0; width: 100%; min-height: 48px; padding: 10px 12px;
   .filter-panel { display: grid; grid-template-columns: minmax(220px, 1fr) minmax(0, 2fr); gap: 16px; align-items: end; }
   .select-grid { margin-top: 0; }
   .metric-grid article { padding: 0 28px; }
-  .study-layout { width: min(calc(100% - (var(--page-gutter) * 2)), 960px); }
+  .study-flow { width: min(calc(100% - 64px), 840px); margin-top: 36px; }
   .question-panel { padding: 32px 40px; }
   .question-meta { padding: 24px 40px 0; }
   .answer-panel { padding: 0 40px 36px; }
@@ -244,10 +263,26 @@ input, select { min-width: 0; width: 100%; min-height: 48px; padding: 10px 12px;
   .dashboard-screen > .hero-panel, .dashboard-screen > .metric-grid { grid-column: 1 / -1; }
   .dashboard-screen > .deck-section { grid-column: 1; }
   .dashboard-screen > .weak-section { grid-column: 2; margin-top: 30px; }
-  .study-layout { width: min(calc(100% - (var(--page-gutter) * 2)), 1180px); grid-template-columns: minmax(340px, .78fr) minmax(0, 1.22fr); gap: 20px; align-items: start; }
-  .study-layout.is-revealed .study-card { border-radius: 20px; }
-  .study-card { position: sticky; top: 24px; }
+  .study-flow { width: min(calc(100% - 80px), 900px); margin-top: 48px; }
+  .study-card.is-revealed .question-panel { padding-top: 22px; padding-bottom: 22px; }
+  .study-card.is-revealed .question-panel h1 { margin-top: 12px; margin-bottom: 0; font-size: 24px; }
   .answer-panel { border: 1px solid var(--line); border-radius: 20px; padding: 0 32px 36px; }
+  .rating-dock { padding: 12px 20px; }
+}
+@media (max-width: 767px) {
+  .study-screen { padding-bottom: calc(150px + env(safe-area-inset-bottom)); }
+  .study-flow { width: min(calc(100% - 32px), 900px); margin-top: 24px; }
+  .rating-dock {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: auto;
+    margin: 0;
+    border-width: 1px 0 0;
+    border-radius: 0;
+    padding: 12px 16px max(16px, env(safe-area-inset-bottom));
+  }
 }
 @media (max-width: 380px) {
   .metric-grid article { padding: 0 12px; }

@@ -24,6 +24,11 @@ test("development styles load under CSP at mobile and desktop sizes", async ({ p
           <article class="browse-card"></article>
           <article class="browse-card expanded"></article>
         </section>
+        <div class="study-flow">
+          <article class="study-card"></article>
+          <section class="answer-panel"></section>
+          <footer class="rating-dock"><div><button>不会</button><button>模糊</button><button>掌握</button></div></footer>
+        </div>
       </div>`;
     document.body.append(shell);
   });
@@ -39,6 +44,8 @@ test("development styles load under CSP at mobile and desktop sizes", async ({ p
       const filter = getComputedStyle(element.querySelector(".filter-panel")!);
       const browse = getComputedStyle(element.querySelector(".browse-list")!);
       const expanded = getComputedStyle(element.querySelector(".browse-card.expanded")!);
+      const flow = getComputedStyle(element.querySelector(".study-flow")!);
+      const rating = getComputedStyle(element.querySelector(".rating-dock")!);
       return {
         shellDisplay: shell.display,
         navPosition: nav.position,
@@ -46,6 +53,9 @@ test("development styles load under CSP at mobile and desktop sizes", async ({ p
         filterDisplay: filter.display,
         browseColumns: browse.gridTemplateColumns,
         expandedColumn: expanded.gridColumn,
+        flowColumns: flow.gridTemplateColumns,
+        ratingPosition: rating.position,
+        ratingWidth: rating.width,
       };
     });
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
@@ -62,6 +72,12 @@ test("development styles load under CSP at mobile and desktop sizes", async ({ p
       expect(layout.filterDisplay).toBe("grid");
       expect(layout.browseColumns.split(" ")).toHaveLength(2);
       expect(layout.expandedColumn).toContain("1 / -1");
+    }
+    expect(layout.flowColumns.split(" ")).toHaveLength(1);
+    if (width < 768) {
+      expect(layout.ratingPosition).toBe("fixed");
+    } else {
+      expect(layout.ratingPosition).toBe("sticky");
     }
   }
   expect(violations).toEqual([]);
