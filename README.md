@@ -17,10 +17,27 @@ npm run dev
 
 私有知识库保持在公开仓库之外。所有命令都通过显式路径读取它，发布密码由本地终端隐藏输入两次，不接受命令行参数或环境变量。
 
+题库内容有任何修改时，必须先重新编译并生成新的密文，再进行前端验证和推送；只运行 `npm run build` 不会读取私有知识库，也不会更新线上题目。
+
 ```bash
+# 1. 检查私有文档
 npm run cards:lint -- --vault <vault-path>
+
+# 2. 重新编译、加密并原子替换公开密文（必须执行）
 npm run cards:build -- --vault <vault-path>
+
+# 3. 检查题库指纹、公开工作树和 Git 历史
 npm run verify:vault -- --vault <vault-path>
+
+# 4. 确认密文确实变化后，再运行前端验证
+npm run verify
+npm run test:e2e
+
+# 5. 仅提交密文和必要的前端改动，再推送触发 Pages
+git diff -- public/cards.enc.json
+git add public/cards.enc.json <frontend-files>
+git commit
+git push origin main
 ```
 
 `cards:build` 只会原子替换 `public/cards.enc.json`，不会提交或推送。确认完整验证通过后，再自行提交生成的密文。
