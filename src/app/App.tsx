@@ -18,6 +18,8 @@ import {
 } from "../study/scheduler";
 import { BrowseScreen } from "./BrowseScreen";
 import { Dashboard } from "./Dashboard";
+import { RouteScreen } from "./RouteScreen";
+import { resolveRouteCards, type KnowledgeRoute } from "../routes/routes";
 import {
   CardBankUnavailableError,
   loadEncryptedCardsSession,
@@ -31,7 +33,7 @@ import {
   type RememberedUnlockStore,
 } from "../security/remembered-unlock";
 
-type View = "home" | "browse" | "settings";
+type View = "home" | "routes" | "browse" | "settings";
 
 export interface AppProps {
   unlockCards?: (password: string) => Promise<ParsedCardsPayload | DecryptedCardsSession>;
@@ -66,6 +68,9 @@ function MainNavigation({ view, onView }: { view: View; onView(view: View): void
       <button aria-current={view === "browse" ? "page" : undefined} onClick={() => onView("browse")}>
         <span aria-hidden="true">▤</span><small>浏览</small>
       </button>
+      <button aria-current={view === "routes" ? "page" : undefined} onClick={() => onView("routes")}>
+        <span aria-hidden="true">↗</span><small>路线</small>
+      </button>
       <button aria-current={view === "settings" ? "page" : undefined} onClick={() => onView("settings")}>
         <span aria-hidden="true">⚙</span><small>设置</small>
       </button>
@@ -85,7 +90,13 @@ function Workspace({ payload, createStore, now, onLock }: WorkspaceProps) {
   const [progress, setProgress] = useState(new Map<string, CardProgress>());
   const [dailyLimit, setDailyLimit] = useState<DailyLimit>(20);
   const [view, setView] = useState<View>("home");
-  const [session, setSession] = useState<{ deck: Deck; queue: QueueItem[] }>();
+  const [selectedRouteId, setSelectedRouteId] = useState<string>();
+  const [session, setSession] = useState<{
+    deck: Deck;
+    queue: QueueItem[];
+    returnView: View;
+    label?: string;
+  }>();
   const [notice, setNotice] = useState<string>();
   const [storageError, setStorageError] = useState(false);
 
@@ -151,7 +162,29 @@ function Workspace({ payload, createStore, now, onLock }: WorkspaceProps) {
       return;
     }
     setNotice(undefined);
-    setSession({ deck, queue });
+    setSession({ deck, queue, returnView: view });
+  }
+
+  function startRouteStep(route: KnowledgeRoute, stepIndex: number): void {
+    const step = route.steps[stepIndex];
+    if (!step) return;
+    const routeCards = resolveRouteCards(step, payload.cards);
+    if (routeCards.length === 0) {
+      setNotice("当前阶段暂未找到可练习的卡片，请先更新题库");
+      return;
+    }
+    setNotice(undefined);
+    setSelectedRouteId(route.id);
+    setView("routes");
+    setSession({
+      deck: "full",
+      queue: routeCards.map((card) => ({
+        card,
+        kind: progress.has(card.id) ? "review" : "new",
+      })),
+      returnView: "routes",
+      label: "路线练习",
+    });
   }
 
   function updateProgress(record: CardProgress): void {
@@ -181,6 +214,8 @@ function Workspace({ payload, createStore, now, onLock }: WorkspaceProps) {
     return (
       <StudyScreen
         deck={session.deck}
+        deckLabel={session.label}
+        returnLabel={session.returnView === "routes" ? "路线" : "首页"}
         initialQueue={session.queue}
         progress={progress}
         store={store}
@@ -203,6 +238,19 @@ function Workspace({ payload, createStore, now, onLock }: WorkspaceProps) {
             progress={progress}
             today={toLocalDateKey(now())}
             onStart={startSession}
+            onOpenRoutes={() => {
+              setSelectedRouteId(undefined);
+              setView("routes");
+            }}
+          />
+        ) : null}
+        {view === "routes" ? (
+          <RouteScreen
+            cards={payload.cards}
+            progress={progress}
+            selectedRouteId={selectedRouteId}
+            onSelectRoute={setSelectedRouteId}
+            onPractice={startRouteStep}
           />
         ) : null}
         {view === "browse" ? <BrowseScreen cards={payload.cards} progress={progress} /> : null}

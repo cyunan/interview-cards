@@ -266,8 +266,27 @@ describe("App", () => {
     expect(store.migrationCards).toEqual(migratedPayload.cards);
     const navigation = screen.getByRole("navigation", { name: "主导航" });
     expect(navigation).toHaveClass("main-nav");
-    expect(navigation.querySelectorAll("button")).toHaveLength(3);
+    expect(navigation.querySelectorAll("button")).toHaveLength(4);
     expect(navigation.nextElementSibling).toHaveClass("app-content");
+  });
+
+  it("opens knowledge routes from the main navigation without changing the card source", async () => {
+    render(
+      <App
+        unlockCards={async () => payload}
+        createStore={async () => new MemoryProgressStore()}
+        createRememberedUnlockStore={async () => new MemoryRememberedUnlockStore()}
+      />,
+    );
+
+    await submitPassword("correct-password");
+    expect(await screen.findByText("今日复习")).toBeInTheDocument();
+    const navigation = screen.getByRole("navigation", { name: "主导航" });
+    fireEvent.click(navigation.querySelectorAll("button")[2]);
+
+    expect(await screen.findByRole("heading", { name: "沿路线建立理解" })).toBeInTheDocument();
+    expect(screen.getByText("Android 页面是怎样跑起来的？")).toBeInTheDocument();
+    expect(screen.queryByText("当前密文版本暂未包含本阶段卡片，更新题库后会自动出现。")).not.toBeInTheDocument();
   });
 
   it("keeps card plaintext hidden until unlock and uses a generic failure message", async () => {

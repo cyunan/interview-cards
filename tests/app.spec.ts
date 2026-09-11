@@ -27,6 +27,23 @@ test("reading layout preserves production CSP and daily navigation", async ({ pa
   await page.screenshot({ path: testInfo.outputPath("settings-mobile.png"), fullPage: true });
 });
 
+test("organizes existing cards into knowledge routes without exposing answers before practice", async ({ page }) => {
+  await page.goto("./");
+  await unlock(page);
+  await page.getByRole("button", { name: "路线", exact: true }).click();
+
+  await expect(page.getByRole("heading", { name: "沿路线建立理解" })).toBeVisible();
+  await expect(page.locator(".route-card")).toHaveCount(6);
+  await expect(page.getByText("一条路线 = 一条可口述的因果链")).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+
+  await page.locator(".route-card").first().click();
+  await expect(page.getByRole("heading", { name: "Android 页面是怎样跑起来的？" })).toBeVisible();
+  await expect(page.locator(".route-step")).toHaveCount(4);
+  await expect(page.getByRole("button", { name: "练习本阶段" })).toBeDisabled();
+  await expect(page.getByText("当前密文版本暂未包含本阶段卡片，更新题库后会自动出现。").first()).toBeVisible();
+});
+
 async function unlock(
   page: import("@playwright/test").Page,
   rememberDevice = false,

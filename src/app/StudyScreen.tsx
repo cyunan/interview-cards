@@ -14,6 +14,8 @@ import { ProgressiveAnswer } from "./ProgressiveAnswer";
 
 interface StudyScreenProps {
   deck: Deck;
+  deckLabel?: string;
+  returnLabel?: string;
   initialQueue: QueueItem[];
   progress: ReadonlyMap<string, CardProgress>;
   store: ProgressStore;
@@ -76,6 +78,8 @@ function SourceAction({ card }: { card: CardV2 }) {
 
 export function StudyScreen({
   deck,
+  deckLabel,
+  returnLabel = "首页",
   initialQueue,
   progress,
   store,
@@ -132,8 +136,8 @@ export function StudyScreen({
         <div className="complete-mark" aria-hidden="true">✓</div>
         <p className="eyebrow">SESSION COMPLETE</p>
         <h1>本轮完成</h1>
-        <p>今天的回答已经记录到本机。休息一下，或回到首页换一套题库。</p>
-        <button className="primary-button" type="button" onClick={onExit}>返回首页</button>
+        <p>今天的回答已经记录到本机。休息一下，或回到{returnLabel}继续学习。</p>
+        <button className="primary-button" type="button" onClick={onExit}>返回{returnLabel}</button>
       </main>
     );
   }
@@ -153,7 +157,7 @@ export function StudyScreen({
           />
           <small>已完成 {completed} / {total}</small>
         </div>
-        <span className="deck-pill">{deck === "sprint" ? "冲刺" : "完整"}</span>
+        <span className="deck-pill">{deckLabel ?? (deck === "sprint" ? "冲刺" : "完整")}</span>
       </header>
 
       <div ref={flowRef} className={revealed ? "study-flow is-revealed" : "study-flow"}>

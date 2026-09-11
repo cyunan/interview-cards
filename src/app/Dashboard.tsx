@@ -1,4 +1,5 @@
 import type { CardV2 } from "../content/types";
+import { KNOWLEDGE_ROUTES } from "../routes/routes";
 import { calculateStudyStreak } from "../storage/progress";
 import type { CardProgress, Deck } from "../study/scheduler";
 
@@ -7,6 +8,7 @@ interface DashboardProps {
   progress: ReadonlyMap<string, CardProgress>;
   today: string;
   onStart(deck: Deck): void;
+  onOpenRoutes(): void;
 }
 
 function weakCategories(
@@ -27,7 +29,7 @@ function weakCategories(
     .slice(0, 3);
 }
 
-export function Dashboard({ cards, progress, today, onStart }: DashboardProps) {
+export function Dashboard({ cards, progress, today, onStart, onOpenRoutes }: DashboardProps) {
   const records = [...progress.values()];
   const knownIds = new Set(cards.map((card) => card.id));
   const due = records.filter(
@@ -68,10 +70,29 @@ export function Dashboard({ cards, progress, today, onStart }: DashboardProps) {
         </article>
       </section>
 
+      <section className="section-block route-section" aria-labelledby="route-title">
+        <div className="section-heading route-section-heading">
+          <div>
+            <p className="eyebrow">BUILD THE WHY</p>
+            <h2 id="route-title">沿路线学习</h2>
+          </div>
+          <button className="text-button" type="button" onClick={onOpenRoutes}>查看全部路线 →</button>
+        </div>
+        <button className="route-feature-card" type="button" onClick={onOpenRoutes}>
+          <span className="route-feature-index">01</span>
+          <span>
+            <strong>{KNOWLEDGE_ROUTES[0].title}</strong>
+            <small>{KNOWLEDGE_ROUTES[0].summary}</small>
+          </span>
+          <span className="route-feature-meta">{KNOWLEDGE_ROUTES[0].steps.length} 个阶段 · 约 {KNOWLEDGE_ROUTES[0].estimatedMinutes} 分钟 <span aria-hidden="true">→</span></span>
+        </button>
+      </section>
+
       <section className="section-block deck-section" aria-labelledby="deck-title">
         <div className="section-heading">
           <div>
-            <h2 id="deck-title">选择题库</h2>
+            <h2 id="deck-title">复习工具</h2>
+            <p className="section-note">路线负责串起理解；题库负责按掌握度安排重复。</p>
           </div>
         </div>
         <div className="deck-grid">
