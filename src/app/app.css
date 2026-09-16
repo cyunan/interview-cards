@@ -386,6 +386,14 @@ input, select { min-width: 0; width: 100%; min-height: 48px; padding: 10px 12px;
   .route-step-footer { align-items: flex-start; flex-direction: column; }
   .route-step-footer .primary-button { width: 100%; }
 }
+.route-scenario { margin-top: 24px; padding: 20px; background: var(--surface, #fff); border: 1px solid var(--line); border-radius: 16px; }
+.route-scenario h2 { margin: 0; font-size: 18px; }
+.route-scenario ul { padding-left: 22px; line-height: 1.8; }
+.route-stage-nav { display: flex; flex-wrap: wrap; gap: 8px; margin: 24px 0; }
+.route-stage-nav a { display: inline-flex; align-items: center; min-height: 44px; padding: 8px 12px; border: 1px solid var(--line); border-radius: 10px; color: inherit; background: white; text-decoration: none; }
+.route-stage-nav a:hover { background: #edf7f3; }
+.route-stage-nav a:focus-visible { outline: 3px solid #167d71; outline-offset: 3px; }
+.route-step { scroll-margin-top: 24px; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms!important; animation-iteration-count: 1!important; transition-duration: .01ms!important; scroll-behavior: auto!important; }
 }

@@ -3,6 +3,7 @@ import type { CardProgress } from "../study/scheduler";
 
 export interface RouteCheckpoint {
   cardId: string;
+  followUpIndex?: number;
 }
 
 export interface KnowledgeRouteStep {
@@ -20,6 +21,8 @@ export interface KnowledgeRoute {
   summary: string;
   level: string;
   estimatedMinutes: number;
+  scenario?: string;
+  outcomes?: string[];
   steps: KnowledgeRouteStep[];
 }
 
@@ -38,49 +41,75 @@ export const KNOWLEDGE_ROUTES: KnowledgeRoute[] = [
   {
     id: "android-page-rendering",
     title: "Android 页面是怎样跑起来的？",
-    summary: "从 Activity 入口一路走到 UI 线程、VSYNC 和 Compose 状态，建立一条能口述的首帧链路。",
+    summary: "跟着一个商品详情页，从启动请求走到画面上屏，再用这条链路解释更新和掉帧。",
     level: "基础到进阶",
-    estimatedMinutes: 35,
+    estimatedMinutes: 70,
+    scenario: "打开商品详情页，先显示加载中，数据返回后显示名称和图片，点击收藏改变图标颜色。最后把同一页面换成 Compose，比较哪些步骤变了、哪些仍由 Android 窗口与图形系统完成。这是教学场景，不代表项目经历。",
+    outcomes: ["说清 Activity 回调、窗口接入和首帧显示的区别", "解释一次状态更新怎样进入帧调度并最终上屏", "按证据区分排队、布局绘制和渲染端的耗时"],
     steps: [
       {
         id: "runtime-entry",
-        title: "先画边界：谁负责页面，谁负责像素？",
-        purpose: "把 Activity、Window、View 从“一个页面”里拆成三层职责。",
-        cardIds: ["android-activity-002", "android-activity-003"],
-        transition: "知道页面由谁承载后，再追问这些对象由哪个线程修改，以及消息如何送到那里。",
+        title: "页面入口：启动请求怎样交到主线程？",
+        purpose: "先分清 Activity、Window、View，再跟踪系统请求如何进入应用执行。",
+        cardIds: ["android-activity-002", "android-page-001"],
+        transition: "Activity 开始执行，并不等于布局已经接入窗口。下一步看 setContentView 之后还缺什么。",
         checkpoint: {
-          cardId: "android-activity-002",
+          cardId: "android-page-001", followUpIndex: 1,
         },
+      },
+      {
+        id: "window-attachment",
+        title: "窗口接入：布局什么时候成为可显示的页面？",
+        purpose: "沿 setContentView、DecorView、ViewRootImpl 追到首帧，解释 onResume 与上屏的时间差。",
+        cardIds: ["android-page-002", "android-page-003", "android-page-004"],
+        transition: "树接入窗口以后，数据加载完成了。谁可以改这棵树，后台结果又该怎样交回来？",
+        checkpoint: { cardId: "android-page-004", followUpIndex: 1 },
       },
       {
         id: "ui-owner",
         title: "再看执行者：UI 线程如何接住更新？",
         purpose: "理解 Handler、Looper 和 View 线程封闭之间的因果关系。",
-        cardIds: ["android-android-001", "android-android-004", "android-android-006"],
+        cardIds: ["android-android-001", "android-android-006", "android-android-004"],
         transition: "任务已经排到 UI 线程，并不等于屏幕马上变化；下一步要看一帧什么时候真正开始。",
         checkpoint: {
-          cardId: "android-android-004",
+          cardId: "android-android-004", followUpIndex: 3,
         },
       },
       {
         id: "frame-clock",
         title: "把消息接到帧：VSYNC 怎样变成一次遍历？",
         purpose: "用 Choreographer 解释输入、动画、布局和绘制为什么按帧组织。",
-        cardIds: ["android-android-003"],
+        cardIds: ["android-page-005", "android-android-003", "android-page-006"],
         transition: "一帧开始只是调度入口，真正的流畅性还取决于这一帧内的工作量和提交时机。",
         checkpoint: {
-          cardId: "android-android-003",
+          cardId: "android-page-006", followUpIndex: 1,
         },
       },
       {
+        id: "draw-to-display",
+        title: "绘制上屏：画完为什么不等于看见？",
+        purpose: "把测量、布局、绘制、RenderThread、GPU 和系统合成放在各自的位置上。",
+        cardIds: ["android-page-007", "android-page-008", "android-page-009"],
+        transition: "传统 View 的链路走通后，再把同一商品页换成 Compose：变化从哪开始，最后又在哪里汇合？",
+        checkpoint: { cardId: "android-page-009", followUpIndex: 1 },
+      },
+      {
         id: "declarative-state",
-        title: "最后看 Compose：状态怎样重新进入这条链？",
+        title: "Compose 接入：状态在哪读，更新从哪开始？",
         purpose: "把 View 的命令式更新和 Compose 的状态驱动重组放到同一条渲染链路里比较。",
-        cardIds: ["android-compose-007", "android-compose-004", "android-compose-008"],
+        cardIds: ["android-compose-001", "android-compose-003", "android-compose-013", "android-page-010"],
         transition: "到这里可以从“谁调用 setText”升级到“状态变化如何产生最小 UI 工作”，再进入性能排查。",
         checkpoint: {
-          cardId: "android-compose-007",
+          cardId: "android-page-010", followUpIndex: 1,
         },
+      },
+      {
+        id: "diagnose-frame",
+        title: "综合排查：沿执行链找到断点和慢点",
+        purpose: "用“post 成功但页面没变”和“主线程不忙却掉帧”检验前面六段能否连起来。",
+        cardIds: ["android-page-011", "android-page-012"],
+        transition: "先复述整条链，再到性能路线深入指标、采样和回归验证。",
+        checkpoint: { cardId: "android-page-012", followUpIndex: 1 },
       },
     ],
   },
@@ -275,6 +304,14 @@ export function resolveRouteCards(
   });
 }
 
+export function resolveRouteCheckpoint(step: KnowledgeRouteStep, cards: ReadonlyArray<CardV2>) {
+  const checkpoint = step.checkpoint;
+  const card = cards.find((item) => item.id === checkpoint?.cardId);
+  if (!card || !checkpoint) return undefined;
+  if (checkpoint.followUpIndex !== undefined) return card.followUps[checkpoint.followUpIndex];
+  return { question: card.question, answerMd: card.quickAnswerMd };
+}
+
 export function getRouteProgress(
   route: KnowledgeRoute,
   cards: ReadonlyArray<CardV2>,
@@ -285,10 +322,10 @@ export function getRouteProgress(
   let totalCards = 0;
   const completed = route.steps.map((step) => {
     const availableCards = resolveRouteCards(step, cards);
-    totalCards += availableCards.length;
+    totalCards += step.cardIds.length;
     const reviewed = availableCards.filter((card) => (progress.get(card.id)?.reviewCount ?? 0) > 0);
     reviewedCards += reviewed.length;
-    const isComplete = availableCards.length > 0 && reviewed.length === availableCards.length;
+    const isComplete = step.cardIds.length > 0 && reviewed.length === step.cardIds.length;
     if (isComplete) completedSteps += 1;
     return isComplete;
   });

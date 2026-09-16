@@ -7,6 +7,7 @@ import {
   getRouteProgress,
   KNOWLEDGE_ROUTES,
   resolveRouteCards,
+  resolveRouteCheckpoint,
   type KnowledgeRoute,
 } from "../routes/routes";
 
@@ -28,9 +29,9 @@ function masteryLabel(record: CardProgress | undefined): string {
 function RouteProgressBar({ completed, total }: { completed: number; total: number }) {
   const value = total === 0 ? 0 : Math.round((completed / total) * 100);
   return (
-    <div className="route-progress" aria-label={`已完成 ${completed} / ${total} 个阶段`}>
+    <div className="route-progress" aria-label={`已练过 ${completed} / ${total} 个阶段`}>
       <div className="route-progress-track"><span style={{ width: `${value}%` }} /></div>
-      <small>{completed} / {total} 阶段</small>
+      <small>{completed} / {total} 阶段已练过</small>
     </div>
   );
 }
@@ -105,22 +106,27 @@ function RouteDetail({
         <h1>{route.title}</h1>
         <p>{route.summary}</p>
         <div className="route-detail-stats">
-          <strong>{summary.reviewedCards}<small> / {summary.totalCards} 张已学</small></strong>
+          <strong>{summary.reviewedCards}<small> / {summary.totalCards} 张练过</small></strong>
           <RouteProgressBar completed={summary.completedSteps} total={route.steps.length} />
         </div>
+        <p>练过表示完成过评分，不等于已经掌握；薄弱卡片仍按原有排期复习。</p>
+        {route.scenario ? <div className="route-scenario"><h2>跟着这个页面学</h2><p>{route.scenario}</p>
+          {route.outcomes ? <ul>{route.outcomes.map((outcome) => <li key={outcome}>{outcome}</li>)}</ul> : null}
+        </div> : null}
       </section>
+      <nav className="route-stage-nav" aria-label="跳转学习阶段">
+        {route.steps.map((step, index) => <a key={step.id} href={`#route-${step.id}`}>{index + 1}. {step.title.split("：")[0]}</a>)}
+      </nav>
 
       <section className="route-timeline" aria-label={`${route.title}学习阶段`}>
         {route.steps.map((step, index) => {
           const stepCards = resolveRouteCards(step, cards);
-          const checkpointCard = step.checkpoint
-            ? cards.find((card) => card.id === step.checkpoint?.cardId)
-            : undefined;
+          const checkpoint = resolveRouteCheckpoint(step, cards);
           const stepReviewed = stepCards.filter((card) => (progress.get(card.id)?.reviewCount ?? 0) > 0).length;
-          const complete = stepCards.length > 0 && stepReviewed === stepCards.length;
+          const complete = step.cardIds.length > 0 && stepReviewed === step.cardIds.length;
           const active = index === summary.nextStepIndex;
           return (
-            <div className={active ? "route-step is-active" : complete ? "route-step is-complete" : "route-step"} key={step.id}>
+            <div id={`route-${step.id}`} className={active ? "route-step is-active" : complete ? "route-step is-complete" : "route-step"} key={step.id}>
               <div className="route-step-rail" aria-hidden="true">
                 <span>{complete ? "✓" : String(index + 1).padStart(2, "0")}</span>
               </div>
@@ -130,7 +136,7 @@ function RouteDetail({
                     <p className="eyebrow">阶段 {index + 1}</p>
                     <h2>{step.title}</h2>
                   </div>
-                  <span className="route-step-count">{stepReviewed}/{stepCards.length} 张</span>
+                  <span className="route-step-count">{stepReviewed}/{step.cardIds.length} 张练过</span>
                 </div>
                 <p className="route-step-purpose">{step.purpose}</p>
                 <div className="route-step-cards">
@@ -144,13 +150,14 @@ function RouteDetail({
                     <p className="route-missing-copy">当前密文版本暂未包含本阶段卡片，更新题库后会自动出现。</p>
                   )}
                 </div>
+                {stepCards.length > 0 && stepCards.length < step.cardIds.length ? <p className="route-missing-copy">本阶段缺少 {step.cardIds.length - stepCards.length} 张卡片，请更新题库后再完整练习。</p> : null}
                 {step.checkpoint ? (
                   <details className="route-checkpoint">
-                    <summary>阶段检查：{checkpointCard?.question ?? "关联卡片回答"}</summary>
-                    {checkpointCard ? (
-                      <Markdown>{checkpointCard.quickAnswerMd}</Markdown>
+                    <summary>{checkpoint?.question.startsWith("阶段复述：") ? checkpoint.question : `${step.checkpoint.followUpIndex !== undefined ? "阶段复述" : "阶段检查"}：${checkpoint?.question ?? "等待题库更新"}`}</summary>
+                    {checkpoint?.answerMd ? (
+                      <Markdown>{checkpoint.answerMd}</Markdown>
                     ) : (
-                      <p>解锁后可从关联卡片查看参考回答。</p>
+                      <p>当前题库缺少对应参考回答，更新题库后再试。</p>
                     )}
                   </details>
                 ) : null}

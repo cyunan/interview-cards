@@ -6,6 +6,7 @@ import {
   KNOWLEDGE_ROUTES,
   getRouteProgress,
   resolveRouteCards,
+  resolveRouteCheckpoint,
   type KnowledgeRoute,
 } from "./routes";
 
@@ -13,38 +14,38 @@ const cards: CardV2[] = [
   {
     id: "android-activity-002",
     legacyIds: [],
-    question: "Activity、Window、View 三者分别负责什么？",
-    category: "02-Android",
-    topic: "Activity",
+    question: "测试卡片 A 用来模拟路线入口",
+    category: "测试分类",
+    topic: "测试主题",
     decks: ["full"],
     priority: "P0",
-    quickAnswerMd: "Activity、Window、View 是三层边界。",
+    quickAnswerMd: "测试答案 A。",
     followUps: [],
-    source: { path: "activity.md", heading: "Activity、Window、View 三者分别负责什么？" },
+    source: { path: "fixture-a.md", heading: "测试卡片 A" },
   },
   {
     id: "android-android-003",
     legacyIds: [],
-    question: "Choreographer 如何把 VSYNC 变成一帧回调？",
-    category: "02-Android",
-    topic: "Android并发编程",
+    question: "测试卡片 B 用来模拟中间节点",
+    category: "测试分类",
+    topic: "测试主题",
     decks: ["full"],
     priority: "P0",
-    quickAnswerMd: "VSYNC 进入消息队列后驱动一帧。",
+    quickAnswerMd: "测试答案 B。",
     followUps: [],
-    source: { path: "concurrency.md", heading: "Choreographer 如何把 VSYNC 变成一帧回调？" },
+    source: { path: "fixture-b.md", heading: "测试卡片 B" },
   },
   {
     id: "android-activity-003",
     legacyIds: [],
-    question: "Activity 主要生命周期回调各负责什么？",
-    category: "02-Android",
-    topic: "Activity",
+    question: "测试卡片 C 用来模拟路线终点",
+    category: "测试分类",
+    topic: "测试主题",
     decks: ["full"],
     priority: "P0",
-    quickAnswerMd: "生命周期回调表达可见性和交互边界。",
+    quickAnswerMd: "测试答案 C。",
     followUps: [],
-    source: { path: "activity.md", heading: "Activity 主要生命周期回调各负责什么？" },
+    source: { path: "fixture-c.md", heading: "测试卡片 C" },
   },
 ];
 
@@ -58,6 +59,28 @@ const progress: CardProgress = {
 };
 
 describe("knowledge routes", () => {
+  it("organizes the page route into seven stages and twenty unique cards", () => {
+    const route = KNOWLEDGE_ROUTES[0];
+    expect(route.steps).toHaveLength(7);
+    expect(route.steps.flatMap((step) => step.cardIds)).toHaveLength(20);
+    expect(route.steps.flatMap((step) => step.cardIds).filter((id) => id.startsWith("android-page-"))).toHaveLength(12);
+    expect(new Set(route.steps.flatMap((step) => step.cardIds)).size).toBe(20);
+    expect(route.scenario).toBeTruthy();
+    expect(route.steps.every((step) => step.checkpoint?.followUpIndex !== undefined)).toBe(true);
+  });
+
+  it("reads recap answers only from the unlocked follow-up and never falls back for a missing index", () => {
+    const step = { ...KNOWLEDGE_ROUTES[0].steps[0], checkpoint: { cardId: cards[0].id, followUpIndex: 0 } };
+    const unlocked = [{ ...cards[0], followUps: [{ question: "复述问题", answerMd: "密文内的完整答案" }] }];
+    expect(resolveRouteCheckpoint(step, unlocked)).toEqual({ question: "复述问题", answerMd: "密文内的完整答案" });
+    expect(resolveRouteCheckpoint(step, cards)).toBeUndefined();
+    expect(resolveRouteCheckpoint({ ...step, checkpoint: { cardId: cards[0].id } }, cards)?.answerMd).toBe(cards[0].quickAnswerMd);
+  });
+
+  it("does not count a partially available stage as reviewed", () => {
+    const route = { ...KNOWLEDGE_ROUTES[0], steps: [{ ...KNOWLEDGE_ROUTES[0].steps[0], cardIds: [cards[0].id, "missing"] }] };
+    expect(getRouteProgress(route, cards, new Map([[progress.cardId, progress]]))).toMatchObject({ completedSteps: 0, totalCards: 2, reviewedCards: 1 });
+  });
   it("keeps the page-rendering route as a chain of existing card ids", () => {
     const route = KNOWLEDGE_ROUTES.find((item) => item.id === "android-page-rendering");
     expect(route).toBeDefined();

@@ -39,7 +39,9 @@ test("organizes existing cards into knowledge routes without exposing answers be
 
   await page.locator(".route-card").first().click();
   await expect(page.getByRole("heading", { name: "Android 页面是怎样跑起来的？" })).toBeVisible();
-  await expect(page.locator(".route-step")).toHaveCount(4);
+  await expect(page.locator(".route-step")).toHaveCount(7);
+  await expect(page.getByRole("navigation", { name: "跳转学习阶段" }).getByRole("link")).toHaveCount(7);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await expect(page.getByRole("button", { name: "练习本阶段" })).toBeDisabled();
   await expect(page.getByText("当前密文版本暂未包含本阶段卡片，更新题库后会自动出现。").first()).toBeVisible();
 });

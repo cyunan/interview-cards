@@ -1,18 +1,18 @@
 {
-  "sourceDocuments": 42,
-  "cards": 530,
+  "sourceDocuments": 43,
+  "cards": 542,
   "byDeck": {
     "sprint": 209,
-    "full": 530
+    "full": 542
   },
   "byPriority": {
     "P0": 209,
-    "P1": 288,
+    "P1": 300,
     "P2": 33
   },
   "byCategory": {
     "08-算法与综合": 12,
-    "02-Android": 225,
+    "02-Android": 237,
     "05-设计模式": 51,
     "08-跨端与扩展技术": 17,
     "03-开源框架": 62,
@@ -22,5 +22,5 @@
     "09-岗位专项": 2,
     "09-场景题": 22
   },
-  "membershipDigest": "f40226e1086ba07a03fd241d954570ca6c1fc0f2e1460bcc91f853c9711b6313"
+  "membershipDigest": "bfd23ea332a8282b21bf6494e31e0778867e177dd7fe4478542314d9011a46fe"
 }
