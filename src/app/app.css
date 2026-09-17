@@ -386,14 +386,53 @@ input, select { min-width: 0; width: 100%; min-height: 48px; padding: 10px 12px;
   .route-step-footer { align-items: flex-start; flex-direction: column; }
   .route-step-footer .primary-button { width: 100%; }
 }
-.route-scenario { margin-top: 24px; padding: 20px; background: var(--surface, #fff); border: 1px solid var(--line); border-radius: 16px; }
-.route-scenario h2 { margin: 0; font-size: 18px; }
-.route-scenario ul { padding-left: 22px; line-height: 1.8; }
-.route-stage-nav { display: flex; flex-wrap: wrap; gap: 8px; margin: 24px 0; }
-.route-stage-nav a { display: inline-flex; align-items: center; min-height: 44px; padding: 8px 12px; border: 1px solid var(--line); border-radius: 10px; color: inherit; background: white; text-decoration: none; }
-.route-stage-nav a:hover { background: #edf7f3; }
-.route-stage-nav a:focus-visible { outline: 3px solid #167d71; outline-offset: 3px; }
-.route-step { scroll-margin-top: 24px; }
+.route-detail-hero { max-width: 840px; padding-bottom: 8px; }
+.route-detail-stats { margin-top: 16px; }
+.route-learning-guide { margin-top: 18px; color: var(--muted); font-size: 14px; }
+.route-learning-guide > summary { min-height: 44px; padding: 10px 0; cursor: pointer; color: var(--forest-soft); font-size: 13px; font-weight: 600; }
+.route-teaching-label { display: inline-block; margin-left: 10px; padding: 2px 7px; border-radius: 4px; background: #eaf1ee; color: var(--muted); font-size: 10px; font-weight: 400; vertical-align: middle; }
+.route-learning-guide > div { padding: 4px 0 8px 16px; border-left: 2px solid #cfe0d9; }
+.route-learning-guide p { margin: 0 0 12px; max-width: 68ch; font-size: 14px; line-height: 1.85; }
+.route-learning-guide ul { margin: 0 0 12px; padding-left: 20px; font-size: 13px; line-height: 1.9; }
+.route-detail-hero .route-progress-note, .route-learning-guide .route-progress-note { font-size: 11px; color: var(--muted); }
+.route-stage-nav { display: flex; gap: 0; margin: 18px 0 28px; padding: 14px 0 20px; border-bottom: 1px solid var(--line); }
+.route-stage-nav a { flex: 1; position: relative; display: flex; flex-direction: column; align-items: center; gap: 8px; min-width: 0; min-height: 70px; padding: 8px 4px; border-radius: 8px; color: var(--muted); text-align: center; text-decoration: none; font-size: 12px; line-height: 1.4; }
+.route-stage-nav a:not(:last-child)::after { content: ""; position: absolute; top: 23px; left: calc(50% + 21px); width: calc(100% - 42px); height: 1px; background: #d4e1da; }
+.route-stage-number { display: grid; place-items: center; flex: none; width: 30px; height: 30px; border: 1px solid #d4e1da; border-radius: 50%; background: var(--paper); font-size: 11px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.route-stage-nav a small, .route-mobile-directory a small { display: block; margin-top: 3px; font-size: 10px; font-weight: 400; }
+.route-stage-nav a.is-reviewed .route-stage-number, .route-mobile-directory a.is-reviewed .route-stage-number { color: var(--forest); background: #e3f2eb; border-color: #c6e2d5; }
+.route-stage-nav a[aria-current="step"] { color: var(--forest); background: #e9f3ee; font-weight: 700; }
+.route-stage-nav a[aria-current="step"] .route-stage-number, .route-mobile-directory a[aria-current="step"] .route-stage-number { color: white; border-color: var(--forest); background: var(--forest); }
+.route-stage-nav a:hover { color: var(--forest); background: #edf7f3; }
+.route-stage-nav a:focus-visible, .route-mobile-directory a:focus-visible, .route-mobile-directory > summary:focus-visible, .route-learning-guide > summary:focus-visible { outline: 3px solid #167d71; outline-offset: 3px; }
+.route-mobile-directory, .route-mobile-position { display: none; }
+.route-navigation-dock { position: sticky; top: 0; z-index: 25; padding-top: env(safe-area-inset-top, 0px); margin-bottom: 24px; background: #f7f8fa; border-bottom: 1px solid var(--line); box-shadow: 0 8px 16px -16px #25312f55; }
+.route-navigation-dock .route-stage-nav { margin: 12px 0 0; padding: 10px 0 14px; border-bottom: 0; }
+.route-step { scroll-margin-top: calc(140px + env(safe-area-inset-top, 0px)); }
+.route-step:focus { outline: none; }
+@media (max-width: 759px) {
+  .route-stage-nav { display: none; }
+  .route-navigation-dock { margin-bottom: 20px; }
+  .route-navigation-dock .route-mobile-directory { position: relative; margin-top: 0; }
+  .route-navigation-dock .route-mobile-directory nav { position: absolute; z-index: 1; top: calc(100% + 8px); left: 0; right: 0; max-height: min(60dvh, 420px); overflow-y: auto; overscroll-behavior: contain; box-shadow: 0 12px 32px #25312f24; }
+  .route-navigation-dock .route-mobile-position { margin: 0 0 8px; }
+  .route-step { scroll-margin-top: calc(88px + env(safe-area-inset-top, 0px)); }
+  .route-mobile-directory { display: block; margin-top: 14px; }
+  .route-mobile-directory > summary { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 52px; padding: 8px 0; cursor: pointer; list-style: none; font-size: 14px; font-weight: 600; }
+  .route-mobile-directory > summary::-webkit-details-marker { display: none; }
+  .route-mobile-directory > summary small { margin-right: 9px; color: var(--forest); font-size: 12px; font-variant-numeric: tabular-nums; }
+  .route-directory-toggle { flex: none; color: var(--muted); font-size: 12px; font-weight: 400; }
+  .route-directory-toggle::after { content: " ▾"; }
+  .route-mobile-directory[open] .route-directory-toggle::after { content: " ▴"; }
+  .route-mobile-directory nav { display: grid; gap: 2px; padding: 8px; border: 1px solid var(--line); border-radius: 12px; background: white; }
+  .route-mobile-directory a { display: flex; align-items: center; gap: 12px; min-height: 48px; padding: 8px 10px; border-radius: 6px; color: var(--muted); font-size: 13px; text-decoration: none; }
+  .route-mobile-directory a[aria-current="step"] { color: var(--forest); background: #e9f3ee; font-weight: 600; }
+  .route-mobile-position { display: block; height: 3px; margin: 3px 0 22px; background: #dfe9e3; border-radius: 3px; overflow: hidden; }
+  .route-mobile-position span { display: block; height: 100%; background: var(--forest); }
+  .route-step { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .route-step-rail { display: none; }
+  .route-step-body { padding: 18px; border-radius: 12px; }
+}
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms!important; animation-iteration-count: 1!important; transition-duration: .01ms!important; scroll-behavior: auto!important; }
 }

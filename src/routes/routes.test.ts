@@ -59,6 +59,22 @@ const progress: CardProgress = {
 };
 
 describe("knowledge routes", () => {
+  it("gives every route a scenario, learning outcomes and an in-stage encrypted recap reference", () => {
+    expect(KNOWLEDGE_ROUTES).toHaveLength(6);
+    for (const route of KNOWLEDGE_ROUTES) {
+      expect(route.scenario, route.id).toBeTruthy();
+      expect(route.outcomes?.length, route.id).toBeGreaterThanOrEqual(2);
+      const ids = route.steps.flatMap((step) => step.cardIds);
+      expect(new Set(ids).size, route.id).toBe(ids.length);
+      for (const step of route.steps) {
+        expect(step.checkpoint, `${route.id}/${step.id}`).toBeDefined();
+        expect(step.cardIds).toContain(step.checkpoint?.cardId);
+        expect(Number.isInteger(step.checkpoint?.followUpIndex)).toBe(true);
+        expect(step.checkpoint!.followUpIndex).toBeGreaterThanOrEqual(0);
+      }
+    }
+  });
+
   it("organizes the page route into seven stages and twenty unique cards", () => {
     const route = KNOWLEDGE_ROUTES[0];
     expect(route.steps).toHaveLength(7);

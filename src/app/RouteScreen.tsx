@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import type { CardV2 } from "../content/types";
 import type { CardProgress } from "../study/scheduler";
@@ -95,6 +95,61 @@ function RouteDetail({
   onPractice(route: KnowledgeRoute, stepIndex: number): void;
 }) {
   const summary = useMemo(() => getRouteProgress(route, cards, progress), [cards, progress, route]);
+  const indexFromHash = () => route.steps.findIndex((step) => window.location.hash === `#route-${step.id}`);
+  const [selectedIndex, setSelectedIndex] = useState(() => {
+    const index = indexFromHash();
+    return index >= 0 ? index : summary.nextStepIndex;
+  });
+  const directoryRef = useRef<HTMLDetailsElement>(null);
+  const navigationRef = useRef<HTMLDivElement>(null);
+  const currentIndex = Math.min(selectedIndex, route.steps.length - 1);
+  const stageLabel = (index: number) => route.steps[index].shortTitle ?? route.steps[index].title.split("：")[0];
+  useEffect(() => {
+    const update = () => { const index = indexFromHash(); if (index >= 0) setSelectedIndex(index); };
+    window.addEventListener("hashchange", update);
+    return () => window.removeEventListener("hashchange", update);
+  }, [route]);
+  useEffect(() => {
+    let frame = 0;
+    const updatePosition = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        if (directoryRef.current?.open) return;
+        const navigation = navigationRef.current;
+        if (!navigation) return;
+        const firstStage = document.getElementById(`route-${route.steps[0].id}`);
+        const anchorOffset = firstStage ? Number.parseFloat(getComputedStyle(firstStage).scrollMarginTop) : 0;
+        const threshold = Math.max(navigation.getBoundingClientRect().bottom + 24, anchorOffset) + 2;
+        let index = 0;
+        route.steps.forEach((step, candidate) => {
+          const element = document.getElementById(`route-${step.id}`);
+          if (element && element.getBoundingClientRect().top <= threshold) index = candidate;
+        });
+        setSelectedIndex(index);
+      });
+    };
+    window.addEventListener("scroll", updatePosition, { passive: true });
+    window.addEventListener("resize", updatePosition);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", updatePosition);
+      window.removeEventListener("resize", updatePosition);
+    };
+  }, [route]);
+  const selectStage = (index: number) => {
+    setSelectedIndex(index);
+    if (directoryRef.current) directoryRef.current.open = false;
+    requestAnimationFrame(() => document.getElementById(`route-${route.steps[index].id}`)?.focus({ preventScroll: true }));
+  };
+  const stageLinks = () => route.steps.map((step, index) => {
+    const complete = step.cardIds.length > 0 && step.cardIds.every((id) => cards.some((card) => card.id === id) && (progress.get(id)?.reviewCount ?? 0) > 0);
+    return <a key={step.id} href={`#route-${step.id}`} onClick={() => selectStage(index)}
+      aria-current={index === currentIndex ? "step" : undefined}
+      className={complete ? "is-reviewed" : undefined}>
+      <span className="route-stage-number" aria-hidden="true">{complete ? "✓" : String(index + 1).padStart(2, "0")}</span>
+      <span>{stageLabel(index)}{complete ? <small>已练习</small> : null}</span>
+    </a>;
+  });
 
   return (
     <main className="screen route-detail-screen">
@@ -102,21 +157,35 @@ function RouteDetail({
         <span aria-hidden="true">←</span> 全部路线
       </button>
       <section className="route-detail-hero">
-        <p className="eyebrow">{route.level} · 约 {route.estimatedMinutes} 分钟</p>
+        <p className="eyebrow">{route.level} · {route.steps.length} 个阶段 · {summary.totalCards} 张卡 · 约 {route.estimatedMinutes} 分钟</p>
         <h1>{route.title}</h1>
         <p>{route.summary}</p>
         <div className="route-detail-stats">
           <strong>{summary.reviewedCards}<small> / {summary.totalCards} 张练过</small></strong>
           <RouteProgressBar completed={summary.completedSteps} total={route.steps.length} />
         </div>
-        <p>练过表示完成过评分，不等于已经掌握；薄弱卡片仍按原有排期复习。</p>
-        {route.scenario ? <div className="route-scenario"><h2>跟着这个页面学</h2><p>{route.scenario}</p>
-          {route.outcomes ? <ul>{route.outcomes.map((outcome) => <li key={outcome}>{outcome}</li>)}</ul> : null}
-        </div> : null}
+        {route.scenario ? <details className="route-learning-guide"><summary>学习场景与目标 <span className="route-teaching-label">教学场景</span></summary>
+          <div><p>{route.scenario}</p>
+            {route.outcomes ? <ul>{route.outcomes.map((outcome) => <li key={outcome}>{outcome}</li>)}</ul> : null}
+            <p className="route-progress-note">练过表示完成过评分，不等于已经掌握；薄弱卡片仍按原有排期复习。</p>
+          </div>
+        </details> : <p className="route-progress-note">练过表示完成过评分，不等于已经掌握。</p>}
       </section>
+      <div className="route-navigation-dock" ref={navigationRef}>
       <nav className="route-stage-nav" aria-label="跳转学习阶段">
-        {route.steps.map((step, index) => <a key={step.id} href={`#route-${step.id}`}>{index + 1}. {step.title.split("：")[0]}</a>)}
+        {stageLinks()}
       </nav>
+      <details className="route-mobile-directory" ref={directoryRef} onKeyDown={(event) => {
+        if (event.key === "Escape" && directoryRef.current) {
+          directoryRef.current.open = false;
+          directoryRef.current.querySelector("summary")?.focus();
+        }
+      }}>
+        <summary><span><small>{String(currentIndex + 1).padStart(2, "0")} / {String(route.steps.length).padStart(2, "0")}</small> {stageLabel(currentIndex)}</span><span className="route-directory-toggle">切换阶段</span></summary>
+        <nav aria-label="手机学习阶段目录">{stageLinks()}</nav>
+      </details>
+      <div className="route-mobile-position" aria-hidden="true"><span style={{ width: `${(currentIndex + 1) / route.steps.length * 100}%` }} /></div>
+      </div>
 
       <section className="route-timeline" aria-label={`${route.title}学习阶段`}>
         {route.steps.map((step, index) => {
@@ -124,9 +193,9 @@ function RouteDetail({
           const checkpoint = resolveRouteCheckpoint(step, cards);
           const stepReviewed = stepCards.filter((card) => (progress.get(card.id)?.reviewCount ?? 0) > 0).length;
           const complete = step.cardIds.length > 0 && stepReviewed === step.cardIds.length;
-          const active = index === summary.nextStepIndex;
+          const active = index === currentIndex;
           return (
-            <div id={`route-${step.id}`} className={active ? "route-step is-active" : complete ? "route-step is-complete" : "route-step"} key={step.id}>
+            <div tabIndex={-1} id={`route-${step.id}`} className={active ? "route-step is-active" : complete ? "route-step is-complete" : "route-step"} key={step.id}>
               <div className="route-step-rail" aria-hidden="true">
                 <span>{complete ? "✓" : String(index + 1).padStart(2, "0")}</span>
               </div>
@@ -199,6 +268,7 @@ export function RouteScreen({
 
   return (
     <RouteDetail
+      key={route.id}
       route={route}
       cards={cards}
       progress={progress}
