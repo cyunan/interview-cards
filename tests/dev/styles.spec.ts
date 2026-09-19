@@ -14,7 +14,10 @@ test("development styles load under CSP at mobile and desktop sizes", async ({ p
     const shell = document.createElement("div");
     shell.className = "app-shell layout-probe";
     shell.innerHTML = `
-      <nav class="main-nav"><button>首页</button></nav>
+      <aside class="app-sidebar" aria-label="应用工作区">
+        <header class="app-header"></header>
+        <nav class="main-nav"><button>首页</button></nav>
+      </aside>
       <div class="app-content">
         <section class="filter-panel">
           <input aria-label="关键词" />
@@ -40,6 +43,7 @@ test("development styles load under CSP at mobile and desktop sizes", async ({ p
     await page.setViewportSize({ width, height: 900 });
     const layout = await page.locator(".layout-probe").evaluate((element) => {
       const shell = getComputedStyle(element);
+      const sidebar = getComputedStyle(element.querySelector(".app-sidebar")!);
       const nav = getComputedStyle(element.querySelector(".main-nav")!);
       const filter = getComputedStyle(element.querySelector(".filter-panel")!);
       const browse = getComputedStyle(element.querySelector(".browse-list")!);
@@ -48,6 +52,8 @@ test("development styles load under CSP at mobile and desktop sizes", async ({ p
       const rating = getComputedStyle(element.querySelector(".rating-dock")!);
       return {
         shellDisplay: shell.display,
+        sidebarDisplay: sidebar.display,
+        sidebarGridColumn: sidebar.gridColumn,
         navPosition: nav.position,
         navDisplay: nav.display,
         filterDisplay: filter.display,
@@ -67,6 +73,8 @@ test("development styles load under CSP at mobile and desktop sizes", async ({ p
       expect(layout.filterDisplay).toBe("grid");
     } else {
       expect(layout.shellDisplay).toBe("grid");
+      expect(layout.sidebarDisplay).toBe("block");
+      expect(layout.sidebarGridColumn).toBe("1");
       expect(layout.navPosition).toBe("static");
       expect(layout.navDisplay).toBe("flex");
       expect(layout.filterDisplay).toBe("grid");

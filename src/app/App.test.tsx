@@ -267,7 +267,9 @@ describe("App", () => {
     const navigation = screen.getByRole("navigation", { name: "主导航" });
     expect(navigation).toHaveClass("main-nav");
     expect(navigation.querySelectorAll("button")).toHaveLength(4);
-    expect(navigation.nextElementSibling).toHaveClass("app-content");
+    const sidebar = screen.getByRole("complementary", { name: "应用工作区" });
+    expect(sidebar).toContainElement(navigation);
+    expect(screen.getByTestId("app-content")).toHaveClass("app-content");
   });
 
   it("opens knowledge routes from the main navigation without changing the card source", async () => {

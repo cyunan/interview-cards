@@ -2,6 +2,27 @@ import { expect, test } from "@playwright/test";
 
 import { E2E_PASSWORD } from "./fixture-payload";
 
+test("keeps reference code readable against its dark code surface", async ({ page }) => {
+  await page.goto("./");
+
+  const colors = await page.evaluate(() => {
+    const referenceBody = document.createElement("div");
+    referenceBody.className = "route-reference-item-body";
+    referenceBody.innerHTML = '<div class="markdown"><pre><code>fun enqueueMessage() {}</code></pre></div>';
+    document.body.append(referenceBody);
+
+    const pre = referenceBody.querySelector("pre")!;
+    const code = referenceBody.querySelector("code")!;
+    return {
+      preBackground: getComputedStyle(pre).backgroundColor,
+      codeColor: getComputedStyle(code).color,
+    };
+  });
+
+  expect(colors.preBackground).toBe("rgb(38, 52, 49)");
+  expect(colors.codeColor).toBe("rgb(240, 246, 243)");
+});
+
 test("reading layout preserves production CSP and daily navigation", async ({ page }, testInfo) => {
   await page.goto("./");
   const policy = await page.locator('meta[http-equiv="Content-Security-Policy"]').getAttribute("content");
@@ -41,6 +62,16 @@ test("organizes existing cards into knowledge routes without exposing answers be
   await expect(page.getByRole("heading", { name: "Android 页面是怎样跑起来的？" })).toBeVisible();
   await expect(page.locator(".route-step")).toHaveCount(7);
   await expect(page.locator(".route-stage-nav a")).toHaveCount(7);
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await expect(page.getByRole("navigation", { name: "桌面路线阶段" })).toBeVisible();
+  await expect(page.getByRole("complementary", { name: "路线阶段上下文" })).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  await page.getByRole("navigation", { name: "桌面路线阶段" }).getByRole("link").nth(3).click();
+  await expect(page.locator("#route-frame-clock")).toBeFocused();
+  await expect(page.getByRole("navigation", { name: "桌面路线阶段" }).getByRole("link").nth(3)).toHaveAttribute("aria-current", "step");
+  await page.setViewportSize({ width: 1024, height: 900 });
+  await expect(page.getByRole("navigation", { name: "桌面路线阶段" })).toBeHidden();
+  await page.setViewportSize({ width: 390, height: 844 });
   await expect(page.locator(".route-learning-guide")).not.toHaveAttribute("open", "");
   await page.locator(".route-mobile-directory > summary").click();
   await expect(page.getByRole("navigation", { name: "手机学习阶段目录" }).getByRole("link")).toHaveCount(7);
@@ -117,6 +148,7 @@ test("keeps plaintext locked and completes a touch-friendly study flow", async (
   const detailSummary = page.getByText("深入理解", { exact: true });
   await detailSummary.press("Enter");
   await expect(progressiveSections.nth(0)).toHaveAttribute("open", "");
+  await expect(page.locator(".answer-panel [data-mermaid-diagram] svg")).toBeVisible();
   await page.getByText("项目怎么讲", { exact: true }).click();
   await expect(page.locator(".answer-panel details[open]")).toHaveCount(2);
   await detailSummary.press(" ");

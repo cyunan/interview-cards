@@ -15,6 +15,13 @@ const cards: CardV2[] = route.steps.flatMap((step) => step.cardIds).map((id, ind
   followUps: Array.from({ length: 4 }, (_, i) => ({ question: `阶段复述：虚构复述 ${index}-${i}`, answerMd: `虚构完整回答 ${index}-${i}` })),
   source: { path: "fictional.md", heading: "测试" },
 }));
+const documents = [{
+  id: "android-startup",
+  title: "应用启动：冷启动与热启动",
+  sourcePath: "02-Android/Framework/应用启动-冷启动&热启动.md",
+  reason: "解释页面入口与首帧",
+  markdown: "## 启动链路\n\n应用先准备进程，再进入页面。",
+}];
 
 describe("route detail", () => {
   it("shows seven stages with collapsed recap answers from the payload", () => {
@@ -37,5 +44,30 @@ describe("route detail", () => {
     fireEvent.click(screen.getAllByRole("button", { name: "练习这一阶段" })[0]);
     expect(practice).toHaveBeenCalledWith(route, 1);
     expect(screen.getAllByText("当前题库缺少对应参考回答，更新题库后再试。")).toHaveLength(7);
+  });
+
+  it("shows the current stage's technical documents behind a floating entry", () => {
+    render(<RouteScreen cards={cards} documents={documents} progress={new Map()} selectedRouteId={route.id} onSelectRoute={vi.fn()} onPractice={vi.fn()} />);
+    const trigger = screen.getByRole("button", { name: "技术资料 · 1" });
+    expect(trigger).toHaveAttribute("aria-expanded", "false");
+    fireEvent.click(trigger);
+    expect(screen.getAllByRole("complementary", { name: "阶段技术资料" })).toHaveLength(2);
+    expect(screen.getAllByText("应用启动：冷启动与热启动")).toHaveLength(2);
+    expect(screen.getAllByText("解释页面入口与首帧")).toHaveLength(2);
+  });
+
+  it("keeps a useful context sidebar when the current stage has no documents", () => {
+    render(<RouteScreen cards={cards} progress={new Map()} selectedRouteId={route.id} onSelectRoute={vi.fn()} onPractice={vi.fn()} />);
+    const context = screen.getByRole("complementary", { name: "路线阶段上下文" });
+    expect(context).toHaveTextContent("当前阶段");
+    expect(context).toHaveTextContent("阶段 2");
+    expect(context).toHaveTextContent("当前阶段没有附带技术资料");
+  });
+
+  it("exposes the stage index as a desktop route rail", () => {
+    render(<RouteScreen cards={cards} progress={new Map()} selectedRouteId={route.id} onSelectRoute={vi.fn()} onPractice={vi.fn()} />);
+    const rail = screen.getByRole("navigation", { name: "桌面路线阶段" });
+    expect(rail).toBeInTheDocument();
+    expect(rail.querySelectorAll("a")).toHaveLength(7);
   });
 });
