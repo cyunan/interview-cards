@@ -15,10 +15,12 @@ import { StudyScreen } from "./StudyScreen";
 
 beforeEach(() => {
   vi.spyOn(window, "scrollTo").mockImplementation(() => undefined);
+  window.history.replaceState(null, "", "/");
 });
 
 afterEach(() => {
   cleanup();
+  window.history.replaceState(null, "", "/");
   vi.restoreAllMocks();
 });
 
@@ -289,6 +291,33 @@ describe("App", () => {
     expect(await screen.findByRole("heading", { name: "沿路线建立理解" })).toBeInTheDocument();
     expect(screen.getByText("Android 页面是怎样跑起来的？")).toBeInTheDocument();
     expect(screen.queryByText("当前密文版本暂未包含本阶段卡片，更新题库后会自动出现。")).not.toBeInTheDocument();
+  });
+
+  it("restores the route hierarchy when the browser goes back", async () => {
+    render(
+      <App
+        unlockCards={async () => payload}
+        createStore={async () => new MemoryProgressStore()}
+        createRememberedUnlockStore={async () => new MemoryRememberedUnlockStore()}
+      />,
+    );
+
+    await submitPassword("correct-password");
+    await screen.findByText("今日复习");
+    fireEvent.click(screen.getByRole("button", { name: /^路线$/ }));
+    await screen.findByRole("heading", { name: "沿路线建立理解" });
+    fireEvent.click(screen.getAllByRole("button", { name: /Android 页面是怎样跑起来的/ })[0]);
+    expect(await screen.findByRole("heading", { name: "Android 页面是怎样跑起来的？" })).toBeInTheDocument();
+
+    const routeListState = { app: "interview-cards", view: "routes" };
+    window.history.replaceState(routeListState, "", "/");
+    fireEvent(window, new PopStateEvent("popstate", { state: routeListState }));
+    expect(await screen.findByRole("heading", { name: "沿路线建立理解" })).toBeInTheDocument();
+
+    const homeState = { app: "interview-cards", view: "home" };
+    window.history.replaceState(homeState, "", "/");
+    fireEvent(window, new PopStateEvent("popstate", { state: homeState }));
+    expect(await screen.findByRole("heading", { name: "今日复习" })).toBeInTheDocument();
   });
 
   it("keeps card plaintext hidden until unlock and uses a generic failure message", async () => {

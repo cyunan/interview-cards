@@ -24,6 +24,23 @@ describe("parseCardsPayload", () => {
     })).toMatchObject({ schema: "cards-v2", cards: [{ legacyIds: [] }] });
   });
 
+  it("accepts encrypted reference documents with relative source paths", () => {
+    expect(parseCardsPayload({
+      schema: "cards-v2",
+      buildId: "build-fictional-001",
+      builtAt: "2026-08-31T08:00:00.000Z",
+      cards: [{ ...card, legacyIds: [] }],
+      documents: [{
+        id: "android-handler",
+        title: "Handler 消息驱动机制",
+        sourcePath: "02-Android/Framework/Handler机制.md",
+        heading: "消息如何进入队列",
+        reason: "解释阶段中的排队与唤醒",
+        markdown: "## 消息如何进入队列\n\n任务进入目标 Looper 的 MessageQueue。",
+      }],
+    })).toMatchObject({ documents: [{ id: "android-handler", sourcePath: "02-Android/Framework/Handler机制.md" }] });
+  });
+
   it("accepts cards-v1 and normalizes its cards to v2 internally", () => {
     expect(parseCardsPayload({
       schema: "cards-v1",
@@ -39,6 +56,8 @@ describe("parseCardsPayload", () => {
     { schema: "cards-v2", cards: [{ ...card, legacyIds: ["INVALID ID"] }] },
     { schema: "cards-v2", cards: [{ ...card, decks: ["sprint"], legacyIds: [] }] },
     { schema: "cards-v2", cards: [{ ...card, unknown: true, legacyIds: [] }] },
+    { schema: "cards-v2", cards: [{ ...card, legacyIds: [] }], documents: [{ id: "android-handler", title: "Handler", sourcePath: "/private/Handler.md", reason: "说明机制", markdown: "正文" }] },
+    { schema: "cards-v2", cards: [{ ...card, legacyIds: [] }], documents: [{ id: "android-handler", title: "Handler", sourcePath: "02-Android/Handler.md", reason: "说明机制", markdown: "![图](image.png)" }] },
   ])("rejects malformed payloads with one generic unlock error", (invalid) => {
     expect(() => parseCardsPayload({ buildId: "build-fictional-001", builtAt: "2026-08-31T08:00:00.000Z", ...invalid })).toThrow("解锁失败");
   });

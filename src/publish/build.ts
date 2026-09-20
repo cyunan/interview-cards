@@ -4,6 +4,7 @@ import path from "node:path";
 
 import { assertReportMatchesBaseline } from "../content/baseline";
 import type { CardsPayloadV2 } from "../content/payload";
+import { compileReferenceDocuments } from "../content/reference-docs";
 import { compileVault, type CompileReport } from "../content/vault";
 import { encryptEnvelope, type EncryptedEnvelopeV1 } from "../crypto/envelope";
 
@@ -19,6 +20,7 @@ interface BuildEncryptedCardsInput {
 export interface EncryptedCardsBuild {
   envelope: EncryptedEnvelopeV1;
   report: CompileReport;
+  documents: number;
 }
 
 async function writeEnvelopeAtomically(
@@ -54,13 +56,15 @@ export async function buildEncryptedCards({
 }: BuildEncryptedCardsInput): Promise<EncryptedCardsBuild> {
   const compiled = await compileVault(vaultRoot);
   assertReportMatchesBaseline(compiled.report, baseline);
+  const documents = await compileReferenceDocuments(vaultRoot);
   const payload: CardsPayloadV2 = {
     schema: "cards-v2",
     buildId,
     builtAt,
     cards: compiled.cards,
+    documents,
   };
   const envelope = await encryptEnvelope(payload, password, buildId);
   await writeEnvelopeAtomically(outputPath, envelope);
-  return { envelope, report: compiled.report };
+  return { envelope, report: compiled.report, documents: documents.length };
 }

@@ -16,7 +16,7 @@ test("development styles load under CSP at mobile and desktop sizes", async ({ p
     shell.innerHTML = `
       <aside class="app-sidebar" aria-label="应用工作区">
         <header class="app-header"></header>
-        <nav class="main-nav"><button>首页</button></nav>
+        <nav class="main-nav"><button>首页</button><button>浏览</button><button>路线</button><button>设置</button></nav>
       </aside>
       <div class="app-content">
         <section class="filter-panel">
@@ -45,6 +45,7 @@ test("development styles load under CSP at mobile and desktop sizes", async ({ p
       const shell = getComputedStyle(element);
       const sidebar = getComputedStyle(element.querySelector(".app-sidebar")!);
       const nav = getComputedStyle(element.querySelector(".main-nav")!);
+      const navButton = getComputedStyle(element.querySelector(".main-nav button")!);
       const filter = getComputedStyle(element.querySelector(".filter-panel")!);
       const browse = getComputedStyle(element.querySelector(".browse-list")!);
       const expanded = getComputedStyle(element.querySelector(".browse-card.expanded")!);
@@ -52,10 +53,16 @@ test("development styles load under CSP at mobile and desktop sizes", async ({ p
       const rating = getComputedStyle(element.querySelector(".rating-dock")!);
       return {
         shellDisplay: shell.display,
+        shellColumns: shell.gridTemplateColumns,
         sidebarDisplay: sidebar.display,
+        sidebarWidth: sidebar.width,
         sidebarGridColumn: sidebar.gridColumn,
         navPosition: nav.position,
         navDisplay: nav.display,
+        navHeight: nav.height,
+        navGap: nav.rowGap,
+        navButtonHeight: navButton.height,
+        navButtonMinHeight: navButton.minHeight,
         filterDisplay: filter.display,
         browseColumns: browse.gridTemplateColumns,
         expandedColumn: expanded.gridColumn,
@@ -73,10 +80,16 @@ test("development styles load under CSP at mobile and desktop sizes", async ({ p
       expect(layout.filterDisplay).toBe("grid");
     } else {
       expect(layout.shellDisplay).toBe("grid");
+      expect(layout.shellColumns.startsWith("196px")).toBe(true);
       expect(layout.sidebarDisplay).toBe("block");
+      expect(layout.sidebarWidth).toBe("196px");
       expect(layout.sidebarGridColumn).toBe("1");
-      expect(layout.navPosition).toBe("static");
-      expect(layout.navDisplay).toBe("flex");
+      expect(layout.navPosition).toBe("absolute");
+      expect(layout.navDisplay).toBe("grid");
+      expect(layout.navHeight).toBe("188px");
+      expect(layout.navGap).toBe("4px");
+      expect(layout.navButtonHeight).toBe("44px");
+      expect(layout.navButtonMinHeight).toBe("44px");
       expect(layout.filterDisplay).toBe("grid");
       expect(layout.browseColumns.split(" ")).toHaveLength(2);
       expect(layout.expandedColumn).toContain("1 / -1");

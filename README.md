@@ -19,6 +19,9 @@ npm run dev
 
 题库内容有任何修改时，必须先重新编译并生成新的密文，再进行前端验证和推送；只运行 `npm run build` 不会读取私有知识库，也不会更新线上题目。
 
+路线页的“本阶段技术资料”也在同一次编译中生成。资料清单维护在
+`src/content/reference-docs.ts`，构建器按相对路径从小陈空间读取选定的技术笔记，去除图片依赖并随题库一起加密；公开仓库和 `dist` 中不会出现原始 Markdown。新增资料时先更新清单和对应路线阶段，再重新执行 `cards:build`。
+
 ```bash
 # 1. 检查私有文档
 npm run cards:lint -- --vault <vault-path>

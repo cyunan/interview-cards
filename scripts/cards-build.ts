@@ -43,7 +43,7 @@ async function main(): Promise<void> {
     builtAt,
   });
   process.stdout.write(
-    `密文已生成：public/cards.enc.json（build ${result.envelope.buildId}）。未提交、未推送。\n`,
+    `密文已生成：public/cards.enc.json（build ${result.envelope.buildId}，附带 ${result.documents} 篇技术文档）。未提交、未推送。\n`,
   );
 }
 

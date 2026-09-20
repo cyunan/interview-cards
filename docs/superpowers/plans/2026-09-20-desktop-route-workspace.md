@@ -50,7 +50,7 @@ it("keeps a useful context sidebar when the current stage has no documents", () 
   render(<RouteScreen cards={cards} progress={new Map()} selectedRouteId={route.id} onSelectRoute={vi.fn()} onPractice={vi.fn()} />);
   const context = screen.getByRole("complementary", { name: "路线阶段上下文" });
   expect(context).toHaveTextContent("当前阶段");
-  expect(context).toHaveTextContent("阶段 2");
+    expect(context).toHaveTextContent("01 · 页面启动");
   expect(context).toHaveTextContent("当前阶段没有附带技术资料");
 });
 
@@ -210,7 +210,7 @@ function RouteContextPanel({
 }
 ```
 
-`RouteDetail` 桌面端无条件渲染这个面板；移动端通过 CSS 隐藏它，并保留现有浮动技术资料入口。为避免嵌套两个 `aside`，`RouteReferencePanel` 增加 `embedded` 参数：嵌入上下文栏时使用 `div.route-reference-embedded`，只复用标题、折叠资料列表和复制路径逻辑，不再声明第二个 `complementary` 角色。
+`RouteDetail` 桌面端无条件渲染这个面板；移动端通过 CSS 隐藏它，并保留现有浮动技术资料入口。为避免嵌套两个 `aside`，`RouteReferencePanel` 增加 `embedded` 参数：嵌入上下文栏时使用 `div.route-reference-embedded`，只复用标题、折叠资料列表和复制路径逻辑，不再声明第二个 `complementary` 角色；因此资料阶段在桌面 DOM 中只有外层“路线阶段上下文”一个 complementary，移动抽屉打开时仍有一个“阶段技术资料” complementary。
 
 - [ ] **Step 4: Make the existing reference panel embeddable**
 

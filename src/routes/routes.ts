@@ -1,9 +1,15 @@
 import type { CardV2 } from "../content/types";
+import type { ReferenceDocument } from "../content/payload";
 import type { CardProgress } from "../study/scheduler";
 
 export interface RouteCheckpoint {
   cardId: string;
   followUpIndex?: number;
+}
+
+export interface RouteDocumentReference {
+  documentId: string;
+  reason?: string;
 }
 
 export interface KnowledgeRouteStep {
@@ -14,6 +20,7 @@ export interface KnowledgeRouteStep {
   cardIds: string[];
   transition: string;
   checkpoint?: RouteCheckpoint;
+  referenceDocuments?: RouteDocumentReference[];
 }
 
 export interface KnowledgeRoute {
@@ -32,6 +39,11 @@ export interface RouteProgressSummary {
   nextStepIndex: number;
   reviewedCards: number;
   totalCards: number;
+}
+
+export interface ResolvedRouteDocument {
+  document: ReferenceDocument;
+  reason: string;
 }
 
 /**
@@ -55,6 +67,7 @@ export const KNOWLEDGE_ROUTES: KnowledgeRoute[] = [
         purpose: "先分清 Activity、Window、View，再跟踪系统请求如何进入应用执行。",
         cardIds: ["android-activity-002", "android-page-001"],
         transition: "Activity 开始执行，并不等于布局已经接入窗口。下一步看 setContentView 之后还缺什么。",
+        referenceDocuments: [{ documentId: "android-startup" }],
         checkpoint: {
           cardId: "android-page-001", followUpIndex: 1,
         },
@@ -66,6 +79,7 @@ export const KNOWLEDGE_ROUTES: KnowledgeRoute[] = [
         purpose: "沿 setContentView、DecorView、ViewRootImpl 追到首帧，解释 onResume 与上屏的时间差。",
         cardIds: ["android-page-002", "android-page-003", "android-page-004"],
         transition: "树接入窗口以后，数据加载完成了。谁可以改这棵树，后台结果又该怎样交回来？",
+        referenceDocuments: [{ documentId: "android-startup" }, { documentId: "android-handler" }],
         checkpoint: { cardId: "android-page-004", followUpIndex: 1 },
       },
       {
@@ -75,6 +89,7 @@ export const KNOWLEDGE_ROUTES: KnowledgeRoute[] = [
         purpose: "理解 Handler、Looper 和 View 线程封闭之间的因果关系。",
         cardIds: ["android-android-001", "android-android-006", "android-android-004"],
         transition: "任务已经排到 UI 线程，并不等于屏幕马上变化；下一步要看一帧什么时候真正开始。",
+        referenceDocuments: [{ documentId: "android-handler" }, { documentId: "android-lifecycle" }],
         checkpoint: {
           cardId: "android-android-004", followUpIndex: 3,
         },
@@ -86,6 +101,7 @@ export const KNOWLEDGE_ROUTES: KnowledgeRoute[] = [
         purpose: "用 Choreographer 解释输入、动画、布局和绘制为什么按帧组织。",
         cardIds: ["android-page-005", "android-android-003", "android-page-006"],
         transition: "一帧开始只是调度入口，真正的流畅性还取决于这一帧内的工作量和提交时机。",
+        referenceDocuments: [{ documentId: "android-handler" }, { documentId: "android-compose-rendering" }],
         checkpoint: {
           cardId: "android-page-006", followUpIndex: 1,
         },
@@ -97,6 +113,7 @@ export const KNOWLEDGE_ROUTES: KnowledgeRoute[] = [
         purpose: "把测量、布局、绘制、RenderThread、GPU 和系统合成放在各自的位置上。",
         cardIds: ["android-page-007", "android-page-008", "android-page-009"],
         transition: "传统 View 的链路走通后，再把同一商品页换成 Compose：变化从哪开始，最后又在哪里汇合？",
+        referenceDocuments: [{ documentId: "android-compose-rendering" }],
         checkpoint: { cardId: "android-page-009", followUpIndex: 1 },
       },
       {
@@ -106,6 +123,7 @@ export const KNOWLEDGE_ROUTES: KnowledgeRoute[] = [
         purpose: "把 View 的命令式更新和 Compose 的状态驱动重组放到同一条渲染链路里比较。",
         cardIds: ["android-compose-001", "android-compose-003", "android-compose-013", "android-page-010"],
         transition: "到这里可以从“谁调用 setText”升级到“状态变化如何产生最小 UI 工作”，再进入性能排查。",
+        referenceDocuments: [{ documentId: "android-compose-rendering" }, { documentId: "android-lifecycle" }],
         checkpoint: {
           cardId: "android-page-010", followUpIndex: 1,
         },
@@ -117,6 +135,7 @@ export const KNOWLEDGE_ROUTES: KnowledgeRoute[] = [
         purpose: "用“post 成功但页面没变”和“主线程不忙却掉帧”检验前面六段能否连起来。",
         cardIds: ["android-page-011", "android-page-012"],
         transition: "先复述整条链，再到性能路线深入指标、采样和回归验证。",
+        referenceDocuments: [{ documentId: "android-startup" }, { documentId: "android-compose-rendering" }],
         checkpoint: { cardId: "android-page-012", followUpIndex: 1 },
       },
     ],
@@ -136,6 +155,7 @@ export const KNOWLEDGE_ROUTES: KnowledgeRoute[] = [
         purpose: "解释为什么 launch 和 suspend 不能自动移走耗时工作，以及结果如何回到调用方。",
         cardIds: ["kotlin-kotlin-001", "kotlin-kotlin-009", "kotlin-kotlin-011"],
         transition: "执行位置明确后，再问旋转屏幕时任务和控件是否应该一起结束。",
+        referenceDocuments: [{ documentId: "kotlin-thread-pool" }, { documentId: "android-handler" }],
         checkpoint: { cardId: "kotlin-kotlin-011", followUpIndex: 0 },
       },
       {
@@ -144,6 +164,7 @@ export const KNOWLEDGE_ROUTES: KnowledgeRoute[] = [
         purpose: "把页面 View 的短寿命和 ViewModel 的状态寿命分开。",
         cardIds: ["android-lifecycle-001", "android-viewmodel-001", "android-viewmodel-014", "kotlin-kotlin-034"],
         transition: "页面可以重新接收状态了，但连续搜索时，旧请求应该怎样退出？",
+        referenceDocuments: [{ documentId: "android-lifecycle" }, { documentId: "android-viewmodel" }],
         checkpoint: { cardId: "kotlin-kotlin-034", followUpIndex: 0 },
       },
       {
@@ -152,6 +173,7 @@ export const KNOWLEDGE_ROUTES: KnowledgeRoute[] = [
         purpose: "沿 Job、挂起等待和底层回调检查取消，区分结束等待与停止外部工作。",
         cardIds: ["kotlin-kotlin-012"],
         transition: "取消单个请求之后，再看页面没有订阅者时，共享上游和缓存会怎样变化。",
+        referenceDocuments: [{ documentId: "android-lifecycle" }, { documentId: "kotlin-thread-pool" }],
         checkpoint: { cardId: "kotlin-kotlin-012", followUpIndex: 0 },
       },
       {
@@ -160,6 +182,7 @@ export const KNOWLEDGE_ROUTES: KnowledgeRoute[] = [
         purpose: "分别追踪 UI 收集器、共享上游和缓存，解释回来先看到旧状态的原因。",
         cardIds: ["kotlin-kotlin-028", "kotlin-kotlin-029"],
         transition: "状态能够重放后，下一步判断哪些信息应该保留、哪些允许错过。",
+        referenceDocuments: [{ documentId: "android-lifecycle" }, { documentId: "android-viewmodel" }],
         checkpoint: { cardId: "kotlin-kotlin-029", followUpIndex: 0 },
       },
       {
@@ -168,6 +191,7 @@ export const KNOWLEDGE_ROUTES: KnowledgeRoute[] = [
         purpose: "用失败重试、短暂提示和导航解释重建后的显示与处理规则。",
         cardIds: ["kotlin-kotlin-035"],
         transition: "最后把任务取消、当前状态和 View 收集拼成可验证的搜索流程。",
+        referenceDocuments: [{ documentId: "android-lifecycle" }, { documentId: "state-machine" }],
         checkpoint: { cardId: "kotlin-kotlin-035", followUpIndex: 0 },
       },
       {
@@ -176,6 +200,7 @@ export const KNOWLEDGE_ROUTES: KnowledgeRoute[] = [
         purpose: "把线程安全提升到请求版本、生命周期和数据所有权。",
         cardIds: ["android-fragment-005", "android-fragment-017"],
         transition: "按 A/B 乱序、旋转和后台返回复述并验证这条链路，再进入性能路线。",
+        referenceDocuments: [{ documentId: "android-lifecycle" }, { documentId: "android-viewmodel" }],
         checkpoint: { cardId: "android-fragment-017", followUpIndex: 0 },
       },
     ],
@@ -196,6 +221,7 @@ export const KNOWLEDGE_ROUTES: KnowledgeRoute[] = [
         shortTitle: "定义体验",
         cardIds: ["android-performance-002"],
         transition: "完成点明确后，把总耗时拆开，找出用户究竟在等哪一段。",
+        referenceDocuments: [{ documentId: "android-startup" }, { documentId: "http-map" }],
         checkpoint: { cardId: "android-performance-002", followUpIndex: 1 },
       },
       {
@@ -205,6 +231,7 @@ export const KNOWLEDGE_ROUTES: KnowledgeRoute[] = [
         purpose: "把提交、开始、依赖就绪与结果交付对齐，避免把墙钟时间全算成 CPU 工作。",
         cardIds: ["android-performance-001", "android-performance-003"],
         transition: "知道等待发生在哪里之后，用启动链路练习怎样调整依赖。",
+        referenceDocuments: [{ documentId: "android-startup" }, { documentId: "android-handler" }],
         checkpoint: { cardId: "android-performance-003", followUpIndex: 2 },
       },
       {
@@ -214,6 +241,7 @@ export const KNOWLEDGE_ROUTES: KnowledgeRoute[] = [
         purpose: "同时检查首帧、内容可用和首次点击，验证异步初始化的收益与正确性。",
         cardIds: ["android-performance-004", "android-performance-005"],
         transition: "页面能打开后，再沿一帧时间线解释滑动抖动。",
+        referenceDocuments: [{ documentId: "android-startup" }, { documentId: "kotlin-thread-pool" }],
         checkpoint: { cardId: "android-performance-004", followUpIndex: 2 },
       },
       {
@@ -223,6 +251,7 @@ export const KNOWLEDGE_ROUTES: KnowledgeRoute[] = [
         purpose: "先确定迟到环节，再区分布局绘制、Compose、图片与列表处理。",
         cardIds: ["android-performance-008", "android-performance-009", "android-performance-010", "android-performance-011"],
         transition: "如果随使用时间逐渐恶化，继续检查存活对象、分配与任务积压。",
+        referenceDocuments: [{ documentId: "android-compose-rendering" }, { documentId: "android-handler" }, { documentId: "coil-overview" }, { documentId: "glide-overview" }],
         checkpoint: { cardId: "android-performance-008", followUpIndex: 2 },
       },
       {
@@ -232,6 +261,7 @@ export const KNOWLEDGE_ROUTES: KnowledgeRoute[] = [
         shortTitle: "资源趋势",
         cardIds: ["android-performance-012", "android-performance-013", "android-performance-014"],
         transition: "找到候选根因后，必须用同一用户路径复测，确认优化没有把问题挪到别处。",
+        referenceDocuments: [{ documentId: "android-leakcanary" }, { documentId: "android-mat" }, { documentId: "kotlin-thread-pool" }],
         checkpoint: { cardId: "android-performance-012", followUpIndex: 2 },
       },
       {
@@ -241,6 +271,7 @@ export const KNOWLEDGE_ROUTES: KnowledgeRoute[] = [
         shortTitle: "回归验证",
         cardIds: ["android-performance-015", "android-performance-016"],
         transition: "完成这条路线后，可以把同样的证据链用到网络耗时和弱网治理。",
+        referenceDocuments: [{ documentId: "android-startup" }, { documentId: "android-mat" }],
         checkpoint: { cardId: "android-performance-016", followUpIndex: 2 },
       },
     ],
@@ -261,6 +292,7 @@ export const KNOWLEDGE_ROUTES: KnowledgeRoute[] = [
         purpose: "先把网络耗时拆成名字解析、建连和安全握手。",
         cardIds: ["network-6db9761a-001", "network-coding-v3-037", "network-coding-v3-013"],
         transition: "连接建立后，请求还要经过客户端的调度、拦截和响应体生命周期。",
+        referenceDocuments: [{ documentId: "http-map" }, { documentId: "http-tls" }],
         checkpoint: { cardId: "network-6db9761a-001", followUpIndex: 0 },
       },
       {
@@ -270,6 +302,7 @@ export const KNOWLEDGE_ROUTES: KnowledgeRoute[] = [
         purpose: "按拦截器、连接复用、缓存和 Dispatcher 解释客户端行为。",
         cardIds: ["framework-okhttp-005", "framework-okhttp-006", "framework-okhttp-007", "framework-okhttp-015"],
         transition: "OkHttp 负责传输，但接口描述和数据转换属于 Retrofit。",
+        referenceDocuments: [{ documentId: "okhttp-overview" }, { documentId: "http-okhttp-client" }],
         checkpoint: { cardId: "framework-okhttp-005", followUpIndex: 0 },
       },
       {
@@ -279,6 +312,7 @@ export const KNOWLEDGE_ROUTES: KnowledgeRoute[] = [
         purpose: "理解动态代理、Converter、CallAdapter 和取消语义的分工。",
         cardIds: ["framework-retrofit-001", "framework-retrofit-003", "framework-retrofit-008", "framework-retrofit-010"],
         transition: "最后把传输错误、解析错误和业务错误分层，才能谈重试和降级。",
+        referenceDocuments: [{ documentId: "retrofit-overview" }, { documentId: "http-retrofit-coroutines" }],
         checkpoint: { cardId: "framework-retrofit-010", followUpIndex: 0 },
       },
       {
@@ -288,6 +322,7 @@ export const KNOWLEDGE_ROUTES: KnowledgeRoute[] = [
         purpose: "按错误层次、幂等性、超时和取消设计恢复策略。",
         cardIds: ["framework-okhttp-009", "framework-okhttp-022", "framework-okhttp-023"],
         transition: "请求链路闭环后，再按项目真实场景选择缓存、并发和观测策略。",
+        referenceDocuments: [{ documentId: "http-retry" }, { documentId: "http-map" }],
         checkpoint: { cardId: "framework-okhttp-022", followUpIndex: 0 },
       },
     ],
@@ -308,6 +343,7 @@ export const KNOWLEDGE_ROUTES: KnowledgeRoute[] = [
         purpose: "识别视图、状态、导航和副作用混在一起时的具体代价。",
         cardIds: ["android-mvc-mvp-mvvm-mvi-001", "android-activity-022"],
         transition: "问题边界清楚后，再比较不同架构把 owner 放在哪里。",
+        referenceDocuments: [{ documentId: "android-architecture" }],
         checkpoint: { cardId: "android-mvc-mvp-mvvm-mvi-001", followUpIndex: 0 },
       },
       {
@@ -317,6 +353,7 @@ export const KNOWLEDGE_ROUTES: KnowledgeRoute[] = [
         purpose: "把状态寿命、数据来源和渲染订阅分开。",
         cardIds: ["android-viewmodel-001", "android-viewmodel-005", "android-room-compose-001", "android-room-compose-003"],
         transition: "状态 owner 确定后，才能讨论事件、状态机和不可变更新。",
+        referenceDocuments: [{ documentId: "android-viewmodel" }, { documentId: "android-lifecycle" }],
         checkpoint: { cardId: "android-room-compose-001", followUpIndex: 0 },
       },
       {
@@ -326,6 +363,7 @@ export const KNOWLEDGE_ROUTES: KnowledgeRoute[] = [
         purpose: "用事件、状态和副作用解释何时值得引入更强约束。",
         cardIds: ["design-fsm-001", "kotlin-kotlin-019", "kotlin-kotlin-035"],
         transition: "最后回到真实项目，说明选型依据和迁移边界，而不是背模式定义。",
+        referenceDocuments: [{ documentId: "state-machine" }, { documentId: "android-architecture" }],
         checkpoint: { cardId: "design-fsm-001", followUpIndex: 0 },
       },
       {
@@ -335,6 +373,7 @@ export const KNOWLEDGE_ROUTES: KnowledgeRoute[] = [
         purpose: "把模块边界、测试成本、迁移策略和团队协作纳入回答。",
         cardIds: ["android-mvc-mvp-mvvm-mvi-015", "android-mvc-mvp-mvvm-mvi-016"],
         transition: "完成后可把这套“问题—约束—取舍—验证”框架迁移到跨端路线。",
+        referenceDocuments: [{ documentId: "android-architecture" }, { documentId: "state-machine" }],
         checkpoint: { cardId: "android-mvc-mvp-mvvm-mvi-015", followUpIndex: 0 },
       },
     ],
@@ -355,6 +394,7 @@ export const KNOWLEDGE_ROUTES: KnowledgeRoute[] = [
         purpose: "把业务规则、数据访问和 UI 共享拆开讨论。",
         cardIds: ["extended-kotlin-multiplatform-kmp-001", "extended-kotlin-multiplatform-kmp-004", "extended-kotlin-multiplatform-kmp-005"],
         transition: "确定共享形态后，再进入 source set 与 expect/actual 的具体边界。",
+        referenceDocuments: [{ documentId: "kmp-interview-map" }, { documentId: "cross-platform-overview" }],
         checkpoint: { cardId: "extended-kotlin-multiplatform-kmp-001", followUpIndex: 0 },
       },
       {
@@ -364,6 +404,7 @@ export const KNOWLEDGE_ROUTES: KnowledgeRoute[] = [
         purpose: "用依赖倒置而不是到处判断平台来组织差异实现。",
         cardIds: ["extended-kotlin-multiplatform-kmp-002", "extended-kotlin-multiplatform-kmp-003"],
         transition: "平台能力接入后，还要看网络、序列化和调度器怎样落在各平台。",
+        referenceDocuments: [{ documentId: "kmp-interview-map" }, { documentId: "cross-platform-overview" }],
         checkpoint: { cardId: "extended-kotlin-multiplatform-kmp-003", followUpIndex: 0 },
       },
       {
@@ -373,6 +414,7 @@ export const KNOWLEDGE_ROUTES: KnowledgeRoute[] = [
         purpose: "理解 common API、平台 engine 和 Main 调度的组合。",
         cardIds: ["extended-kotlin-multiplatform-kmp-007", "extended-kotlin-multiplatform-kmp-009"],
         transition: "最后用项目约束验证共享边界，而不是为了复用率牺牲平台体验。",
+        referenceDocuments: [{ documentId: "kmp-interview-map" }, { documentId: "cross-platform-overview" }],
         checkpoint: { cardId: "extended-kotlin-multiplatform-kmp-009", followUpIndex: 0 },
       },
     ],
@@ -387,6 +429,21 @@ export function resolveRouteCards(
   return step.cardIds.flatMap((id) => {
     const card = cardsById.get(id);
     return card ? [card] : [];
+  });
+}
+
+export function resolveRouteDocuments(
+  step: KnowledgeRouteStep,
+  documents: ReadonlyArray<ReferenceDocument>,
+): ResolvedRouteDocument[] {
+  if (!step.referenceDocuments?.length || !documents.length) return [];
+  const documentsById = new Map(documents.map((document) => [document.id, document]));
+  const seen = new Set<string>();
+  return step.referenceDocuments.flatMap((reference) => {
+    const document = documentsById.get(reference.documentId);
+    if (!document || seen.has(document.id)) return [];
+    seen.add(document.id);
+    return [{ document, reason: reference.reason ?? document.reason }];
   });
 }
 

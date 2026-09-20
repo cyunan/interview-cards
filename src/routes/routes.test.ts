@@ -7,6 +7,7 @@ import {
   getRouteProgress,
   resolveRouteCards,
   resolveRouteCheckpoint,
+  resolveRouteDocuments,
   type KnowledgeRoute,
 } from "./routes";
 
@@ -71,8 +72,31 @@ describe("knowledge routes", () => {
         expect(step.cardIds).toContain(step.checkpoint?.cardId);
         expect(Number.isInteger(step.checkpoint?.followUpIndex)).toBe(true);
         expect(step.checkpoint!.followUpIndex).toBeGreaterThanOrEqual(0);
+        expect(step.referenceDocuments?.length, `${route.id}/${step.id}`).toBeGreaterThan(0);
       }
     }
+  });
+
+  it("resolves stage references from the unlocked encrypted document set", () => {
+    const step = KNOWLEDGE_ROUTES.find((item) => item.id === "performance-diagnosis")!.steps[4];
+    const resolved = resolveRouteDocuments(step, [
+      {
+        id: "android-leakcanary",
+        title: "LeakCanary",
+        sourcePath: "02-Android/LeakCanary.md",
+        reason: "通用原因",
+        markdown: "正文",
+      },
+      {
+        id: "android-mat",
+        title: "MAT",
+        sourcePath: "02-Android/MAT.md",
+        reason: "堆分析",
+        markdown: "正文",
+      },
+    ]);
+    expect(resolved.map((item) => item.document.id)).toEqual(["android-leakcanary", "android-mat"]);
+    expect(resolved[0].reason).toBe("通用原因");
   });
 
   it("organizes the page route into seven stages and twenty unique cards", () => {

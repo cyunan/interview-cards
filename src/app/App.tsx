@@ -19,7 +19,14 @@ import {
 import { BrowseScreen } from "./BrowseScreen";
 import { Dashboard } from "./Dashboard";
 import { RouteScreen } from "./RouteScreen";
-import { resolveRouteCards, type KnowledgeRoute } from "../routes/routes";
+import { KNOWLEDGE_ROUTES, resolveRouteCards, type KnowledgeRoute } from "../routes/routes";
+import {
+  isAppHistoryState,
+  pushAppHistoryState,
+  replaceAppHistoryState,
+  type AppView,
+  withoutHash,
+} from "./navigation-history";
 import {
   CardBankUnavailableError,
   loadEncryptedCardsSession,
@@ -33,7 +40,7 @@ import {
   type RememberedUnlockStore,
 } from "../security/remembered-unlock";
 
-type View = "home" | "routes" | "browse" | "settings";
+type View = AppView;
 
 export interface AppProps {
   unlockCards?: (password: string) => Promise<ParsedCardsPayload | DecryptedCardsSession>;
@@ -85,12 +92,29 @@ interface WorkspaceProps {
   onLock(): void;
 }
 
+function routeIdFromHash(hash: string): string | undefined {
+  const stepId = hash.startsWith("#route-") ? hash.slice("#route-".length) : "";
+  if (!stepId) return undefined;
+  return KNOWLEDGE_ROUTES.find((route) => route.steps.some((step) => step.id === stepId))?.id;
+}
+
+function initialWorkspaceHistory(): { view: View; routeId?: string } {
+  if (isAppHistoryState(window.history.state)) {
+    return {
+      view: window.history.state.view,
+      routeId: window.history.state.view === "routes" ? window.history.state.routeId : undefined,
+    };
+  }
+  const routeId = routeIdFromHash(window.location.hash);
+  return routeId ? { view: "routes", routeId } : { view: "home" };
+}
+
 function Workspace({ payload, createStore, now, onLock }: WorkspaceProps) {
   const [store, setStore] = useState<ProgressStore>();
   const [progress, setProgress] = useState(new Map<string, CardProgress>());
   const [dailyLimit, setDailyLimit] = useState<DailyLimit>(20);
-  const [view, setView] = useState<View>("home");
-  const [selectedRouteId, setSelectedRouteId] = useState<string>();
+  const [view, setView] = useState<View>(() => initialWorkspaceHistory().view);
+  const [selectedRouteId, setSelectedRouteId] = useState<string | undefined>(() => initialWorkspaceHistory().routeId);
   const [session, setSession] = useState<{
     deck: Deck;
     queue: QueueItem[];
@@ -100,6 +124,33 @@ function Workspace({ payload, createStore, now, onLock }: WorkspaceProps) {
   const [notice, setNotice] = useState<string>();
   const [storageError, setStorageError] = useState(false);
 
+  useEffect(() => {
+    const initial = initialWorkspaceHistory();
+    if (!isAppHistoryState(window.history.state)) {
+      replaceAppHistoryState({ view: initial.view, routeId: initial.routeId, layer: undefined, referenceId: undefined });
+    }
+    const handlePopState = (event: PopStateEvent) => {
+      if (!isAppHistoryState(event.state)) {
+        // Native hash navigation may dispatch popstate with a null state. It
+        // is still an in-app stage transition, not a request to leave the
+        // workspace; RouteDetail will apply the hash to its selected stage.
+        const routeId = routeIdFromHash(window.location.hash);
+        if (routeId) {
+          setView("routes");
+          setSelectedRouteId(routeId);
+        }
+        return;
+      }
+      const next = event.state;
+      setView(next.view);
+      setSelectedRouteId(next.view === "routes" ? next.routeId : undefined);
+      setSession(undefined);
+      setNotice(undefined);
+    };
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, []);
+
   const reloadProgress = useCallback(async (activeStore: ProgressStore) => {
     const [records, limit] = await Promise.all([
       activeStore.getAll(),
@@ -108,6 +159,18 @@ function Workspace({ payload, createStore, now, onLock }: WorkspaceProps) {
     setProgress(new Map(records.map((record) => [record.cardId, record])));
     setDailyLimit(limit);
   }, []);
+
+  function navigateView(nextView: View): void {
+    pushAppHistoryState({ view: nextView, routeId: undefined, layer: undefined, referenceId: undefined }, withoutHash());
+    setView(nextView);
+    setSelectedRouteId(undefined);
+  }
+
+  function navigateRoute(routeId?: string): void {
+    pushAppHistoryState({ view: "routes", routeId, layer: undefined, referenceId: undefined }, withoutHash());
+    setView("routes");
+    setSelectedRouteId(routeId);
+  }
 
   useEffect(() => {
     let active = true;
@@ -174,8 +237,7 @@ function Workspace({ payload, createStore, now, onLock }: WorkspaceProps) {
       return;
     }
     setNotice(undefined);
-    setSelectedRouteId(route.id);
-    setView("routes");
+    navigateRoute(route.id);
     setSession({
       deck: "full",
       queue: routeCards.map((card) => ({
@@ -228,9 +290,11 @@ function Workspace({ payload, createStore, now, onLock }: WorkspaceProps) {
 
   return (
     <div className="app-shell">
-      <AppHeader onLock={onLock} />
-      <MainNavigation view={view} onView={setView} />
-      <div className="app-content">
+      <aside className="app-sidebar" aria-label="应用工作区">
+        <AppHeader onLock={onLock} />
+        <MainNavigation view={view} onView={navigateView} />
+      </aside>
+      <div className="app-content" data-testid="app-content">
         {notice ? <p className="app-notice" role="status">{notice}</p> : null}
         {view === "home" ? (
           <Dashboard
@@ -238,18 +302,16 @@ function Workspace({ payload, createStore, now, onLock }: WorkspaceProps) {
             progress={progress}
             today={toLocalDateKey(now())}
             onStart={startSession}
-            onOpenRoutes={() => {
-              setSelectedRouteId(undefined);
-              setView("routes");
-            }}
+            onOpenRoutes={() => navigateRoute()}
           />
         ) : null}
         {view === "routes" ? (
           <RouteScreen
             cards={payload.cards}
+            documents={payload.documents}
             progress={progress}
             selectedRouteId={selectedRouteId}
-            onSelectRoute={setSelectedRouteId}
+            onSelectRoute={navigateRoute}
             onPractice={startRouteStep}
           />
         ) : null}
@@ -350,6 +412,7 @@ export function App({
 
   function lock(): void {
     setPayload(undefined);
+    replaceAppHistoryState({ view: "home", routeId: undefined, layer: undefined, referenceId: undefined }, withoutHash());
     void rememberedStore?.clear().catch(() => undefined);
   }
 

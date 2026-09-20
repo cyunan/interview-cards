@@ -65,6 +65,40 @@ test("organizes existing cards into knowledge routes without exposing answers be
   await page.setViewportSize({ width: 1440, height: 900 });
   await expect(page.getByRole("navigation", { name: "桌面路线阶段" })).toBeVisible();
   await expect(page.getByRole("complementary", { name: "路线阶段上下文" })).toBeVisible();
+  const desktopStageRail = await page.getByRole("navigation", { name: "桌面路线阶段" }).boundingBox();
+  const routeFlowColumn = await page.locator(".route-flow-column").boundingBox();
+  expect(desktopStageRail?.x).toBeGreaterThanOrEqual(196);
+  const desktopStageRailRight = desktopStageRail ? desktopStageRail.x + desktopStageRail.width : undefined;
+  expect(desktopStageRailRight).toBeLessThanOrEqual((routeFlowColumn?.x ?? 0) - 16);
+  const stickyPanelStyles = await page.locator(".route-desktop-stage-rail, .route-context-sidebar").evaluateAll((elements) =>
+    elements.map((element) => {
+      const style = getComputedStyle(element);
+      return { top: Number.parseFloat(style.top), zIndex: Number.parseInt(style.zIndex, 10) };
+    }),
+  );
+  expect(stickyPanelStyles).toHaveLength(2);
+  for (const panel of stickyPanelStyles) {
+    expect(panel.top).toBe(72);
+    expect(panel.zIndex).toBeLessThan(40);
+  }
+  const routeOverviewBar = page.locator(".route-back-bar");
+  const routeOverviewPosition = await routeOverviewBar.evaluate((element) => {
+    const style = getComputedStyle(element);
+    return { position: style.position, top: Number.parseFloat(style.top), background: style.backgroundColor };
+  });
+  expect(routeOverviewPosition.position).toBe("sticky");
+  expect(routeOverviewPosition.background).not.toBe("rgba(0, 0, 0, 0)");
+  const routeDetailScreen = await page.locator(".route-detail-screen").boundingBox();
+  const routeOverviewBeforeScroll = await routeOverviewBar.boundingBox();
+  expect(routeOverviewBeforeScroll?.width).toBeGreaterThan((routeDetailScreen?.width ?? 0) * 0.9);
+  const sidebarBeforeScroll = await page.locator(".app-sidebar").boundingBox();
+  await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+  const routeOverviewAfterScroll = await routeOverviewBar.boundingBox();
+  expect(routeOverviewAfterScroll?.y).toBeGreaterThanOrEqual(routeOverviewPosition.top - 1);
+  const sidebarAfterScroll = await page.locator(".app-sidebar").boundingBox();
+  expect(Math.abs(sidebarBeforeScroll?.y ?? 0)).toBeLessThanOrEqual(1);
+  expect(Math.abs(sidebarAfterScroll?.y ?? 0)).toBeLessThanOrEqual(1);
+  expect(sidebarAfterScroll?.height).toBeGreaterThanOrEqual(900);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await page.getByRole("navigation", { name: "桌面路线阶段" }).getByRole("link").nth(3).click();
   await expect(page.locator("#route-frame-clock")).toBeFocused();
@@ -88,6 +122,21 @@ test("organizes existing cards into knowledge routes without exposing answers be
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await expect(page.getByRole("button", { name: "练习本阶段" })).toBeDisabled();
   await expect(page.getByText("当前密文版本暂未包含本阶段卡片，更新题库后会自动出现。").first()).toBeVisible();
+});
+
+test("uses browser history for route overview and route detail", async ({ page }) => {
+  await page.goto("./");
+  await unlock(page);
+
+  await page.getByRole("button", { name: "路线", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "沿路线建立理解" })).toBeVisible();
+  await page.locator(".route-card").first().click();
+  await expect(page.getByRole("heading", { name: "Android 页面是怎样跑起来的？" })).toBeVisible();
+
+  await page.goBack();
+  await expect(page.getByRole("heading", { name: "沿路线建立理解" })).toBeVisible();
+  await page.goBack();
+  await expect(page.getByRole("heading", { name: "今日复习" })).toBeVisible();
 });
 
 async function unlock(
