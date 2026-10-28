@@ -70,7 +70,7 @@ const referenceImageSchema = z.object({
   id: z.string().regex(/^[a-f0-9]{16,64}$/),
   alt: z.string(),
   mimeType: z.enum(["image/png", "image/jpeg", "image/webp", "image/gif", "image/svg+xml"]),
-  data: z.string().regex(/^[A-Za-z0-9+/]*={0,2}$/).refine((value) => value.length % 4 === 0),
+  data: z.string().regex(/^[A-Za-z0-9+/]*={0,2}$/).refine((value) => value.length % 4 === 0 && !value.includes("\n")),
 }).strict();
 const referenceImageTokenPattern = /^https:\/\/interview-cards\.invalid\/reference-image\/[a-f0-9]{16,64}$/;
 const referenceImageOriginPattern = /^https:\/\/cdn\.nlark\.com\//;

@@ -7,7 +7,7 @@ import type { CardV2 } from "./types";
 
 export function cardMarkdown(card: CardV2, number: string): string {
   if (/[\r\n]/.test(card.question)) throw new Error("题目含换行，需要人工核对: " + card.id);
-  const callout = (kind: string, text: string) => "> [!" + kind + "]\n" + text.split("\n").map((line) => "> " + line).join("\n");
+  const callout = (kind: string, text: string) => "> [!" + kind + "]\n" + text.split("\n").map((line) => line ? "> " + line : ">").join("\n");
   const parts = ["%%card-id: " + card.id + "; priority: " + card.priority + "; decks: " + card.decks.join(",") + "%%"];
   if (card.legacyIds.length) parts.push("%%legacy-card-ids: " + card.legacyIds.join(",") + "%%");
   parts.push("### " + number + " " + card.question, "", callout("summary", card.quickAnswerMd));
@@ -16,7 +16,7 @@ export function cardMarkdown(card: CardV2, number: string): string {
   if (card.pitfallsMd) parts.push("", callout("warning", card.pitfallsMd));
   if (card.followUps.length) {
     parts.push("", "#### 高频追问");
-    for (const followUp of card.followUps) parts.push("", "##### " + followUp.question, "", ...(followUp.answerMd ? followUp.answerMd.split("\n").map((line) => "> " + line) : []));
+    for (const followUp of card.followUps) parts.push("", "##### " + followUp.question, "", ...(followUp.answerMd ? followUp.answerMd.split("\n").map((line) => line ? "> " + line : ">") : []));
   }
   parts.push("", "%%card-end%%");
   return parts.join("\n");
