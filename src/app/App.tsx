@@ -21,6 +21,7 @@ import { Dashboard } from "./Dashboard";
 import { RouteScreen } from "./RouteScreen";
 import { KNOWLEDGE_ROUTES, resolveRouteCards, type KnowledgeRoute } from "../routes/routes";
 import { KnowledgeRoutesContext } from "../routes/context";
+import { ContentDocumentsContext } from "../content/documents-context";
 import {
   isAppHistoryState,
   pushAppHistoryState,
@@ -94,7 +95,7 @@ interface WorkspaceProps {
 }
 
 export function ContentWorkspace(props: WorkspaceProps) {
-  return <KnowledgeRoutesContext.Provider value={props.payload.routes ?? KNOWLEDGE_ROUTES}><Workspace {...props} /></KnowledgeRoutesContext.Provider>;
+  return <KnowledgeRoutesContext.Provider value={props.payload.routes ?? KNOWLEDGE_ROUTES}><ContentDocumentsContext.Provider value={props.payload.documents ?? []}><Workspace {...props} /></ContentDocumentsContext.Provider></KnowledgeRoutesContext.Provider>;
 }
 
 function routeIdFromHash(hash: string, routes = KNOWLEDGE_ROUTES): string | undefined {

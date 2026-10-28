@@ -40,7 +40,7 @@ async function writeIndex(site: Awaited<ReturnType<typeof compileSite>>) {
     items.push("- [[" + card.source.path.replace(/\.md$/, "") + "#" + card.source.heading + "|" + card.question + "]]");
     groups.set(card.category, items);
   }
-  const output = "# 网站题库索引\n\n> 自动生成；请修改链接指向的技术笔记。未迁移题目继续由只读历史题库提供。\n\n" +
+  const output = "# 网站题库索引\n\n> 自动生成；请修改链接指向的技术笔记。" + (site.partial ? "未迁移题目继续由只读历史题库提供。" : "全部卡片已由笔记直接生成。") + "\n\n" +
     [...groups].map(([category, lines]) => "## " + category + "\n\n" + lines.join("\n")).join("\n\n") + "\n";
   const target = path.join(vault, "09-面试题整理", "网站题库索引.md");
   if (await exists(target) && !(await readFile(target, "utf8")).includes("> 自动生成；")) throw new Error("索引文件已存在且不是生成文件，拒绝覆盖");
@@ -64,7 +64,7 @@ async function init() {
       "\n" + shellQuote(process.execPath) + " --import tsx scripts/maintain.ts " + action + " --vault " + shellQuote(vault) +
       "\nresult=$?\nprintf '\\n按回车关闭窗口…'\nread -r\nexit $result\n", { mode: 0o700 });
   }
-  await writeFile(path.join(directory, ".gitignore"), "本机配置.json\n*.command\n");
+  await writeFile(path.join(directory, ".gitignore"), "本机配置.json\n*.command\n迁移暂存/\n迁移备份/\n");
   console.log("本机入口已配置。双击知识库中的预览网站.command 或发布网站.command。");
 }
 async function preview() {
@@ -114,6 +114,9 @@ async function preview() {
             response.statusCode = 403; response.end(); return;
           }
           response.setHeader("Cache-Control", "no-store");
+          const revision = '"' + digest(JSON.stringify(state.error ?? state.payload?.buildId ?? "pending")) + '"';
+          response.setHeader("ETag", revision);
+          if (request.headers["if-none-match"] === revision) { response.statusCode = 304; response.end(); return; }
           response.setHeader("Content-Type", "application/json; charset=utf-8");
           response.setHeader("X-Content-Type-Options", "nosniff");
           response.statusCode = state.error ? 422 : 200;
@@ -125,7 +128,7 @@ async function preview() {
   await server.listen();
   openBrowser();
   console.log("本机预览：http://127.0.0.1:" + port + "/interview-cards/ （保存笔记后自动刷新）");
-  console.log(legacy ? "已合并完整历史题库。" : "当前展示已迁移主题；完整预览可加 --with-legacy，发布始终要求解锁历史题库。");
+  console.log(state.partial === false ? "完整题库已由笔记生成。" : "当前展示已迁移主题；完整预览可加 --with-legacy，发布始终要求解锁历史题库。");
   const shutdown = async () => { await server.close(); process.exit(); };
   process.once("SIGINT", shutdown); process.once("SIGTERM", shutdown);
 }
@@ -179,14 +182,14 @@ async function addCard() {
   let relative = at < 0 ? "" : args[at + 1];
   if (!relative && process.stdin.isTTY) {
     const input = createInterface({ input: process.stdin, output: process.stdout });
-    try { relative = await input.question("请输入 01～08 内的笔记相对路径："); } finally { input.close(); }
+    try { relative = await input.question("请输入 01～09 内的笔记相对路径："); } finally { input.close(); }
   }
-  if (!relative || path.isAbsolute(relative) || relative.split(/[\\/]/).includes("..") || !/^0[1-8]-/.test(relative)) throw new Error("需要 --note 指定 01～08 内的笔记相对路径");
+  if (!relative || path.isAbsolute(relative) || relative.split(/[\\/]/).includes("..") || !/^0[1-9]-/.test(relative)) throw new Error("需要 --note 指定 01～09 内的笔记相对路径");
   const filename = path.join(vault, relative);
   const parsed = matter(await readFile(filename, "utf8"));
   const id = "card-" + randomUUID().slice(0, 18);
   parsed.data.site_doc_id ??= "note-" + randomUUID().slice(0, 18);
-  const block = "\n\n%%card-id: " + id + "; priority: P1; decks: full%%\n### 新问题？\n\n> [!summary] 30 秒回答\n> 在这里填写简明口述答案。\n\n#### 深入理解\n\n在这里填写原理、表格或图示。\n";
+  const block = "\n\n%%card-id: " + id + "; priority: P1; decks: full%%\n### 新问题？\n\n> [!summary] 30 秒回答\n> 在这里填写简明口述答案。\n\n#### 深入理解\n\n在这里填写原理、表格或图示。\n\n%%card-end%%\n";
   const config = await readSiteConfig(vault);
   config.ownedCardIds.push(id);
   if (!config.ownedDocumentIds.includes(parsed.data.site_doc_id)) config.ownedDocumentIds.push(parsed.data.site_doc_id);

@@ -8,6 +8,7 @@ import type { CompiledSite } from "../content/single-source";
 import { membership, membershipChanges, type MembershipEntry } from "../content/single-source";
 import { scanForPlaintextLeaks, scanGitHistoryLeaks, isScannableTextPath, type GitHistoryText, type LeakSource } from "../security/leak-scan";
 import { REFERENCE_DOCUMENT_MANIFEST } from "../content/reference-docs";
+import { ENCRYPTED_BANK_CACHE_BYTES } from "../security/cache-budget";
 const execFile = promisify(callback);
 export async function git(root: string, args: string[]): Promise<string> {
   return (await execFile("git", args, { cwd: root, maxBuffer: 100 * 1024 * 1024, encoding: "utf8" })).stdout.trim();
@@ -67,9 +68,10 @@ export async function readHistoryEntries(root: string): Promise<Array<GitHistory
 export async function scanSiteRelease(root: string, site: CompiledSite): Promise<void> {
   const corpus = siteLeakCorpus(site);
   const entries = await readHistoryEntries(root);
-  const historyFindings = entries.flatMap((entry) => scanGitHistoryLeaks("", [entry], corpus).filter((finding) =>
-    finding.kind !== "absolute-path" || !site.config.approvedHistoricalPaths.some((approved) => approved.objectId === entry.objectId && approved.path === entry.path),
-  ));
+  const historyFindings = entries.flatMap((entry) => scanGitHistoryLeaks("", [entry], corpus).filter((finding) => {
+    if (finding.kind === "absolute-path") return !site.config.approvedHistoricalPaths.some((approved) => approved.objectId === entry.objectId && approved.path === entry.path);
+    return !site.config.approvedHistoricalContent.some((approved) => approved.objectId === entry.objectId && approved.path === entry.path && approved.kind === finding.kind && approved.cardId === finding.cardId);
+  }));
   const findings = [
     ...await scanForPlaintextLeaks([root], corpus),
     // Author identities are Git publication metadata; inspect commit messages for leaks.
@@ -90,6 +92,7 @@ export async function prepareRelease(root: string, site: CompiledSite, password:
   const builtAt = new Date().toISOString();
   const buildId = builtAt.replace(/\D/g, "").slice(0, 14) + "-" + randomUUID().slice(0, 8);
   const envelope = await encryptEnvelope({ ...site.payload, buildId, builtAt }, password, buildId);
+  if (Buffer.byteLength(JSON.stringify(envelope)) > ENCRYPTED_BANK_CACHE_BYTES) throw new Error("密文题库超过离线缓存预算；请先压缩技术资料中的图片");
   return { envelope, members: after, changes };
 }
 export async function replaceRelease(root: string, envelope: unknown, members: MembershipEntry[]) {

@@ -67,7 +67,9 @@ function hasExactKeys(
 }
 
 function decodeCanonicalBase64(value: unknown): Uint8Array {
-  if (typeof value !== "string" || !/^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/.test(value)) {
+  // A repeated four-character group can overflow the regexp stack on large banks.
+  // Decode/re-encode below still enforces canonical padding and unused bits.
+  if (typeof value !== "string" || value.length % 4 !== 0 || !/^[A-Za-z0-9+/]*={0,2}$/.test(value)) {
     throw new UnlockError();
   }
   const bytes = fromBase64(value);

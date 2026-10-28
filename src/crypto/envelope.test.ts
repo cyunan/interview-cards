@@ -17,6 +17,12 @@ const payload = {
 const password = "正确的 Unicode 强口令🔐-2026";
 
 describe("encrypted card envelope", () => {
+  it("round-trips a full-size bank without overflowing the base64 validator", async () => {
+    const large = { data: "x".repeat(5 * 1024 * 1024) };
+    const envelope = await encryptEnvelope(large, password, "large-fixture");
+    expect(envelope.ciphertext.length).toBeGreaterThan(6 * 1024 * 1024);
+    await expect(decryptEnvelope(envelope, password)).resolves.toEqual(large);
+  });
   it("round-trips JSON with the required algorithms and parameters", async () => {
     const envelope = await encryptEnvelope(payload, password, "build-001");
 

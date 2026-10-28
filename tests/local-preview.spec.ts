@@ -23,6 +23,9 @@ test("live note edits refresh real card content and invalid edits show a stale-c
   await expect(page.getByText("Imaginary live answer version one.")).toBeVisible({ timeout: 10000 });
   const denied = await request.post("__site/preview", { headers: { Origin: "https://unrelated.invalid" } });
   expect(denied.status()).toBe(403);
+  const initial = await request.post("__site/preview", {headers:{Origin:"http://127.0.0.1:5186"}});
+  const unchanged = await request.post("__site/preview", {headers:{Origin:"http://127.0.0.1:5186","If-None-Match":initial.headers().etag}});
+  expect(unchanged.status()).toBe(304);
   const directFile = await request.get("/interview-cards/@fs" + filename);
   expect(directFile.status()).toBe(403);
   expect(await page.evaluate(async () => (await indexedDB.databases()).map((db) => db.name))).toContain("interview-cards-preview-progress");

@@ -1,4 +1,5 @@
-import { useEffect, useId, useState, type ReactNode } from "react";
+import { useEffect, useId, useState, useContext, type ReactNode } from "react";
+import { ContentDocumentsContext } from "../content/documents-context";
 
 import type { CardV2 } from "../content/types";
 import { Markdown } from "./Markdown";
@@ -82,6 +83,8 @@ function FollowUpAccordion({
 }
 
 export function ProgressiveAnswer({ card, children }: ProgressiveAnswerProps) {
+  const documents = useContext(ContentDocumentsContext);
+  const images = card.images ?? documents.find((document) => document.sourcePath === card.source.path)?.images;
   return (
     <div className="progressive-answer">
       <section className="answer-section quick-answer">
@@ -92,7 +95,7 @@ export function ProgressiveAnswer({ card, children }: ProgressiveAnswerProps) {
         className="detail-answer"
         label="深入理解"
         markdown={card.detailMd}
-        images={card.images}
+        images={images}
       />
       <CollapsibleAnswerSection
         className="project-answer"

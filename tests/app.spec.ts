@@ -1,6 +1,28 @@
 import { expect, test } from "@playwright/test";
 
 import { E2E_PASSWORD } from "./fixture-payload";
+import { E2E_PAYLOAD } from "./fixture-payload";
+import { encryptEnvelope } from "../src/crypto/envelope";
+
+test.describe("full-size v3 bank", () => {
+  test.use({ serviceWorkers: "block" });
+  test("unlocks a bank above six MiB without overflowing base64 validation", async ({ page }) => {
+    const payload = {
+      schema: "cards-v3", buildId: "fictional-large-v3", builtAt: "2026-01-01T00:00:00Z",
+      cards: E2E_PAYLOAD.cards.map((card) => ({ ...card, legacyIds: [], detailMd: "Fictional padding for an oversized test bank. ".repeat(130000) })),
+      documents: [], routes: [],
+    };
+    const envelope = await encryptEnvelope(payload, E2E_PASSWORD, payload.buildId);
+    expect(envelope.ciphertext.length).toBeGreaterThan(6 * 1024 * 1024);
+    await page.route("**/cards.enc.json", (route) => route.fulfill({ contentType: "application/json", body: JSON.stringify(envelope) }));
+    await page.goto("./");
+    await page.getByLabel("题库密码").fill(E2E_PASSWORD);
+    await page.getByRole("button", { name: "解锁", exact: true }).click();
+    await expect(page.getByRole("heading", { name: "今日复习" })).toBeVisible();
+    await page.getByRole("button", { name: "设置", exact: true }).click();
+    await expect(page.getByText("题库版本 · fictional-large-v3")).toBeVisible();
+  });
+});
 
 test("keeps reference code readable against its dark code surface", async ({ page }) => {
   await page.goto("./");

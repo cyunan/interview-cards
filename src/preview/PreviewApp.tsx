@@ -11,12 +11,15 @@ export function PreviewApp() {
   const [partial, setPartial] = useState(true);
   useEffect(() => {
     let active = true;
+    let revision = "";
     let timer: ReturnType<typeof setTimeout>;
     async function poll() {
       try {
         const response = await fetch(import.meta.env.BASE_URL + "__site/preview", {
-          method: "POST", headers: { "Content-Type": "application/json" }, cache: "no-store",
+          method: "POST", headers: { "Content-Type": "application/json", ...(revision ? { "If-None-Match": revision } : {}) }, cache: "no-store",
         });
+        if (response.status === 304) return;
+        revision = response.headers.get("ETag") ?? "";
         const state = await response.json();
         if (!active) return;
         if (!response.ok || state.error) throw new Error(state.error ?? "预览服务不可用");

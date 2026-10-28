@@ -45,6 +45,15 @@ it("keeps stable identity when a marked note is renamed and ignores unmarked per
   expect(JSON.stringify(moved.payload)).not.toContain("private sentence");
   expect(moved.payload.documents?.[0].markdown).not.toContain("%%card-id:");
 });
+it("packages each note image once rather than repeating its bytes on every card", async () => {
+  const root = await fixture();
+  await writeFile(path.join(root, "02-Tech/picture.png"), Buffer.from([0,1,2,3]));
+  await writeFile(path.join(root, "02-Tech/note.md"), note + "\n![[picture.png]]\n");
+  const result = await compileSite(root);
+  expect(result.payload.documents?.[0].images).toHaveLength(1);
+  expect(result.payload.cards[0].images).toBeUndefined();
+  expect(result.payload.cards[0].detailMd).toContain("reference-image");
+});
 it("merges legacy cards once and preserves aliases without silently taking ownership", async () => {
   const root = await fixture();
   const inline = (await compileSite(root)).payload.cards[0];

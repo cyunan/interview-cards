@@ -141,7 +141,7 @@ describe("Markdown", () => {
   it("keeps flowchart nodes, labels, and links readable", async () => {
     const { container } = render(
       <Markdown>
-        {"```mermaid\nflowchart TD\n  A[提交任务 execute] --> B{线程数 < corePoolSize?}\n  B -- 是 --> C[创建核心线程执行]\n  B -- 否 --> D{队列未满?}\n  D -- 是 --> E[任务入队排队]\n```"}
+        {"```mermaid\nflowchart TD\n  A[提交虚构包裹] --> B{演示容量 < 3?}\n  B -- 是 --> C[分配虚构飞船]\n  B -- 否 --> D{演示仓库未满?}\n  D -- 是 --> E[包裹暂存仓库]\n```"}
       </Markdown>,
     );
 
@@ -167,7 +167,7 @@ describe("Markdown", () => {
   it("keeps flowchart subgraph backgrounds light and labels readable", async () => {
     const { container } = render(
       <Markdown>
-        {"```mermaid\nflowchart LR\n  subgraph compose [Compose 侧]\n    S[State / Snapshot] --> R[Recomposer 调度]\n  end\n  R --> A[AndroidComposeView]\n```"}
+        {"```mermaid\nflowchart LR\n  subgraph compose [演示星球侧]\n    S[State / Snapshot] --> R[Recomposer 调度]\n  end\n  R --> A[AndroidComposeView]\n```"}
       </Markdown>,
     );
 

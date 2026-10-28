@@ -23,12 +23,26 @@ it("reads full Git history in a batch and restricts approved historical paths to
     const site: CompiledSite = {
       partial: false, inlineCards: [],
       payload: { schema: "cards-v3", buildId: "fictional", builtAt: "2026-01-01T00:00:00Z", cards: [], documents: [], routes: [] },
-      config: { schema: 1, legacyFile: "历史题库.enc.json", legacySha256: "a".repeat(64), ownedCardIds: [], ownedDocumentIds: [], approvedRemovals: [], approvedDocumentRemovals: [], approvedHistoricalPaths: [], routes: [] },
+      config: { schema: 1, legacyFile: "历史题库.enc.json", legacySha256: "a".repeat(64), ownedCardIds: [], ownedDocumentIds: [], approvedRemovals: [], approvedDocumentRemovals: [], approvedHistoricalPaths: [], approvedHistoricalContent: [], migrationComplete: false, legacyCardIds: [], legacyDocumentIds: [], routes: [] },
     };
     await expect(scanSiteRelease(root, site)).rejects.toThrow("absolute-path");
     site.config.approvedHistoricalPaths = [{ objectId, path: "known.md" }];
     await expect(scanSiteRelease(root, site)).resolves.toBeUndefined();
     await writeFile(path.join(root, "new.md"), oldPath + "\n");
     await expect(scanSiteRelease(root, site)).rejects.toThrow("absolute-path");
+    await rm(path.join(root, "new.md"));
+    const question = "Imaginary historical orb question?";
+    await writeFile(path.join(root, "question.md"), question);
+    await git(root, ["add", "question.md"]);
+    await git(root, [...author, "commit", "-qm", "Historical question fixture"]);
+    const questionObject = await git(root, ["rev-parse", "HEAD:question.md"]);
+    await git(root, ["rm", "-q", "question.md"]);
+    await git(root, [...author, "commit", "-qm", "Replace question fixture"]);
+    site.payload.cards.push({id:"fictional-orb-001",legacyIds:[],question,quickAnswerMd:"An imaginary answer.",category:"Demo",topic:"Orb",priority:"P1",decks:["full"],followUps:[],source:{path:"02-Demo/orb-source.md",heading:question}});
+    await expect(scanSiteRelease(root, site)).rejects.toThrow("card-question");
+    site.config.approvedHistoricalContent = [{objectId:questionObject,path:"question.md",kind:"card-question",cardId:"fictional-orb-001"}];
+    await expect(scanSiteRelease(root, site)).resolves.toBeUndefined();
+    await writeFile(path.join(root, "new-question.md"), question);
+    await expect(scanSiteRelease(root, site)).rejects.toThrow("card-question");
   } finally { await rm(root, { recursive: true, force: true }); }
 });

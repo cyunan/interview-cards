@@ -19,7 +19,11 @@ const configSchema = z.object({
   ownedDocumentIds: z.array(z.string()).default([]),
   approvedDocumentRemovals: z.array(z.string()).default([]),
   approvedHistoricalPaths: z.array(z.object({ objectId: z.string().regex(/^[a-f0-9]{40}$/), path: z.string().min(1) }).strict()).default([]),
+  approvedHistoricalContent: z.array(z.object({ objectId: z.string().regex(/^[a-f0-9]{40}$/), path: z.string().min(1), kind: z.enum(["card-answer", "card-question"]), cardId: z.string().min(1) }).strict()).default([]),
   approvedRemovals: z.array(z.string()).default([]),
+  migrationComplete: z.boolean().default(false),
+  legacyCardIds: z.array(z.string()).default([]),
+  legacyDocumentIds: z.array(z.string()).default([]),
   routes: z.array(z.unknown()),
 }).strict();
 export type SiteConfig = Omit<z.infer<typeof configSchema>, "routes"> & { routes: KnowledgeRoute[] };
@@ -57,7 +61,10 @@ export function extractInlineCards(source: string, sourcePath: string, category:
     const heading = structure[++index]?.match(/^###\s+(.+?)\s*$/);
     if (!heading) throw new Error(sourcePath + ":" + line + " card-id 后需要三级问题标题");
     let end = index + 1;
-    while (end < lines.length && !/^#{1,3}\s/.test(structure[end]) && !structure[end].trim().startsWith("%%card-id:")) end++;
+    let explicitEnd = index + 1;
+    while (explicitEnd < lines.length && structure[explicitEnd].trim() !== "%%card-end%%" && !structure[explicitEnd].trim().startsWith("%%card-id:")) explicitEnd++;
+    if (structure[explicitEnd]?.trim() === "%%card-end%%") end = explicitEnd;
+    else while (end < lines.length && !/^#{1,3}\s/.test(structure[end]) && !structure[end].trim().startsWith("%%card-id:")) end++;
     const parsed = parseMarkedCard({
       path: sourcePath, line, marker, question: heading[1].replace(/^\d+(?:\.\d+)*[.、]?\s+/, ""),
       category, topic, body: lines.slice(index + 1, end),
@@ -75,7 +82,7 @@ export interface CompiledSite {
 export async function compileSite(vault: string, legacy?: ParsedCardsPayload): Promise<CompiledSite> {
   const config = await readSiteConfig(vault);
   if (legacy && config.legacyCardCount !== undefined && legacy.cards.length !== config.legacyCardCount) throw new Error("历史卡片数量与冻结快照基线不符");
-  const roots = (await readdir(vault, { withFileTypes: true })).filter((entry) => entry.isDirectory() && /^0[1-8]-/.test(entry.name));
+  const roots = (await readdir(vault, { withFileTypes: true })).filter((entry) => entry.isDirectory() && /^0[1-9]-/.test(entry.name));
   const files = (await Promise.all(roots.map((entry) => walk(path.join(vault, entry.name))))).flat();
   const notes: Array<{ path: string; source: string; data: Record<string, unknown> }> = [];
   for (const filename of files) {
@@ -98,9 +105,9 @@ export async function compileSite(vault: string, legacy?: ParsedCardsPayload): P
     const note = notes.find((item) => item.path === document.sourcePath)!;
     return extractInlineCards(document.markdown, note.path,
       String(note.data.card_category ?? note.path.split("/")[0]), String(note.data.card_topic ?? document.title),
-    ).map((card) => ({ ...card, ...(document.images?.length ? { images: document.images } : {}) }));
+    );
   });
-  for (const document of documents) document.markdown = document.markdown.replace(/^%%(?:card-id|legacy-card-ids):.*%%\s*$/gm, "").trim();
+  for (const document of documents) document.markdown = document.markdown.replace(/^%%(?:(?:card-id|legacy-card-ids):.*|card-end)%%\s*$/gm, "").trim();
   const ids = new Set<string>();
   const oldCards = new Map(legacy?.cards.map((card) => [card.id, card]));
   const owned = new Set(config.ownedCardIds);
@@ -116,7 +123,12 @@ export async function compileSite(vault: string, legacy?: ParsedCardsPayload): P
   const documentIds = new Set(documents.map((document) => document.id));
   const combinedDocuments = [...(legacy?.documents ?? []).filter((document) => !documentIds.has(document.id) && !config.ownedDocumentIds.includes(document.id) && !config.approvedDocumentRemovals.includes(document.id)), ...documents];
   let routes = config.routes;
-  if (!legacy) {
+  if (config.migrationComplete) {
+    if (config.legacyCardIds.length !== config.legacyCardCount) throw new Error("全量迁移的原始卡片 ID 基线不完整");
+    for (const id of config.legacyCardIds) if (!ids.has(id) && !config.approvedRemovals.includes(id)) throw new Error("全量迁移缺失原卡片: " + id);
+    for (const id of config.legacyDocumentIds) if (!presentDocuments.has(id) && !config.approvedDocumentRemovals.includes(id)) throw new Error("全量迁移缺失原资料: " + id);
+  }
+  if (!legacy && !config.migrationComplete) {
     const docs = new Set(combinedDocuments.map((document) => document.id));
     routes = routes.map((route) => ({ ...route, steps: route.steps.map((step) => ({
       ...step, cardIds: step.cardIds.filter((id) => ids.has(id)),
@@ -130,7 +142,7 @@ export async function compileSite(vault: string, legacy?: ParsedCardsPayload): P
   };
   validateRouteReferences(payload);
   parseCardsPayload(payload);
-  return { payload, inlineCards, config, partial: !legacy };
+  return { payload, inlineCards, config, partial: !legacy && !config.migrationComplete };
 }
 export interface MembershipEntry { id: string; decks: string[]; source: string; category: string; priority: string }
 export function membership(payload: ParsedCardsPayload): MembershipEntry[] {

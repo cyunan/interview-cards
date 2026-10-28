@@ -2,6 +2,7 @@ import react from "@vitejs/plugin-react";
 import { randomBytes } from "node:crypto";
 import { defineConfig } from "vite";
 import { VitePWA } from "vite-plugin-pwa";
+import { ENCRYPTED_BANK_CACHE_BYTES } from "./src/security/cache-budget";
 
 export default defineConfig(({ command }) => {
   const nonce = command === "serve" ? randomBytes(24).toString("base64") : undefined;
@@ -71,7 +72,7 @@ export default defineConfig(({ command }) => {
         cleanupOutdatedCaches: true,
         clientsClaim: true,
         skipWaiting: true,
-        maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
+        maximumFileSizeToCacheInBytes: ENCRYPTED_BANK_CACHE_BYTES,
         globPatterns: ["**/*.{js,css,html,svg,png,json,webmanifest}"],
         runtimeCaching: [
           {
