@@ -1,5 +1,5 @@
 import type { CardV2 } from "../content/types";
-import { KNOWLEDGE_ROUTES } from "../routes/routes";
+import { useKnowledgeRoutes } from "../routes/context";
 import { calculateStudyStreak } from "../storage/progress";
 import type { CardProgress, Deck } from "../study/scheduler";
 
@@ -30,6 +30,7 @@ function weakCategories(
 }
 
 export function Dashboard({ cards, progress, today, onStart, onOpenRoutes }: DashboardProps) {
+  const KNOWLEDGE_ROUTES = useKnowledgeRoutes();
   const records = [...progress.values()];
   const knownIds = new Set(cards.map((card) => card.id));
   const due = records.filter(
@@ -78,14 +79,14 @@ export function Dashboard({ cards, progress, today, onStart, onOpenRoutes }: Das
           </div>
           <button className="text-button" type="button" onClick={onOpenRoutes}>查看全部路线 →</button>
         </div>
-        <button className="route-feature-card" type="button" onClick={onOpenRoutes}>
+        {KNOWLEDGE_ROUTES[0] ? <button className="route-feature-card" type="button" onClick={onOpenRoutes}>
           <span className="route-feature-index">01</span>
           <span>
             <strong>{KNOWLEDGE_ROUTES[0].title}</strong>
             <small>{KNOWLEDGE_ROUTES[0].summary}</small>
           </span>
           <span className="route-feature-meta">{KNOWLEDGE_ROUTES[0].steps.length} 个阶段 · 约 {KNOWLEDGE_ROUTES[0].estimatedMinutes} 分钟 <span aria-hidden="true">→</span></span>
-        </button>
+        </button> : <p>当前预览还没有可用的学习路线。</p>}
       </section>
 
       <section className="section-block deck-section" aria-labelledby="deck-title">

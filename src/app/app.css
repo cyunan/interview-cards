@@ -270,7 +270,10 @@ input, select { min-width: 0; width: 100%; min-height: 48px; padding: 10px 12px;
 .markdown .mermaid-diagram.is-fullscreen { position: fixed; z-index: 100; inset: 16px; display: flex; flex-direction: column; max-width: none; margin: 0; box-shadow: 0 24px 60px #25312f33; }
 .markdown .mermaid-diagram.is-fullscreen .mermaid-diagram-viewport { flex: 1; max-height: none; }
 .markdown .mermaid-diagram-close { position: absolute; top: 8px; right: 10px; z-index: 1; width: 32px; min-height: 32px; padding: 0; font-size: 20px; line-height: 1; }
-.markdown-image { margin: 22px auto; text-align: center; }
+.markdown-image { display: block; margin: 22px auto; text-align: center; }
+.local-preview-notice { position: sticky; top: 0; z-index: 100; padding: 12px 20px; background: #e8f5ee; color: #163c32; border-bottom: 1px solid #a4c9b6; }
+.local-preview-notice.has-error { background: #fee2e2; }
+.local-preview-notice p { white-space: pre-wrap; }
 .markdown-image img { display: block; width: auto; max-width: 100%; max-height: min(70dvh, 720px); margin: 0 auto; border: 1px solid var(--line); border-radius: 12px; background: #fff; object-fit: contain; }
 .markdown-image-missing { display: block; margin: 16px 0; padding: 12px 14px; border-left: 3px solid #d6b08a; color: #79563a; background: #fff8ed; font-size: 13px; line-height: 1.6; }
 .markdown table { display: block; max-width: 100%; overflow-x: auto; border-collapse: collapse; font-size: 13px; }

@@ -12,10 +12,12 @@ function CollapsibleAnswerSection({
   className,
   label,
   markdown,
+  images,
 }: {
   className: string;
   label: string;
   markdown?: string;
+  images?: CardV2["images"];
 }) {
   if (!markdown) {
     return null;
@@ -24,7 +26,7 @@ function CollapsibleAnswerSection({
   return (
     <details className={`answer-section ${className}`}>
       <summary>{label}</summary>
-      <Markdown>{markdown}</Markdown>
+      <Markdown images={images}>{markdown}</Markdown>
     </details>
   );
 }
@@ -90,6 +92,7 @@ export function ProgressiveAnswer({ card, children }: ProgressiveAnswerProps) {
         className="detail-answer"
         label="深入理解"
         markdown={card.detailMd}
+        images={card.images}
       />
       <CollapsibleAnswerSection
         className="project-answer"

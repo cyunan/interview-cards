@@ -7,6 +7,8 @@
     "node": ">=24 <25"
   },
   "scripts": {
+    "site": "node --import tsx scripts/maintain.ts",
+    "test:local": "playwright test --config playwright.local.config.ts",
     "cards:build": "tsx scripts/cards-build.ts",
     "cards:lint": "tsx scripts/cards-lint.ts",
     "build": "vite build",

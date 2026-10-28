@@ -339,21 +339,21 @@ export function Markdown({ children, className, images = [] }: MarkdownProps) {
             const packagedImage = imageId ? imageMap.get(imageId) : undefined;
             if (packagedImage) {
               return (
-                <figure className="markdown-image">
+                <span className="markdown-image">
                   <img
                     src={`data:${packagedImage.mimeType};base64,${packagedImage.data}`}
                     alt={alt || packagedImage.alt}
                     loading="lazy"
                     decoding="async"
                   />
-                </figure>
+                </span>
               );
             }
             if (!src) return <span className="markdown-image-missing">图示未加载：{alt || "未命名图片"}</span>;
             return (
-              <figure className="markdown-image">
+              <span className="markdown-image">
                 <img src={src} alt={alt || ""} loading="lazy" decoding="async" referrerPolicy="no-referrer" />
-              </figure>
+              </span>
             );
           },
           code: ({ className, children: codeChildren, node: _node, ...props }) => {

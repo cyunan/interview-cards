@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useKnowledgeRoutes } from "../routes/context";
 import type { WheelEvent as ReactWheelEvent } from "react";
 
 import type { CardV2 } from "../content/types";
@@ -8,7 +9,6 @@ import { Markdown } from "./Markdown";
 import { currentAppHistoryState, pushAppHistoryState } from "./navigation-history";
 import {
   getRouteProgress,
-  KNOWLEDGE_ROUTES,
   resolveRouteCards,
   resolveRouteCheckpoint,
   resolveRouteDocuments,
@@ -240,6 +240,7 @@ function RouteList({
   progress,
   onSelectRoute,
 }: Pick<RouteScreenProps, "cards" | "progress" | "onSelectRoute">) {
+  const KNOWLEDGE_ROUTES = useKnowledgeRoutes();
   return (
     <main className="screen route-screen">
       <section className="page-title route-intro">
@@ -570,6 +571,7 @@ export function RouteScreen({
   onSelectRoute,
   onPractice,
 }: RouteScreenProps) {
+  const KNOWLEDGE_ROUTES = useKnowledgeRoutes();
   const route = selectedRouteId
     ? KNOWLEDGE_ROUTES.find((item) => item.id === selectedRouteId)
     : undefined;

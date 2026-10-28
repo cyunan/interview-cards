@@ -138,6 +138,20 @@ async function submitPassword(password: string, rememberDevice = false): Promise
 }
 
 describe("App", () => {
+  it("reads v3 route definitions from the unlocked payload while keeping the same progress identities", async () => {
+    const store = new MemoryProgressStore();
+    const remembered = new MemoryRememberedUnlockStore();
+    const next: ParsedCardsPayload = { ...payload, schema: "cards-v3", routes: [{
+      id: "fictional-private-route", title: "Fictional payload route", summary: "Route supplied by content", level: "Demo", estimatedMinutes: 1,
+      steps: [{ id: "fictional-private-step", title: "A payload step", purpose: "", transition: "", cardIds: [payload.cards[0].id] }],
+    }] };
+    render(<App unlockCards={async () => next} createStore={async () => store} createRememberedUnlockStore={async () => remembered} restoreRememberedCards={async () => undefined} />);
+    await submitPassword("fictional-password");
+    await screen.findByText("Fictional payload route");
+    fireEvent.click(screen.getByRole("button", { name: /^路线$/ }));
+    expect(screen.getAllByText("Fictional payload route").length).toBeGreaterThan(0);
+    expect(store.migrationCards?.map((card) => card.id)).toEqual(payload.cards.map((card) => card.id));
+  });
   it("resets progressive sections when a card is repeated after Again", async () => {
     const store = new MemoryProgressStore();
     const { container } = render(

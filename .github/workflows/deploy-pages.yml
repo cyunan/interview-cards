@@ -39,6 +39,9 @@ jobs:
       - name: Run mobile and offline tests
         run: npm run test:e2e
 
+      - name: Verify local content preview
+        run: npm run test:local
+
       - name: Build production PWA
         run: npm run build
 

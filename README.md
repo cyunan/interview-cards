@@ -13,6 +13,31 @@ npm run dev
 
 开发服务器地址包含固定子路径：`http://localhost:5173/interview-cards/`。
 
+## 单篇笔记维护入口
+
+Node 24 下首次初始化：
+
+~~~bash
+npm ci
+npm run site -- init --vault <vault-path>
+~~~
+
+初始化在知识库生成本机预览与发布启动入口，并冻结现有密文作为迁移兼容来源。正文、资料收录和路线配置由知识库维护。新格式按显式的 site_doc_id 与隐藏 card-id 标记发现，不依赖文件名。普通标题和总结不会自动收录。
+
+~~~bash
+npm run site -- preview --vault <vault-path>
+npm run site -- preview --vault <vault-path> --with-legacy
+npm run site -- add-card --vault <vault-path> --note <relative-note.md>
+npm run site -- index --vault <vault-path>
+npm run site -- publish --vault <vault-path>
+~~~
+
+默认预览仅显示已迁移内容，页面会明确标注；完整预览通过终端隐藏输入密码解锁历史题库。保存笔记会重新编译，错误时提示并保留上次成功画面。预览绑定本机回环地址、使用独立进度、不注册生产 Service Worker，私有内容不会写入公开静态目录。
+
+发布必须在干净且与远端同步的 main 上进行。它解锁冻结快照，与明确登记接管的卡片合并，检查具体成员变化、路线引用、单元测试、手机浏览器及离线流程和公开产物与可达历史的明文风险，再提交密文与成员基线并推送。检查失败恢复原产物，推送失败保留可重试提交。已有卡片 ID 与旧版载荷继续兼容。
+
+新载荷 cards-v3 在现有加密封装内携带卡片、技术资料和学习路线；cards-v1/cards-v2 使用旧路线作为兼容回退。新入口替代下方旧格式的手动发布步骤；旧命令保留供未迁移的规范题库使用。
+
 ## 题库检查与发布
 
 私有知识库保持在公开仓库之外。所有命令都通过显式路径读取它，发布密码由本地终端隐藏输入两次，不接受命令行参数或环境变量。

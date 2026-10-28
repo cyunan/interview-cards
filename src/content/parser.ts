@@ -1,4 +1,5 @@
 import matter from "gray-matter";
+import { structuralLines } from "./structure";
 
 import { CARD_ID_PATTERN } from "./card-id";
 import type {
@@ -12,6 +13,7 @@ import type {
 interface ParseCardDocumentInput {
   path: string;
   source: string;
+  allowImages?: boolean;
 }
 
 interface CardMetadata {
@@ -54,9 +56,10 @@ function extractCallout(
   type: "summary" | "tip" | "warning",
 ): { value?: string; indexes: Set<number> } {
   const indexes = new Set<number>();
+  const structure = structuralLines(lines);
   const marker = new RegExp(`^> \\[!${type}\\](?:[+-])?(?:\\s+.*)?$`, "i");
   for (let index = 0; index < lines.length; index += 1) {
-    if (!marker.test(lines[index].trim())) continue;
+    if (!marker.test(structure[index].trim())) continue;
     indexes.add(index);
     const content: string[] = [];
     for (let cursor = index + 1; cursor < lines.length; cursor += 1) {
@@ -75,19 +78,20 @@ function trimMarkdownLines(lines: string[]): string | undefined {
 }
 
 function parseFollowUps(lines: string[]): FollowUpV1[] {
-  const sectionStart = lines.findIndex((line) => /^####\s+高频追问\s*$/.test(line));
+  const structure = structuralLines(lines);
+  const sectionStart = structure.findIndex((line) => /^####\s+高频追问\s*$/.test(line));
   if (sectionStart < 0) return [];
   const followUps: FollowUpV1[] = [];
   let cursor = sectionStart + 1;
   while (cursor < lines.length) {
-    const heading = lines[cursor].match(/^#####\s+(.+?)\s*$/);
+    const heading = structure[cursor].match(/^#####\s+(.+?)\s*$/);
     if (!heading) {
       cursor += 1;
       continue;
     }
     const answer: string[] = [];
     cursor += 1;
-    while (cursor < lines.length && !/^#{4,5}\s+/.test(lines[cursor])) {
+    while (cursor < lines.length && !/^#{4,5}\s+/.test(structure[cursor])) {
       answer.push(lines[cursor]);
       cursor += 1;
     }
@@ -97,11 +101,12 @@ function parseFollowUps(lines: string[]): FollowUpV1[] {
 }
 
 function extractDetail(lines: string[], excludedIndexes: Set<number>): string | undefined {
-  const start = lines.findIndex((line) => /^####\s+深入理解\s*$/.test(line));
+  const structure = structuralLines(lines);
+  const start = structure.findIndex((line) => /^####\s+深入理解\s*$/.test(line));
   if (start < 0) return undefined;
   let end = lines.length;
   for (let index = start + 1; index < lines.length; index += 1) {
-    if (/^####\s+高频追问\s*$/.test(lines[index])) {
+    if (/^####\s+高频追问\s*$/.test(structure[index])) {
       end = index;
       break;
     }
@@ -126,9 +131,9 @@ function parseLegacyIds(value: string, path: string, line: number): string[] {
 
 function parseCardBody(
   lines: string[],
-  context: { path: string; line: number; metadata: CardMetadata; question: string; category: string; topic: string },
+  context: { path: string; line: number; metadata: CardMetadata; question: string; category: string; topic: string; allowImages?: boolean },
 ): ParsedCard {
-  if (lines.some(containsMarkdownImage)) {
+  if (!context.allowImages && lines.some(containsMarkdownImage)) {
     throw new CardFormatError(context.path, context.line, "卡片内容不能包含图片");
   }
   const summary = extractCallout(lines, "summary");
@@ -160,6 +165,22 @@ function requireString(data: Record<string, unknown>, key: string, path: string)
   return value.trim();
 }
 
+export function parseMarkedCard(input: {
+  path: string; line: number; marker: string; question: string;
+  category: string; topic: string; body: string[]; legacyIds?: string[];
+}): ParsedCard {
+  const match = input.marker.match(CARD_META_PATTERN);
+  if (!match) throw new CardFormatError(input.path, input.line, "card-id 格式非法");
+  const metadata: CardMetadata = {
+    id: match[1], priority: match[2] as CardPriority,
+    decks: match[3] === "full" ? ["full"] : ["sprint", "full"],
+    legacyIds: input.legacyIds ?? [], line: input.line,
+  };
+  const card = parseCardBody(input.body, { ...input, metadata, allowImages: true });
+  if (containsMarkdownImage(card.quickAnswerMd)) throw new CardFormatError(input.path, input.line, "30 秒回答不能包含图片");
+  return card;
+}
+
 function requireVerifiedAt(source: string, path: string): string {
   const frontmatter = source.match(/^---\r?\n([\s\S]*?)\r?\n---(?:\r?\n|$)/);
   if (!frontmatter) throw new CardFormatError(path, 1, "verified_at 必须为真实日期 YYYY-MM-DD");
@@ -176,7 +197,7 @@ function requireVerifiedAt(source: string, path: string): string {
   return `${match[2]}-${match[3]}-${match[4]}`;
 }
 
-export function parseCardDocument({ path, source }: ParseCardDocumentInput): ParsedCardDocument {
+export function parseCardDocument({ path, source, allowImages }: ParseCardDocumentInput): ParsedCardDocument {
   const parsed = (() => {
     try { return matter(source); } catch (error) {
       const marked = error as { mark?: { line?: unknown } };
@@ -232,7 +253,7 @@ export function parseCardDocument({ path, source }: ParseCardDocumentInput): Par
     for (let cursor = index + 1; cursor < lines.length; cursor += 1) {
       if (/^#{2,3}\s+/.test(lines[cursor]) || CARD_META_PATTERN.test(lines[cursor].trim())) { end = cursor; break; }
     }
-    cards.push(parseCardBody(lines.slice(index + 1, end), { path, line: offset + index + 1, metadata: pendingMetadata, question: questionMatch[1].trim(), category, topic }));
+    cards.push(parseCardBody(lines.slice(index + 1, end), { path, line: offset + index + 1, metadata: pendingMetadata, question: questionMatch[1].trim(), category, topic, allowImages }));
     pendingMetadata = undefined;
     index = end - 1;
   }

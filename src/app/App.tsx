@@ -20,6 +20,7 @@ import { BrowseScreen } from "./BrowseScreen";
 import { Dashboard } from "./Dashboard";
 import { RouteScreen } from "./RouteScreen";
 import { KNOWLEDGE_ROUTES, resolveRouteCards, type KnowledgeRoute } from "../routes/routes";
+import { KnowledgeRoutesContext } from "../routes/context";
 import {
   isAppHistoryState,
   pushAppHistoryState,
@@ -92,29 +93,34 @@ interface WorkspaceProps {
   onLock(): void;
 }
 
-function routeIdFromHash(hash: string): string | undefined {
-  const stepId = hash.startsWith("#route-") ? hash.slice("#route-".length) : "";
-  if (!stepId) return undefined;
-  return KNOWLEDGE_ROUTES.find((route) => route.steps.some((step) => step.id === stepId))?.id;
+export function ContentWorkspace(props: WorkspaceProps) {
+  return <KnowledgeRoutesContext.Provider value={props.payload.routes ?? KNOWLEDGE_ROUTES}><Workspace {...props} /></KnowledgeRoutesContext.Provider>;
 }
 
-function initialWorkspaceHistory(): { view: View; routeId?: string } {
+function routeIdFromHash(hash: string, routes = KNOWLEDGE_ROUTES): string | undefined {
+  const stepId = hash.startsWith("#route-") ? hash.slice("#route-".length) : "";
+  if (!stepId) return undefined;
+  return routes.find((route) => route.steps.some((step) => step.id === stepId))?.id;
+}
+
+function initialWorkspaceHistory(routes = KNOWLEDGE_ROUTES): { view: View; routeId?: string } {
   if (isAppHistoryState(window.history.state)) {
     return {
       view: window.history.state.view,
       routeId: window.history.state.view === "routes" ? window.history.state.routeId : undefined,
     };
   }
-  const routeId = routeIdFromHash(window.location.hash);
+  const routeId = routeIdFromHash(window.location.hash, routes);
   return routeId ? { view: "routes", routeId } : { view: "home" };
 }
 
 function Workspace({ payload, createStore, now, onLock }: WorkspaceProps) {
+  const routes = payload.routes ?? KNOWLEDGE_ROUTES;
   const [store, setStore] = useState<ProgressStore>();
   const [progress, setProgress] = useState(new Map<string, CardProgress>());
   const [dailyLimit, setDailyLimit] = useState<DailyLimit>(20);
-  const [view, setView] = useState<View>(() => initialWorkspaceHistory().view);
-  const [selectedRouteId, setSelectedRouteId] = useState<string | undefined>(() => initialWorkspaceHistory().routeId);
+  const [view, setView] = useState<View>(() => initialWorkspaceHistory(routes).view);
+  const [selectedRouteId, setSelectedRouteId] = useState<string | undefined>(() => initialWorkspaceHistory(routes).routeId);
   const [session, setSession] = useState<{
     deck: Deck;
     queue: QueueItem[];
@@ -125,7 +131,7 @@ function Workspace({ payload, createStore, now, onLock }: WorkspaceProps) {
   const [storageError, setStorageError] = useState(false);
 
   useEffect(() => {
-    const initial = initialWorkspaceHistory();
+    const initial = initialWorkspaceHistory(routes);
     if (!isAppHistoryState(window.history.state)) {
       replaceAppHistoryState({ view: initial.view, routeId: initial.routeId, layer: undefined, referenceId: undefined });
     }
@@ -134,7 +140,7 @@ function Workspace({ payload, createStore, now, onLock }: WorkspaceProps) {
         // Native hash navigation may dispatch popstate with a null state. It
         // is still an in-app stage transition, not a request to leave the
         // workspace; RouteDetail will apply the hash to its selected stage.
-        const routeId = routeIdFromHash(window.location.hash);
+        const routeId = routeIdFromHash(window.location.hash, routes);
         if (routeId) {
           setView("routes");
           setSelectedRouteId(routeId);
@@ -149,7 +155,7 @@ function Workspace({ payload, createStore, now, onLock }: WorkspaceProps) {
     };
     window.addEventListener("popstate", handlePopState);
     return () => window.removeEventListener("popstate", handlePopState);
-  }, []);
+  }, [routes]);
 
   const reloadProgress = useCallback(async (activeStore: ProgressStore) => {
     const [records, limit] = await Promise.all([
@@ -430,7 +436,7 @@ export function App({
   }
 
   return (
-    <Workspace
+    <ContentWorkspace
       key={payload.buildId}
       payload={payload}
       createStore={createStore}

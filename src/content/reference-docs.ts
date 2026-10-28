@@ -5,7 +5,7 @@ import path from "node:path";
 import type { ReferenceDocument, ReferenceImage } from "./payload";
 import { normalizeObsidianMarkdown } from "./markdown";
 
-interface ReferenceDocumentManifestEntry {
+export interface ReferenceDocumentManifestEntry {
   id: string;
   title: string;
   sourcePath: string;
@@ -313,8 +313,8 @@ async function packageReferenceImages(vaultRoot: string, sourcePath: string, sou
  * checkouts can still build a valid card bank. The real vault is checked by
  * the build output count before publishing.
  */
-export async function compileReferenceDocuments(vaultRoot: string): Promise<ReferenceDocument[]> {
-  const results = await Promise.all(REFERENCE_DOCUMENT_MANIFEST.map(async (entry) => {
+export async function compileReferenceDocuments(vaultRoot: string, manifest: readonly ReferenceDocumentManifestEntry[] = REFERENCE_DOCUMENT_MANIFEST): Promise<ReferenceDocument[]> {
+  const results = await Promise.all(manifest.map(async (entry) => {
     try {
       const source = await readFile(path.join(vaultRoot, entry.sourcePath), "utf8");
       const images = await packageReferenceImages(vaultRoot, entry.sourcePath, source);

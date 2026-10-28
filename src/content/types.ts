@@ -36,6 +36,7 @@ export interface ParsedCardDocument {
 }
 
 export interface CardV2 {
+  images?: import("./payload").ReferenceImage[];
   id: string;
   legacyIds: string[];
   question: string;
