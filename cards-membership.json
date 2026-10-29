@@ -1,0 +1,5134 @@
+[
+  {
+    "id": "algorithm-ai-coding-003",
+    "decks": [
+      "full"
+    ],
+    "source": "a4501ceb65307bb7b19f651daa1243bcb121dadc9deaf6573b1b8d1be446afd6",
+    "category": "08-算法与综合",
+    "priority": "P1"
+  },
+  {
+    "id": "algorithm-ai-coding-004",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "a4501ceb65307bb7b19f651daa1243bcb121dadc9deaf6573b1b8d1be446afd6",
+    "category": "08-算法与综合",
+    "priority": "P0"
+  },
+  {
+    "id": "algorithm-ai-coding-005",
+    "decks": [
+      "full"
+    ],
+    "source": "a4501ceb65307bb7b19f651daa1243bcb121dadc9deaf6573b1b8d1be446afd6",
+    "category": "08-算法与综合",
+    "priority": "P1"
+  },
+  {
+    "id": "algorithm-ai-coding-006",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "a4501ceb65307bb7b19f651daa1243bcb121dadc9deaf6573b1b8d1be446afd6",
+    "category": "08-算法与综合",
+    "priority": "P0"
+  },
+  {
+    "id": "algorithm-ai-coding-007",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "a4501ceb65307bb7b19f651daa1243bcb121dadc9deaf6573b1b8d1be446afd6",
+    "category": "08-算法与综合",
+    "priority": "P0"
+  },
+  {
+    "id": "algorithm-ai-coding-008",
+    "decks": [
+      "full"
+    ],
+    "source": "a4501ceb65307bb7b19f651daa1243bcb121dadc9deaf6573b1b8d1be446afd6",
+    "category": "08-算法与综合",
+    "priority": "P1"
+  },
+  {
+    "id": "algorithm-ai-coding-009",
+    "decks": [
+      "full"
+    ],
+    "source": "a4501ceb65307bb7b19f651daa1243bcb121dadc9deaf6573b1b8d1be446afd6",
+    "category": "08-算法与综合",
+    "priority": "P1"
+  },
+  {
+    "id": "algorithm-ai-coding-010",
+    "decks": [
+      "full"
+    ],
+    "source": "a4501ceb65307bb7b19f651daa1243bcb121dadc9deaf6573b1b8d1be446afd6",
+    "category": "08-算法与综合",
+    "priority": "P1"
+  },
+  {
+    "id": "algorithm-ai-coding-012",
+    "decks": [
+      "full"
+    ],
+    "source": "a4501ceb65307bb7b19f651daa1243bcb121dadc9deaf6573b1b8d1be446afd6",
+    "category": "08-算法与综合",
+    "priority": "P1"
+  },
+  {
+    "id": "algorithm-ai-coding-013",
+    "decks": [
+      "full"
+    ],
+    "source": "a4501ceb65307bb7b19f651daa1243bcb121dadc9deaf6573b1b8d1be446afd6",
+    "category": "08-算法与综合",
+    "priority": "P1"
+  },
+  {
+    "id": "android-activity-001",
+    "decks": [
+      "full"
+    ],
+    "source": "c45c12132b61d1f58e65c93659969ac84b65dd43597eb96913cda212544c7ba6",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-activity-002",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "c45c12132b61d1f58e65c93659969ac84b65dd43597eb96913cda212544c7ba6",
+    "category": "02-Android",
+    "priority": "P0"
+  },
+  {
+    "id": "android-activity-003",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "c45c12132b61d1f58e65c93659969ac84b65dd43597eb96913cda212544c7ba6",
+    "category": "02-Android",
+    "priority": "P0"
+  },
+  {
+    "id": "android-activity-004",
+    "decks": [
+      "full"
+    ],
+    "source": "c45c12132b61d1f58e65c93659969ac84b65dd43597eb96913cda212544c7ba6",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-activity-005",
+    "decks": [
+      "full"
+    ],
+    "source": "c45c12132b61d1f58e65c93659969ac84b65dd43597eb96913cda212544c7ba6",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-activity-006",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "c45c12132b61d1f58e65c93659969ac84b65dd43597eb96913cda212544c7ba6",
+    "category": "02-Android",
+    "priority": "P0"
+  },
+  {
+    "id": "android-activity-007",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "c45c12132b61d1f58e65c93659969ac84b65dd43597eb96913cda212544c7ba6",
+    "category": "02-Android",
+    "priority": "P0"
+  },
+  {
+    "id": "android-activity-008",
+    "decks": [
+      "full"
+    ],
+    "source": "c45c12132b61d1f58e65c93659969ac84b65dd43597eb96913cda212544c7ba6",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-activity-009",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "c45c12132b61d1f58e65c93659969ac84b65dd43597eb96913cda212544c7ba6",
+    "category": "02-Android",
+    "priority": "P0"
+  },
+  {
+    "id": "android-activity-010",
+    "decks": [
+      "full"
+    ],
+    "source": "c45c12132b61d1f58e65c93659969ac84b65dd43597eb96913cda212544c7ba6",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-activity-011",
+    "decks": [
+      "full"
+    ],
+    "source": "c45c12132b61d1f58e65c93659969ac84b65dd43597eb96913cda212544c7ba6",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-activity-012",
+    "decks": [
+      "full"
+    ],
+    "source": "c45c12132b61d1f58e65c93659969ac84b65dd43597eb96913cda212544c7ba6",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-activity-013",
+    "decks": [
+      "full"
+    ],
+    "source": "c45c12132b61d1f58e65c93659969ac84b65dd43597eb96913cda212544c7ba6",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-activity-014",
+    "decks": [
+      "full"
+    ],
+    "source": "c45c12132b61d1f58e65c93659969ac84b65dd43597eb96913cda212544c7ba6",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-activity-015",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "c45c12132b61d1f58e65c93659969ac84b65dd43597eb96913cda212544c7ba6",
+    "category": "02-Android",
+    "priority": "P0"
+  },
+  {
+    "id": "android-activity-016",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "c45c12132b61d1f58e65c93659969ac84b65dd43597eb96913cda212544c7ba6",
+    "category": "02-Android",
+    "priority": "P0"
+  },
+  {
+    "id": "android-activity-017",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "c45c12132b61d1f58e65c93659969ac84b65dd43597eb96913cda212544c7ba6",
+    "category": "02-Android",
+    "priority": "P0"
+  },
+  {
+    "id": "android-activity-018",
+    "decks": [
+      "full"
+    ],
+    "source": "c45c12132b61d1f58e65c93659969ac84b65dd43597eb96913cda212544c7ba6",
+    "category": "02-Android",
+    "priority": "P2"
+  },
+  {
+    "id": "android-activity-019",
+    "decks": [
+      "full"
+    ],
+    "source": "c45c12132b61d1f58e65c93659969ac84b65dd43597eb96913cda212544c7ba6",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-activity-020",
+    "decks": [
+      "full"
+    ],
+    "source": "c45c12132b61d1f58e65c93659969ac84b65dd43597eb96913cda212544c7ba6",
+    "category": "02-Android",
+    "priority": "P2"
+  },
+  {
+    "id": "android-activity-021",
+    "decks": [
+      "full"
+    ],
+    "source": "c45c12132b61d1f58e65c93659969ac84b65dd43597eb96913cda212544c7ba6",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-activity-022",
+    "decks": [
+      "full"
+    ],
+    "source": "c45c12132b61d1f58e65c93659969ac84b65dd43597eb96913cda212544c7ba6",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-activity-023",
+    "decks": [
+      "full"
+    ],
+    "source": "c45c12132b61d1f58e65c93659969ac84b65dd43597eb96913cda212544c7ba6",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-activity-024",
+    "decks": [
+      "full"
+    ],
+    "source": "c45c12132b61d1f58e65c93659969ac84b65dd43597eb96913cda212544c7ba6",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-android-001",
+    "decks": [
+      "full"
+    ],
+    "source": "dca32dc1dfb0f25a994ecb7f3ebd9999de0db4c62f6ca7e0ead8fedeeea924ad",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-android-003",
+    "decks": [
+      "full"
+    ],
+    "source": "dca32dc1dfb0f25a994ecb7f3ebd9999de0db4c62f6ca7e0ead8fedeeea924ad",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-android-004",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "dca32dc1dfb0f25a994ecb7f3ebd9999de0db4c62f6ca7e0ead8fedeeea924ad",
+    "category": "02-Android",
+    "priority": "P0"
+  },
+  {
+    "id": "android-android-005",
+    "decks": [
+      "full"
+    ],
+    "source": "dca32dc1dfb0f25a994ecb7f3ebd9999de0db4c62f6ca7e0ead8fedeeea924ad",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-android-006",
+    "decks": [
+      "full"
+    ],
+    "source": "dca32dc1dfb0f25a994ecb7f3ebd9999de0db4c62f6ca7e0ead8fedeeea924ad",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-android-007",
+    "decks": [
+      "full"
+    ],
+    "source": "dca32dc1dfb0f25a994ecb7f3ebd9999de0db4c62f6ca7e0ead8fedeeea924ad",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-android-008",
+    "decks": [
+      "full"
+    ],
+    "source": "dca32dc1dfb0f25a994ecb7f3ebd9999de0db4c62f6ca7e0ead8fedeeea924ad",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-android-014",
+    "decks": [
+      "full"
+    ],
+    "source": "dca32dc1dfb0f25a994ecb7f3ebd9999de0db4c62f6ca7e0ead8fedeeea924ad",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-android-015",
+    "decks": [
+      "full"
+    ],
+    "source": "13aad17b51057db2498dca8c45490d0ac005395005d5c18314f914608fb313e8",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-android-016",
+    "decks": [
+      "full"
+    ],
+    "source": "dca32dc1dfb0f25a994ecb7f3ebd9999de0db4c62f6ca7e0ead8fedeeea924ad",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-android-017",
+    "decks": [
+      "full"
+    ],
+    "source": "13aad17b51057db2498dca8c45490d0ac005395005d5c18314f914608fb313e8",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-android-018",
+    "decks": [
+      "full"
+    ],
+    "source": "dca32dc1dfb0f25a994ecb7f3ebd9999de0db4c62f6ca7e0ead8fedeeea924ad",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-android-019",
+    "decks": [
+      "full"
+    ],
+    "source": "dca32dc1dfb0f25a994ecb7f3ebd9999de0db4c62f6ca7e0ead8fedeeea924ad",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-android-023",
+    "decks": [
+      "full"
+    ],
+    "source": "dca32dc1dfb0f25a994ecb7f3ebd9999de0db4c62f6ca7e0ead8fedeeea924ad",
+    "category": "02-Android",
+    "priority": "P2"
+  },
+  {
+    "id": "android-android-024",
+    "decks": [
+      "full"
+    ],
+    "source": "dca32dc1dfb0f25a994ecb7f3ebd9999de0db4c62f6ca7e0ead8fedeeea924ad",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-android-029",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "81d0881b8c24c314ad5b88f2b17731c83f6b1496ebbb078535b31c4c5415fbdc",
+    "category": "02-Android",
+    "priority": "P0"
+  },
+  {
+    "id": "android-android-031",
+    "decks": [
+      "full"
+    ],
+    "source": "81d0881b8c24c314ad5b88f2b17731c83f6b1496ebbb078535b31c4c5415fbdc",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-android-032",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "81d0881b8c24c314ad5b88f2b17731c83f6b1496ebbb078535b31c4c5415fbdc",
+    "category": "02-Android",
+    "priority": "P0"
+  },
+  {
+    "id": "android-android-035",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "81d0881b8c24c314ad5b88f2b17731c83f6b1496ebbb078535b31c4c5415fbdc",
+    "category": "02-Android",
+    "priority": "P0"
+  },
+  {
+    "id": "android-android-036",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "81d0881b8c24c314ad5b88f2b17731c83f6b1496ebbb078535b31c4c5415fbdc",
+    "category": "02-Android",
+    "priority": "P0"
+  },
+  {
+    "id": "android-android-037",
+    "decks": [
+      "full"
+    ],
+    "source": "81d0881b8c24c314ad5b88f2b17731c83f6b1496ebbb078535b31c4c5415fbdc",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-android-038",
+    "decks": [
+      "full"
+    ],
+    "source": "81d0881b8c24c314ad5b88f2b17731c83f6b1496ebbb078535b31c4c5415fbdc",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-android-040",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "81d0881b8c24c314ad5b88f2b17731c83f6b1496ebbb078535b31c4c5415fbdc",
+    "category": "02-Android",
+    "priority": "P0"
+  },
+  {
+    "id": "android-android-045",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "63da639d806c57a9ed33d15e5fafdd356c7735960257d2004c68794a822664a6",
+    "category": "02-Android",
+    "priority": "P0"
+  },
+  {
+    "id": "android-android-046",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "63da639d806c57a9ed33d15e5fafdd356c7735960257d2004c68794a822664a6",
+    "category": "02-Android",
+    "priority": "P0"
+  },
+  {
+    "id": "android-anr-001",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "13aad17b51057db2498dca8c45490d0ac005395005d5c18314f914608fb313e8",
+    "category": "02-Android",
+    "priority": "P0"
+  },
+  {
+    "id": "android-anr-002",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "13aad17b51057db2498dca8c45490d0ac005395005d5c18314f914608fb313e8",
+    "category": "02-Android",
+    "priority": "P0"
+  },
+  {
+    "id": "android-apk-gradle-001",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "6a7c8d441e4dfe4615f5e0f1cb1f52e939d8cacd35194670a362423e2fdd9d17",
+    "category": "02-Android",
+    "priority": "P0"
+  },
+  {
+    "id": "android-apk-gradle-002",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "6a7c8d441e4dfe4615f5e0f1cb1f52e939d8cacd35194670a362423e2fdd9d17",
+    "category": "02-Android",
+    "priority": "P0"
+  },
+  {
+    "id": "android-apk-gradle-003",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "6a7c8d441e4dfe4615f5e0f1cb1f52e939d8cacd35194670a362423e2fdd9d17",
+    "category": "02-Android",
+    "priority": "P0"
+  },
+  {
+    "id": "android-apk-gradle-004",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "6a7c8d441e4dfe4615f5e0f1cb1f52e939d8cacd35194670a362423e2fdd9d17",
+    "category": "02-Android",
+    "priority": "P0"
+  },
+  {
+    "id": "android-apk-gradle-005",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "6a7c8d441e4dfe4615f5e0f1cb1f52e939d8cacd35194670a362423e2fdd9d17",
+    "category": "02-Android",
+    "priority": "P0"
+  },
+  {
+    "id": "android-apk-gradle-006",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "6a7c8d441e4dfe4615f5e0f1cb1f52e939d8cacd35194670a362423e2fdd9d17",
+    "category": "02-Android",
+    "priority": "P0"
+  },
+  {
+    "id": "android-apk-gradle-007",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "6a7c8d441e4dfe4615f5e0f1cb1f52e939d8cacd35194670a362423e2fdd9d17",
+    "category": "02-Android",
+    "priority": "P0"
+  },
+  {
+    "id": "android-apk-gradle-008",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "6a7c8d441e4dfe4615f5e0f1cb1f52e939d8cacd35194670a362423e2fdd9d17",
+    "category": "02-Android",
+    "priority": "P0"
+  },
+  {
+    "id": "android-apk-gradle-009",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "6a7c8d441e4dfe4615f5e0f1cb1f52e939d8cacd35194670a362423e2fdd9d17",
+    "category": "02-Android",
+    "priority": "P0"
+  },
+  {
+    "id": "android-apk-gradle-010",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "6a7c8d441e4dfe4615f5e0f1cb1f52e939d8cacd35194670a362423e2fdd9d17",
+    "category": "02-Android",
+    "priority": "P0"
+  },
+  {
+    "id": "android-apk-gradle-011",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "6a7c8d441e4dfe4615f5e0f1cb1f52e939d8cacd35194670a362423e2fdd9d17",
+    "category": "02-Android",
+    "priority": "P0"
+  },
+  {
+    "id": "android-apk-gradle-012",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "6a7c8d441e4dfe4615f5e0f1cb1f52e939d8cacd35194670a362423e2fdd9d17",
+    "category": "02-Android",
+    "priority": "P0"
+  },
+  {
+    "id": "android-compose-001",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "c78b1203251dbfe0d1a16b7861a576d7b5e462f80cc6d965303ca60a47d66bae",
+    "category": "02-Android",
+    "priority": "P0"
+  },
+  {
+    "id": "android-compose-002",
+    "decks": [
+      "full"
+    ],
+    "source": "c78b1203251dbfe0d1a16b7861a576d7b5e462f80cc6d965303ca60a47d66bae",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-compose-003",
+    "decks": [
+      "full"
+    ],
+    "source": "c78b1203251dbfe0d1a16b7861a576d7b5e462f80cc6d965303ca60a47d66bae",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-compose-004",
+    "decks": [
+      "full"
+    ],
+    "source": "c78b1203251dbfe0d1a16b7861a576d7b5e462f80cc6d965303ca60a47d66bae",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-compose-005",
+    "decks": [
+      "full"
+    ],
+    "source": "c78b1203251dbfe0d1a16b7861a576d7b5e462f80cc6d965303ca60a47d66bae",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-compose-006",
+    "decks": [
+      "full"
+    ],
+    "source": "c78b1203251dbfe0d1a16b7861a576d7b5e462f80cc6d965303ca60a47d66bae",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-compose-007",
+    "decks": [
+      "full"
+    ],
+    "source": "c78b1203251dbfe0d1a16b7861a576d7b5e462f80cc6d965303ca60a47d66bae",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-compose-008",
+    "decks": [
+      "full"
+    ],
+    "source": "c78b1203251dbfe0d1a16b7861a576d7b5e462f80cc6d965303ca60a47d66bae",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-compose-009",
+    "decks": [
+      "full"
+    ],
+    "source": "c78b1203251dbfe0d1a16b7861a576d7b5e462f80cc6d965303ca60a47d66bae",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-compose-010",
+    "decks": [
+      "full"
+    ],
+    "source": "c78b1203251dbfe0d1a16b7861a576d7b5e462f80cc6d965303ca60a47d66bae",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-compose-011",
+    "decks": [
+      "full"
+    ],
+    "source": "c78b1203251dbfe0d1a16b7861a576d7b5e462f80cc6d965303ca60a47d66bae",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-compose-012",
+    "decks": [
+      "full"
+    ],
+    "source": "c78b1203251dbfe0d1a16b7861a576d7b5e462f80cc6d965303ca60a47d66bae",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-compose-013",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "c78b1203251dbfe0d1a16b7861a576d7b5e462f80cc6d965303ca60a47d66bae",
+    "category": "02-Android",
+    "priority": "P0"
+  },
+  {
+    "id": "android-compose-014",
+    "decks": [
+      "full"
+    ],
+    "source": "c78b1203251dbfe0d1a16b7861a576d7b5e462f80cc6d965303ca60a47d66bae",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-compose-015",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "c78b1203251dbfe0d1a16b7861a576d7b5e462f80cc6d965303ca60a47d66bae",
+    "category": "02-Android",
+    "priority": "P0"
+  },
+  {
+    "id": "android-compose-016",
+    "decks": [
+      "full"
+    ],
+    "source": "c78b1203251dbfe0d1a16b7861a576d7b5e462f80cc6d965303ca60a47d66bae",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-fragment-001",
+    "decks": [
+      "full"
+    ],
+    "source": "6255480032d05255275716220fa053a02dcc800b25832f8faebffc569766e519",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-fragment-002",
+    "decks": [
+      "full"
+    ],
+    "source": "6255480032d05255275716220fa053a02dcc800b25832f8faebffc569766e519",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-fragment-003",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "6255480032d05255275716220fa053a02dcc800b25832f8faebffc569766e519",
+    "category": "02-Android",
+    "priority": "P0"
+  },
+  {
+    "id": "android-fragment-004",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "6255480032d05255275716220fa053a02dcc800b25832f8faebffc569766e519",
+    "category": "02-Android",
+    "priority": "P0"
+  },
+  {
+    "id": "android-fragment-005",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "6255480032d05255275716220fa053a02dcc800b25832f8faebffc569766e519",
+    "category": "02-Android",
+    "priority": "P0"
+  },
+  {
+    "id": "android-fragment-006",
+    "decks": [
+      "full"
+    ],
+    "source": "6255480032d05255275716220fa053a02dcc800b25832f8faebffc569766e519",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-fragment-007",
+    "decks": [
+      "full"
+    ],
+    "source": "6255480032d05255275716220fa053a02dcc800b25832f8faebffc569766e519",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-fragment-008",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "6255480032d05255275716220fa053a02dcc800b25832f8faebffc569766e519",
+    "category": "02-Android",
+    "priority": "P0"
+  },
+  {
+    "id": "android-fragment-009",
+    "decks": [
+      "full"
+    ],
+    "source": "6255480032d05255275716220fa053a02dcc800b25832f8faebffc569766e519",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-fragment-010",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "6255480032d05255275716220fa053a02dcc800b25832f8faebffc569766e519",
+    "category": "02-Android",
+    "priority": "P0"
+  },
+  {
+    "id": "android-fragment-011",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "6255480032d05255275716220fa053a02dcc800b25832f8faebffc569766e519",
+    "category": "02-Android",
+    "priority": "P0"
+  },
+  {
+    "id": "android-fragment-012",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "6255480032d05255275716220fa053a02dcc800b25832f8faebffc569766e519",
+    "category": "02-Android",
+    "priority": "P0"
+  },
+  {
+    "id": "android-fragment-013",
+    "decks": [
+      "full"
+    ],
+    "source": "6255480032d05255275716220fa053a02dcc800b25832f8faebffc569766e519",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-fragment-015",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "6255480032d05255275716220fa053a02dcc800b25832f8faebffc569766e519",
+    "category": "02-Android",
+    "priority": "P0"
+  },
+  {
+    "id": "android-fragment-016",
+    "decks": [
+      "full"
+    ],
+    "source": "6255480032d05255275716220fa053a02dcc800b25832f8faebffc569766e519",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-fragment-017",
+    "decks": [
+      "full"
+    ],
+    "source": "6255480032d05255275716220fa053a02dcc800b25832f8faebffc569766e519",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-fragment-018",
+    "decks": [
+      "full"
+    ],
+    "source": "6255480032d05255275716220fa053a02dcc800b25832f8faebffc569766e519",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-handler-looper-002",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "dca32dc1dfb0f25a994ecb7f3ebd9999de0db4c62f6ca7e0ead8fedeeea924ad",
+    "category": "02-Android",
+    "priority": "P0"
+  },
+  {
+    "id": "android-handler-looper-003",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "dca32dc1dfb0f25a994ecb7f3ebd9999de0db4c62f6ca7e0ead8fedeeea924ad",
+    "category": "02-Android",
+    "priority": "P0"
+  },
+  {
+    "id": "android-hilt-001",
+    "decks": [
+      "full"
+    ],
+    "source": "b9488bf7e6cb93d43e15af2cc2038a02e07e9b29dbfc40a7d098fd764a3b0ff5",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-hilt-002",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "b9488bf7e6cb93d43e15af2cc2038a02e07e9b29dbfc40a7d098fd764a3b0ff5",
+    "category": "02-Android",
+    "priority": "P0"
+  },
+  {
+    "id": "android-hilt-004",
+    "decks": [
+      "full"
+    ],
+    "source": "b9488bf7e6cb93d43e15af2cc2038a02e07e9b29dbfc40a7d098fd764a3b0ff5",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-hilt-005",
+    "decks": [
+      "full"
+    ],
+    "source": "b9488bf7e6cb93d43e15af2cc2038a02e07e9b29dbfc40a7d098fd764a3b0ff5",
+    "category": "02-Android",
+    "priority": "P2"
+  },
+  {
+    "id": "android-hilt-006",
+    "decks": [
+      "full"
+    ],
+    "source": "b9488bf7e6cb93d43e15af2cc2038a02e07e9b29dbfc40a7d098fd764a3b0ff5",
+    "category": "02-Android",
+    "priority": "P2"
+  },
+  {
+    "id": "android-hilt-007",
+    "decks": [
+      "full"
+    ],
+    "source": "b9488bf7e6cb93d43e15af2cc2038a02e07e9b29dbfc40a7d098fd764a3b0ff5",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-hilt-008",
+    "decks": [
+      "full"
+    ],
+    "source": "b9488bf7e6cb93d43e15af2cc2038a02e07e9b29dbfc40a7d098fd764a3b0ff5",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-hilt-009",
+    "decks": [
+      "full"
+    ],
+    "source": "b9488bf7e6cb93d43e15af2cc2038a02e07e9b29dbfc40a7d098fd764a3b0ff5",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-hilt-010",
+    "decks": [
+      "full"
+    ],
+    "source": "b9488bf7e6cb93d43e15af2cc2038a02e07e9b29dbfc40a7d098fd764a3b0ff5",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-hilt-011",
+    "decks": [
+      "full"
+    ],
+    "source": "b9488bf7e6cb93d43e15af2cc2038a02e07e9b29dbfc40a7d098fd764a3b0ff5",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-hilt-012",
+    "decks": [
+      "full"
+    ],
+    "source": "b9488bf7e6cb93d43e15af2cc2038a02e07e9b29dbfc40a7d098fd764a3b0ff5",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-hilt-013",
+    "decks": [
+      "full"
+    ],
+    "source": "b9488bf7e6cb93d43e15af2cc2038a02e07e9b29dbfc40a7d098fd764a3b0ff5",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-hilt-015",
+    "decks": [
+      "full"
+    ],
+    "source": "b9488bf7e6cb93d43e15af2cc2038a02e07e9b29dbfc40a7d098fd764a3b0ff5",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-hilt-017",
+    "decks": [
+      "full"
+    ],
+    "source": "b9488bf7e6cb93d43e15af2cc2038a02e07e9b29dbfc40a7d098fd764a3b0ff5",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-hilt-018",
+    "decks": [
+      "full"
+    ],
+    "source": "b9488bf7e6cb93d43e15af2cc2038a02e07e9b29dbfc40a7d098fd764a3b0ff5",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-hilt-019",
+    "decks": [
+      "full"
+    ],
+    "source": "b9488bf7e6cb93d43e15af2cc2038a02e07e9b29dbfc40a7d098fd764a3b0ff5",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-hilt-021",
+    "decks": [
+      "full"
+    ],
+    "source": "b9488bf7e6cb93d43e15af2cc2038a02e07e9b29dbfc40a7d098fd764a3b0ff5",
+    "category": "02-Android",
+    "priority": "P2"
+  },
+  {
+    "id": "android-hilt-022",
+    "decks": [
+      "full"
+    ],
+    "source": "b9488bf7e6cb93d43e15af2cc2038a02e07e9b29dbfc40a7d098fd764a3b0ff5",
+    "category": "02-Android",
+    "priority": "P2"
+  },
+  {
+    "id": "android-ipc-001",
+    "decks": [
+      "full"
+    ],
+    "source": "777dcd6d7dd324040e9373a2e1e355fbdb1e1a35b8a8f628d18d50e581a1cf4c",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-ipc-002",
+    "decks": [
+      "full"
+    ],
+    "source": "777dcd6d7dd324040e9373a2e1e355fbdb1e1a35b8a8f628d18d50e581a1cf4c",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-ipc-003",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "777dcd6d7dd324040e9373a2e1e355fbdb1e1a35b8a8f628d18d50e581a1cf4c",
+    "category": "02-Android",
+    "priority": "P0"
+  },
+  {
+    "id": "android-ipc-004",
+    "decks": [
+      "full"
+    ],
+    "source": "777dcd6d7dd324040e9373a2e1e355fbdb1e1a35b8a8f628d18d50e581a1cf4c",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-ipc-005",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "777dcd6d7dd324040e9373a2e1e355fbdb1e1a35b8a8f628d18d50e581a1cf4c",
+    "category": "02-Android",
+    "priority": "P0"
+  },
+  {
+    "id": "android-ipc-007",
+    "decks": [
+      "full"
+    ],
+    "source": "777dcd6d7dd324040e9373a2e1e355fbdb1e1a35b8a8f628d18d50e581a1cf4c",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-ipc-008",
+    "decks": [
+      "full"
+    ],
+    "source": "777dcd6d7dd324040e9373a2e1e355fbdb1e1a35b8a8f628d18d50e581a1cf4c",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-ipc-009",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "777dcd6d7dd324040e9373a2e1e355fbdb1e1a35b8a8f628d18d50e581a1cf4c",
+    "category": "02-Android",
+    "priority": "P0"
+  },
+  {
+    "id": "android-ipc-010",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "777dcd6d7dd324040e9373a2e1e355fbdb1e1a35b8a8f628d18d50e581a1cf4c",
+    "category": "02-Android",
+    "priority": "P0"
+  },
+  {
+    "id": "android-ipc-011",
+    "decks": [
+      "full"
+    ],
+    "source": "777dcd6d7dd324040e9373a2e1e355fbdb1e1a35b8a8f628d18d50e581a1cf4c",
+    "category": "02-Android",
+    "priority": "P2"
+  },
+  {
+    "id": "android-ipc-012",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "777dcd6d7dd324040e9373a2e1e355fbdb1e1a35b8a8f628d18d50e581a1cf4c",
+    "category": "02-Android",
+    "priority": "P0"
+  },
+  {
+    "id": "android-ipc-013",
+    "decks": [
+      "full"
+    ],
+    "source": "777dcd6d7dd324040e9373a2e1e355fbdb1e1a35b8a8f628d18d50e581a1cf4c",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-ipc-014",
+    "decks": [
+      "full"
+    ],
+    "source": "777dcd6d7dd324040e9373a2e1e355fbdb1e1a35b8a8f628d18d50e581a1cf4c",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-ipc-015",
+    "decks": [
+      "full"
+    ],
+    "source": "777dcd6d7dd324040e9373a2e1e355fbdb1e1a35b8a8f628d18d50e581a1cf4c",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-ipc-017",
+    "decks": [
+      "full"
+    ],
+    "source": "777dcd6d7dd324040e9373a2e1e355fbdb1e1a35b8a8f628d18d50e581a1cf4c",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-ipc-018",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "777dcd6d7dd324040e9373a2e1e355fbdb1e1a35b8a8f628d18d50e581a1cf4c",
+    "category": "02-Android",
+    "priority": "P0"
+  },
+  {
+    "id": "android-ipc-020",
+    "decks": [
+      "full"
+    ],
+    "source": "777dcd6d7dd324040e9373a2e1e355fbdb1e1a35b8a8f628d18d50e581a1cf4c",
+    "category": "02-Android",
+    "priority": "P2"
+  },
+  {
+    "id": "android-ipc-022",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "777dcd6d7dd324040e9373a2e1e355fbdb1e1a35b8a8f628d18d50e581a1cf4c",
+    "category": "02-Android",
+    "priority": "P0"
+  },
+  {
+    "id": "android-ipc-023",
+    "decks": [
+      "full"
+    ],
+    "source": "777dcd6d7dd324040e9373a2e1e355fbdb1e1a35b8a8f628d18d50e581a1cf4c",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-ipc-024",
+    "decks": [
+      "full"
+    ],
+    "source": "777dcd6d7dd324040e9373a2e1e355fbdb1e1a35b8a8f628d18d50e581a1cf4c",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-ipc-025",
+    "decks": [
+      "full"
+    ],
+    "source": "777dcd6d7dd324040e9373a2e1e355fbdb1e1a35b8a8f628d18d50e581a1cf4c",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-ipc-026",
+    "decks": [
+      "full"
+    ],
+    "source": "777dcd6d7dd324040e9373a2e1e355fbdb1e1a35b8a8f628d18d50e581a1cf4c",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-ipc-030",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "777dcd6d7dd324040e9373a2e1e355fbdb1e1a35b8a8f628d18d50e581a1cf4c",
+    "category": "02-Android",
+    "priority": "P0"
+  },
+  {
+    "id": "android-ipc-031",
+    "decks": [
+      "full"
+    ],
+    "source": "777dcd6d7dd324040e9373a2e1e355fbdb1e1a35b8a8f628d18d50e581a1cf4c",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-ipc-032",
+    "decks": [
+      "full"
+    ],
+    "source": "777dcd6d7dd324040e9373a2e1e355fbdb1e1a35b8a8f628d18d50e581a1cf4c",
+    "category": "02-Android",
+    "priority": "P2"
+  },
+  {
+    "id": "android-ipc-033",
+    "decks": [
+      "full"
+    ],
+    "source": "777dcd6d7dd324040e9373a2e1e355fbdb1e1a35b8a8f628d18d50e581a1cf4c",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-lifecycle-001",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "ee6f0d371e98cde74f2d3b70d36f40ec631f545142b2a08d7755d782ec9aa333",
+    "category": "02-Android",
+    "priority": "P0"
+  },
+  {
+    "id": "android-lifecycle-003",
+    "decks": [
+      "full"
+    ],
+    "source": "ee6f0d371e98cde74f2d3b70d36f40ec631f545142b2a08d7755d782ec9aa333",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-lifecycle-004",
+    "decks": [
+      "full"
+    ],
+    "source": "ee6f0d371e98cde74f2d3b70d36f40ec631f545142b2a08d7755d782ec9aa333",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-lifecycle-005",
+    "decks": [
+      "full"
+    ],
+    "source": "ee6f0d371e98cde74f2d3b70d36f40ec631f545142b2a08d7755d782ec9aa333",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-lifecycle-006",
+    "decks": [
+      "full"
+    ],
+    "source": "ee6f0d371e98cde74f2d3b70d36f40ec631f545142b2a08d7755d782ec9aa333",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-lifecycle-009",
+    "decks": [
+      "full"
+    ],
+    "source": "ee6f0d371e98cde74f2d3b70d36f40ec631f545142b2a08d7755d782ec9aa333",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-lifecycle-011",
+    "decks": [
+      "full"
+    ],
+    "source": "ee6f0d371e98cde74f2d3b70d36f40ec631f545142b2a08d7755d782ec9aa333",
+    "category": "02-Android",
+    "priority": "P2"
+  },
+  {
+    "id": "android-lifecycle-013",
+    "decks": [
+      "full"
+    ],
+    "source": "ee6f0d371e98cde74f2d3b70d36f40ec631f545142b2a08d7755d782ec9aa333",
+    "category": "02-Android",
+    "priority": "P2"
+  },
+  {
+    "id": "android-livedata-001",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "c7295d445e658e11619d8fff27d437161db1e7bc0ee0f17a2f009ebafd723ca8",
+    "category": "02-Android",
+    "priority": "P0"
+  },
+  {
+    "id": "android-livedata-004",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "c7295d445e658e11619d8fff27d437161db1e7bc0ee0f17a2f009ebafd723ca8",
+    "category": "02-Android",
+    "priority": "P0"
+  },
+  {
+    "id": "android-livedata-005",
+    "decks": [
+      "full"
+    ],
+    "source": "c7295d445e658e11619d8fff27d437161db1e7bc0ee0f17a2f009ebafd723ca8",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-livedata-006",
+    "decks": [
+      "full"
+    ],
+    "source": "c7295d445e658e11619d8fff27d437161db1e7bc0ee0f17a2f009ebafd723ca8",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-livedata-007",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "c7295d445e658e11619d8fff27d437161db1e7bc0ee0f17a2f009ebafd723ca8",
+    "category": "02-Android",
+    "priority": "P0"
+  },
+  {
+    "id": "android-livedata-008",
+    "decks": [
+      "full"
+    ],
+    "source": "c7295d445e658e11619d8fff27d437161db1e7bc0ee0f17a2f009ebafd723ca8",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-livedata-009",
+    "decks": [
+      "full"
+    ],
+    "source": "c7295d445e658e11619d8fff27d437161db1e7bc0ee0f17a2f009ebafd723ca8",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-livedata-010",
+    "decks": [
+      "full"
+    ],
+    "source": "c7295d445e658e11619d8fff27d437161db1e7bc0ee0f17a2f009ebafd723ca8",
+    "category": "02-Android",
+    "priority": "P2"
+  },
+  {
+    "id": "android-mvc-mvp-mvvm-mvi-001",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "63da639d806c57a9ed33d15e5fafdd356c7735960257d2004c68794a822664a6",
+    "category": "02-Android",
+    "priority": "P0"
+  },
+  {
+    "id": "android-mvc-mvp-mvvm-mvi-003",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "63da639d806c57a9ed33d15e5fafdd356c7735960257d2004c68794a822664a6",
+    "category": "02-Android",
+    "priority": "P0"
+  },
+  {
+    "id": "android-mvc-mvp-mvvm-mvi-004",
+    "decks": [
+      "full"
+    ],
+    "source": "63da639d806c57a9ed33d15e5fafdd356c7735960257d2004c68794a822664a6",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-mvc-mvp-mvvm-mvi-005",
+    "decks": [
+      "full"
+    ],
+    "source": "63da639d806c57a9ed33d15e5fafdd356c7735960257d2004c68794a822664a6",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-mvc-mvp-mvvm-mvi-007",
+    "decks": [
+      "full"
+    ],
+    "source": "63da639d806c57a9ed33d15e5fafdd356c7735960257d2004c68794a822664a6",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-mvc-mvp-mvvm-mvi-010",
+    "decks": [
+      "full"
+    ],
+    "source": "63da639d806c57a9ed33d15e5fafdd356c7735960257d2004c68794a822664a6",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-mvc-mvp-mvvm-mvi-011",
+    "decks": [
+      "full"
+    ],
+    "source": "63da639d806c57a9ed33d15e5fafdd356c7735960257d2004c68794a822664a6",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-mvc-mvp-mvvm-mvi-012",
+    "decks": [
+      "full"
+    ],
+    "source": "63da639d806c57a9ed33d15e5fafdd356c7735960257d2004c68794a822664a6",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-mvc-mvp-mvvm-mvi-013",
+    "decks": [
+      "full"
+    ],
+    "source": "63da639d806c57a9ed33d15e5fafdd356c7735960257d2004c68794a822664a6",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-mvc-mvp-mvvm-mvi-014",
+    "decks": [
+      "full"
+    ],
+    "source": "63da639d806c57a9ed33d15e5fafdd356c7735960257d2004c68794a822664a6",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-mvc-mvp-mvvm-mvi-015",
+    "decks": [
+      "full"
+    ],
+    "source": "63da639d806c57a9ed33d15e5fafdd356c7735960257d2004c68794a822664a6",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-mvc-mvp-mvvm-mvi-016",
+    "decks": [
+      "full"
+    ],
+    "source": "63da639d806c57a9ed33d15e5fafdd356c7735960257d2004c68794a822664a6",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-mvc-mvp-mvvm-mvi-017",
+    "decks": [
+      "full"
+    ],
+    "source": "63da639d806c57a9ed33d15e5fafdd356c7735960257d2004c68794a822664a6",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-page-001",
+    "decks": [
+      "full"
+    ],
+    "source": "e1c238affe3ad1d2c73bf18be793f7db96f081ca72c0e585986ded4dac20c0a2",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-page-002",
+    "decks": [
+      "full"
+    ],
+    "source": "662e7c2aa101165daced5898f4854d8f188c0efbd8a3db632ab50be0359fa4bd",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-page-003",
+    "decks": [
+      "full"
+    ],
+    "source": "662e7c2aa101165daced5898f4854d8f188c0efbd8a3db632ab50be0359fa4bd",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-page-004",
+    "decks": [
+      "full"
+    ],
+    "source": "662e7c2aa101165daced5898f4854d8f188c0efbd8a3db632ab50be0359fa4bd",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-page-005",
+    "decks": [
+      "full"
+    ],
+    "source": "662e7c2aa101165daced5898f4854d8f188c0efbd8a3db632ab50be0359fa4bd",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-page-006",
+    "decks": [
+      "full"
+    ],
+    "source": "662e7c2aa101165daced5898f4854d8f188c0efbd8a3db632ab50be0359fa4bd",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-page-007",
+    "decks": [
+      "full"
+    ],
+    "source": "662e7c2aa101165daced5898f4854d8f188c0efbd8a3db632ab50be0359fa4bd",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-page-008",
+    "decks": [
+      "full"
+    ],
+    "source": "662e7c2aa101165daced5898f4854d8f188c0efbd8a3db632ab50be0359fa4bd",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-page-009",
+    "decks": [
+      "full"
+    ],
+    "source": "662e7c2aa101165daced5898f4854d8f188c0efbd8a3db632ab50be0359fa4bd",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-page-010",
+    "decks": [
+      "full"
+    ],
+    "source": "662e7c2aa101165daced5898f4854d8f188c0efbd8a3db632ab50be0359fa4bd",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-page-011",
+    "decks": [
+      "full"
+    ],
+    "source": "662e7c2aa101165daced5898f4854d8f188c0efbd8a3db632ab50be0359fa4bd",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-page-012",
+    "decks": [
+      "full"
+    ],
+    "source": "662e7c2aa101165daced5898f4854d8f188c0efbd8a3db632ab50be0359fa4bd",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-performance-001",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "1dfbf7ea08a831e8ba5e123acfcde28f2ada6b77dfd2c21f57a7a78d42180d42",
+    "category": "02-Android",
+    "priority": "P0"
+  },
+  {
+    "id": "android-performance-002",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "1dfbf7ea08a831e8ba5e123acfcde28f2ada6b77dfd2c21f57a7a78d42180d42",
+    "category": "02-Android",
+    "priority": "P0"
+  },
+  {
+    "id": "android-performance-003",
+    "decks": [
+      "full"
+    ],
+    "source": "1dfbf7ea08a831e8ba5e123acfcde28f2ada6b77dfd2c21f57a7a78d42180d42",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-performance-004",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "1dfbf7ea08a831e8ba5e123acfcde28f2ada6b77dfd2c21f57a7a78d42180d42",
+    "category": "02-Android",
+    "priority": "P0"
+  },
+  {
+    "id": "android-performance-005",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "1dfbf7ea08a831e8ba5e123acfcde28f2ada6b77dfd2c21f57a7a78d42180d42",
+    "category": "02-Android",
+    "priority": "P0"
+  },
+  {
+    "id": "android-performance-006",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "1dfbf7ea08a831e8ba5e123acfcde28f2ada6b77dfd2c21f57a7a78d42180d42",
+    "category": "02-Android",
+    "priority": "P0"
+  },
+  {
+    "id": "android-performance-007",
+    "decks": [
+      "full"
+    ],
+    "source": "1dfbf7ea08a831e8ba5e123acfcde28f2ada6b77dfd2c21f57a7a78d42180d42",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-performance-008",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "1dfbf7ea08a831e8ba5e123acfcde28f2ada6b77dfd2c21f57a7a78d42180d42",
+    "category": "02-Android",
+    "priority": "P0"
+  },
+  {
+    "id": "android-performance-009",
+    "decks": [
+      "full"
+    ],
+    "source": "1dfbf7ea08a831e8ba5e123acfcde28f2ada6b77dfd2c21f57a7a78d42180d42",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-performance-010",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "1dfbf7ea08a831e8ba5e123acfcde28f2ada6b77dfd2c21f57a7a78d42180d42",
+    "category": "02-Android",
+    "priority": "P0"
+  },
+  {
+    "id": "android-performance-011",
+    "decks": [
+      "full"
+    ],
+    "source": "1dfbf7ea08a831e8ba5e123acfcde28f2ada6b77dfd2c21f57a7a78d42180d42",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-performance-012",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "1dfbf7ea08a831e8ba5e123acfcde28f2ada6b77dfd2c21f57a7a78d42180d42",
+    "category": "02-Android",
+    "priority": "P0"
+  },
+  {
+    "id": "android-performance-013",
+    "decks": [
+      "full"
+    ],
+    "source": "1dfbf7ea08a831e8ba5e123acfcde28f2ada6b77dfd2c21f57a7a78d42180d42",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-performance-014",
+    "decks": [
+      "full"
+    ],
+    "source": "1dfbf7ea08a831e8ba5e123acfcde28f2ada6b77dfd2c21f57a7a78d42180d42",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-performance-015",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "1dfbf7ea08a831e8ba5e123acfcde28f2ada6b77dfd2c21f57a7a78d42180d42",
+    "category": "02-Android",
+    "priority": "P0"
+  },
+  {
+    "id": "android-performance-016",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "1dfbf7ea08a831e8ba5e123acfcde28f2ada6b77dfd2c21f57a7a78d42180d42",
+    "category": "02-Android",
+    "priority": "P0"
+  },
+  {
+    "id": "android-room-compose-001",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "c0fde2a6dfc8e31e82d171775457e35d271d24de8b2691620ec4b1e438b48f14",
+    "category": "02-Android",
+    "priority": "P0"
+  },
+  {
+    "id": "android-room-compose-002",
+    "decks": [
+      "full"
+    ],
+    "source": "c0fde2a6dfc8e31e82d171775457e35d271d24de8b2691620ec4b1e438b48f14",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-room-compose-003",
+    "decks": [
+      "full"
+    ],
+    "source": "c0fde2a6dfc8e31e82d171775457e35d271d24de8b2691620ec4b1e438b48f14",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-room-compose-004",
+    "decks": [
+      "full"
+    ],
+    "source": "c0fde2a6dfc8e31e82d171775457e35d271d24de8b2691620ec4b1e438b48f14",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-room-compose-005",
+    "decks": [
+      "full"
+    ],
+    "source": "c0fde2a6dfc8e31e82d171775457e35d271d24de8b2691620ec4b1e438b48f14",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-room-compose-006",
+    "decks": [
+      "full"
+    ],
+    "source": "c0fde2a6dfc8e31e82d171775457e35d271d24de8b2691620ec4b1e438b48f14",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-room-compose-007",
+    "decks": [
+      "full"
+    ],
+    "source": "c0fde2a6dfc8e31e82d171775457e35d271d24de8b2691620ec4b1e438b48f14",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-room-compose-008",
+    "decks": [
+      "full"
+    ],
+    "source": "c0fde2a6dfc8e31e82d171775457e35d271d24de8b2691620ec4b1e438b48f14",
+    "category": "02-Android",
+    "priority": "P2"
+  },
+  {
+    "id": "android-room-compose-010",
+    "decks": [
+      "full"
+    ],
+    "source": "c0fde2a6dfc8e31e82d171775457e35d271d24de8b2691620ec4b1e438b48f14",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-room-compose-018",
+    "decks": [
+      "full"
+    ],
+    "source": "c0fde2a6dfc8e31e82d171775457e35d271d24de8b2691620ec4b1e438b48f14",
+    "category": "02-Android",
+    "priority": "P2"
+  },
+  {
+    "id": "android-startup-flow-001",
+    "decks": [
+      "full"
+    ],
+    "source": "e1c238affe3ad1d2c73bf18be793f7db96f081ca72c0e585986ded4dac20c0a2",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-startup-metrics-001",
+    "decks": [
+      "full"
+    ],
+    "source": "e1c238affe3ad1d2c73bf18be793f7db96f081ca72c0e585986ded4dac20c0a2",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-startup-reuse-001",
+    "decks": [
+      "full"
+    ],
+    "source": "e1c238affe3ad1d2c73bf18be793f7db96f081ca72c0e585986ded4dac20c0a2",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-startup-trace-001",
+    "decks": [
+      "full"
+    ],
+    "source": "e1c238affe3ad1d2c73bf18be793f7db96f081ca72c0e585986ded4dac20c0a2",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-startup-types-001",
+    "decks": [
+      "full"
+    ],
+    "source": "e1c238affe3ad1d2c73bf18be793f7db96f081ca72c0e585986ded4dac20c0a2",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-viewmodel-001",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "1f1741414aa6fe696b2a9b607bf109ba1a6884b662484641ba3249515fb72b72",
+    "category": "02-Android",
+    "priority": "P0"
+  },
+  {
+    "id": "android-viewmodel-004",
+    "decks": [
+      "full"
+    ],
+    "source": "1f1741414aa6fe696b2a9b607bf109ba1a6884b662484641ba3249515fb72b72",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-viewmodel-005",
+    "decks": [
+      "full"
+    ],
+    "source": "1f1741414aa6fe696b2a9b607bf109ba1a6884b662484641ba3249515fb72b72",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-viewmodel-008",
+    "decks": [
+      "full"
+    ],
+    "source": "1f1741414aa6fe696b2a9b607bf109ba1a6884b662484641ba3249515fb72b72",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-viewmodel-010",
+    "decks": [
+      "full"
+    ],
+    "source": "1f1741414aa6fe696b2a9b607bf109ba1a6884b662484641ba3249515fb72b72",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-viewmodel-011",
+    "decks": [
+      "full"
+    ],
+    "source": "1f1741414aa6fe696b2a9b607bf109ba1a6884b662484641ba3249515fb72b72",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-viewmodel-012",
+    "decks": [
+      "full"
+    ],
+    "source": "1f1741414aa6fe696b2a9b607bf109ba1a6884b662484641ba3249515fb72b72",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-viewmodel-013",
+    "decks": [
+      "full"
+    ],
+    "source": "1f1741414aa6fe696b2a9b607bf109ba1a6884b662484641ba3249515fb72b72",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-viewmodel-014",
+    "decks": [
+      "full"
+    ],
+    "source": "1f1741414aa6fe696b2a9b607bf109ba1a6884b662484641ba3249515fb72b72",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-viewmodel-016",
+    "decks": [
+      "full"
+    ],
+    "source": "1f1741414aa6fe696b2a9b607bf109ba1a6884b662484641ba3249515fb72b72",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-workmanager-001",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "f0e62a3d3865ecf8e138a14cf5fb531eafddb9491deb96b9573f2dc967e57433",
+    "category": "02-Android",
+    "priority": "P0"
+  },
+  {
+    "id": "android-workmanager-004",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "f0e62a3d3865ecf8e138a14cf5fb531eafddb9491deb96b9573f2dc967e57433",
+    "category": "02-Android",
+    "priority": "P0"
+  },
+  {
+    "id": "android-workmanager-005",
+    "decks": [
+      "full"
+    ],
+    "source": "f0e62a3d3865ecf8e138a14cf5fb531eafddb9491deb96b9573f2dc967e57433",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-workmanager-007",
+    "decks": [
+      "full"
+    ],
+    "source": "f0e62a3d3865ecf8e138a14cf5fb531eafddb9491deb96b9573f2dc967e57433",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-workmanager-008",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "f0e62a3d3865ecf8e138a14cf5fb531eafddb9491deb96b9573f2dc967e57433",
+    "category": "02-Android",
+    "priority": "P0"
+  },
+  {
+    "id": "android-workmanager-009",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "f0e62a3d3865ecf8e138a14cf5fb531eafddb9491deb96b9573f2dc967e57433",
+    "category": "02-Android",
+    "priority": "P0"
+  },
+  {
+    "id": "android-workmanager-010",
+    "decks": [
+      "full"
+    ],
+    "source": "f0e62a3d3865ecf8e138a14cf5fb531eafddb9491deb96b9573f2dc967e57433",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-workmanager-012",
+    "decks": [
+      "full"
+    ],
+    "source": "f0e62a3d3865ecf8e138a14cf5fb531eafddb9491deb96b9573f2dc967e57433",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-workmanager-013",
+    "decks": [
+      "full"
+    ],
+    "source": "f0e62a3d3865ecf8e138a14cf5fb531eafddb9491deb96b9573f2dc967e57433",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-workmanager-014",
+    "decks": [
+      "full"
+    ],
+    "source": "f0e62a3d3865ecf8e138a14cf5fb531eafddb9491deb96b9573f2dc967e57433",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-workmanager-015",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "f0e62a3d3865ecf8e138a14cf5fb531eafddb9491deb96b9573f2dc967e57433",
+    "category": "02-Android",
+    "priority": "P0"
+  },
+  {
+    "id": "android-workmanager-016",
+    "decks": [
+      "full"
+    ],
+    "source": "f0e62a3d3865ecf8e138a14cf5fb531eafddb9491deb96b9573f2dc967e57433",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-workmanager-017",
+    "decks": [
+      "full"
+    ],
+    "source": "f0e62a3d3865ecf8e138a14cf5fb531eafddb9491deb96b9573f2dc967e57433",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-workmanager-018",
+    "decks": [
+      "full"
+    ],
+    "source": "f0e62a3d3865ecf8e138a14cf5fb531eafddb9491deb96b9573f2dc967e57433",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-workmanager-019",
+    "decks": [
+      "full"
+    ],
+    "source": "f0e62a3d3865ecf8e138a14cf5fb531eafddb9491deb96b9573f2dc967e57433",
+    "category": "02-Android",
+    "priority": "P2"
+  },
+  {
+    "id": "android-workmanager-020",
+    "decks": [
+      "full"
+    ],
+    "source": "f0e62a3d3865ecf8e138a14cf5fb531eafddb9491deb96b9573f2dc967e57433",
+    "category": "02-Android",
+    "priority": "P1"
+  },
+  {
+    "id": "android-workmanager-021",
+    "decks": [
+      "full"
+    ],
+    "source": "f0e62a3d3865ecf8e138a14cf5fb531eafddb9491deb96b9573f2dc967e57433",
+    "category": "02-Android",
+    "priority": "P2"
+  },
+  {
+    "id": "android-workmanager-023",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "f0e62a3d3865ecf8e138a14cf5fb531eafddb9491deb96b9573f2dc967e57433",
+    "category": "02-Android",
+    "priority": "P0"
+  },
+  {
+    "id": "design-196dfd1e-001",
+    "decks": [
+      "full"
+    ],
+    "source": "0ab1c165f351a98fa411c1a1dd222c56fedd65ea813e7ff406e1051005d1b00c",
+    "category": "05-设计模式",
+    "priority": "P1"
+  },
+  {
+    "id": "design-196dfd1e-003",
+    "decks": [
+      "full"
+    ],
+    "source": "0ab1c165f351a98fa411c1a1dd222c56fedd65ea813e7ff406e1051005d1b00c",
+    "category": "05-设计模式",
+    "priority": "P1"
+  },
+  {
+    "id": "design-196dfd1e-005",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "0ab1c165f351a98fa411c1a1dd222c56fedd65ea813e7ff406e1051005d1b00c",
+    "category": "05-设计模式",
+    "priority": "P0"
+  },
+  {
+    "id": "design-196dfd1e-006",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "0ab1c165f351a98fa411c1a1dd222c56fedd65ea813e7ff406e1051005d1b00c",
+    "category": "05-设计模式",
+    "priority": "P0"
+  },
+  {
+    "id": "design-196dfd1e-008",
+    "decks": [
+      "full"
+    ],
+    "source": "0ab1c165f351a98fa411c1a1dd222c56fedd65ea813e7ff406e1051005d1b00c",
+    "category": "05-设计模式",
+    "priority": "P1"
+  },
+  {
+    "id": "design-196dfd1e-009",
+    "decks": [
+      "full"
+    ],
+    "source": "0ab1c165f351a98fa411c1a1dd222c56fedd65ea813e7ff406e1051005d1b00c",
+    "category": "05-设计模式",
+    "priority": "P2"
+  },
+  {
+    "id": "design-1f4fa931-001",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "2a3e38577de6652bf621530f7305cd98635cebee8036b3734db5010d0f0db2dd",
+    "category": "05-设计模式",
+    "priority": "P0"
+  },
+  {
+    "id": "design-1f4fa931-003",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "2a3e38577de6652bf621530f7305cd98635cebee8036b3734db5010d0f0db2dd",
+    "category": "05-设计模式",
+    "priority": "P0"
+  },
+  {
+    "id": "design-1f4fa931-004",
+    "decks": [
+      "full"
+    ],
+    "source": "2a3e38577de6652bf621530f7305cd98635cebee8036b3734db5010d0f0db2dd",
+    "category": "05-设计模式",
+    "priority": "P1"
+  },
+  {
+    "id": "design-1f4fa931-005",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "2a3e38577de6652bf621530f7305cd98635cebee8036b3734db5010d0f0db2dd",
+    "category": "05-设计模式",
+    "priority": "P0"
+  },
+  {
+    "id": "design-1f4fa931-006",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "2a3e38577de6652bf621530f7305cd98635cebee8036b3734db5010d0f0db2dd",
+    "category": "05-设计模式",
+    "priority": "P0"
+  },
+  {
+    "id": "design-1f4fa931-007",
+    "decks": [
+      "full"
+    ],
+    "source": "2a3e38577de6652bf621530f7305cd98635cebee8036b3734db5010d0f0db2dd",
+    "category": "05-设计模式",
+    "priority": "P1"
+  },
+  {
+    "id": "design-1f4fa931-008",
+    "decks": [
+      "full"
+    ],
+    "source": "2a3e38577de6652bf621530f7305cd98635cebee8036b3734db5010d0f0db2dd",
+    "category": "05-设计模式",
+    "priority": "P1"
+  },
+  {
+    "id": "design-4cc6ed85-001",
+    "decks": [
+      "full"
+    ],
+    "source": "f2c75c76128ce5d88ed17ef4839268dd7433f833578f5864acfdfefb7213acf2",
+    "category": "05-设计模式",
+    "priority": "P1"
+  },
+  {
+    "id": "design-4cc6ed85-002",
+    "decks": [
+      "full"
+    ],
+    "source": "f2c75c76128ce5d88ed17ef4839268dd7433f833578f5864acfdfefb7213acf2",
+    "category": "05-设计模式",
+    "priority": "P1"
+  },
+  {
+    "id": "design-4cc6ed85-003",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "f2c75c76128ce5d88ed17ef4839268dd7433f833578f5864acfdfefb7213acf2",
+    "category": "05-设计模式",
+    "priority": "P0"
+  },
+  {
+    "id": "design-4cc6ed85-004",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "f2c75c76128ce5d88ed17ef4839268dd7433f833578f5864acfdfefb7213acf2",
+    "category": "05-设计模式",
+    "priority": "P0"
+  },
+  {
+    "id": "design-4cc6ed85-007",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "f2c75c76128ce5d88ed17ef4839268dd7433f833578f5864acfdfefb7213acf2",
+    "category": "05-设计模式",
+    "priority": "P0"
+  },
+  {
+    "id": "design-4cc6ed85-008",
+    "decks": [
+      "full"
+    ],
+    "source": "f2c75c76128ce5d88ed17ef4839268dd7433f833578f5864acfdfefb7213acf2",
+    "category": "05-设计模式",
+    "priority": "P1"
+  },
+  {
+    "id": "design-a9622ff8-001",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "027d8e0f1529190360b9233ce232cad0dec0e14ef2a57ba3f78bc9c7df43b49e",
+    "category": "05-设计模式",
+    "priority": "P0"
+  },
+  {
+    "id": "design-a9622ff8-003",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "027d8e0f1529190360b9233ce232cad0dec0e14ef2a57ba3f78bc9c7df43b49e",
+    "category": "05-设计模式",
+    "priority": "P0"
+  },
+  {
+    "id": "design-a9622ff8-005",
+    "decks": [
+      "full"
+    ],
+    "source": "027d8e0f1529190360b9233ce232cad0dec0e14ef2a57ba3f78bc9c7df43b49e",
+    "category": "05-设计模式",
+    "priority": "P2"
+  },
+  {
+    "id": "design-a9622ff8-006",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "027d8e0f1529190360b9233ce232cad0dec0e14ef2a57ba3f78bc9c7df43b49e",
+    "category": "05-设计模式",
+    "priority": "P0"
+  },
+  {
+    "id": "design-a9622ff8-007",
+    "decks": [
+      "full"
+    ],
+    "source": "027d8e0f1529190360b9233ce232cad0dec0e14ef2a57ba3f78bc9c7df43b49e",
+    "category": "05-设计模式",
+    "priority": "P1"
+  },
+  {
+    "id": "design-a9622ff8-008",
+    "decks": [
+      "full"
+    ],
+    "source": "027d8e0f1529190360b9233ce232cad0dec0e14ef2a57ba3f78bc9c7df43b49e",
+    "category": "05-设计模式",
+    "priority": "P2"
+  },
+  {
+    "id": "design-a9622ff8-009",
+    "decks": [
+      "full"
+    ],
+    "source": "027d8e0f1529190360b9233ce232cad0dec0e14ef2a57ba3f78bc9c7df43b49e",
+    "category": "05-设计模式",
+    "priority": "P1"
+  },
+  {
+    "id": "design-a9622ff8-010",
+    "decks": [
+      "full"
+    ],
+    "source": "027d8e0f1529190360b9233ce232cad0dec0e14ef2a57ba3f78bc9c7df43b49e",
+    "category": "05-设计模式",
+    "priority": "P1"
+  },
+  {
+    "id": "design-a9622ff8-012",
+    "decks": [
+      "full"
+    ],
+    "source": "027d8e0f1529190360b9233ce232cad0dec0e14ef2a57ba3f78bc9c7df43b49e",
+    "category": "05-设计模式",
+    "priority": "P2"
+  },
+  {
+    "id": "design-a9622ff8-013",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "027d8e0f1529190360b9233ce232cad0dec0e14ef2a57ba3f78bc9c7df43b49e",
+    "category": "05-设计模式",
+    "priority": "P0"
+  },
+  {
+    "id": "design-c0b7fa65-001",
+    "decks": [
+      "full"
+    ],
+    "source": "078d483088ff7a85801e2078d868a0e64d85a2aafa6e8d438bf11ce1b87cecd6",
+    "category": "05-设计模式",
+    "priority": "P1"
+  },
+  {
+    "id": "design-c0b7fa65-002",
+    "decks": [
+      "full"
+    ],
+    "source": "078d483088ff7a85801e2078d868a0e64d85a2aafa6e8d438bf11ce1b87cecd6",
+    "category": "05-设计模式",
+    "priority": "P1"
+  },
+  {
+    "id": "design-c0b7fa65-003",
+    "decks": [
+      "full"
+    ],
+    "source": "078d483088ff7a85801e2078d868a0e64d85a2aafa6e8d438bf11ce1b87cecd6",
+    "category": "05-设计模式",
+    "priority": "P2"
+  },
+  {
+    "id": "design-c0b7fa65-004",
+    "decks": [
+      "full"
+    ],
+    "source": "078d483088ff7a85801e2078d868a0e64d85a2aafa6e8d438bf11ce1b87cecd6",
+    "category": "05-设计模式",
+    "priority": "P2"
+  },
+  {
+    "id": "design-c0b7fa65-008",
+    "decks": [
+      "full"
+    ],
+    "source": "078d483088ff7a85801e2078d868a0e64d85a2aafa6e8d438bf11ce1b87cecd6",
+    "category": "05-设计模式",
+    "priority": "P1"
+  },
+  {
+    "id": "design-c0b7fa65-009",
+    "decks": [
+      "full"
+    ],
+    "source": "078d483088ff7a85801e2078d868a0e64d85a2aafa6e8d438bf11ce1b87cecd6",
+    "category": "05-设计模式",
+    "priority": "P2"
+  },
+  {
+    "id": "design-c0b7fa65-010",
+    "decks": [
+      "full"
+    ],
+    "source": "078d483088ff7a85801e2078d868a0e64d85a2aafa6e8d438bf11ce1b87cecd6",
+    "category": "05-设计模式",
+    "priority": "P2"
+  },
+  {
+    "id": "design-c0b7fa65-011",
+    "decks": [
+      "full"
+    ],
+    "source": "078d483088ff7a85801e2078d868a0e64d85a2aafa6e8d438bf11ce1b87cecd6",
+    "category": "05-设计模式",
+    "priority": "P1"
+  },
+  {
+    "id": "design-fc33463b-001",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "230c9ae6869061ec94be2156f575fe6f57246f0d54dec9f24b67f55c664c22df",
+    "category": "05-设计模式",
+    "priority": "P0"
+  },
+  {
+    "id": "design-fc33463b-003",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "230c9ae6869061ec94be2156f575fe6f57246f0d54dec9f24b67f55c664c22df",
+    "category": "05-设计模式",
+    "priority": "P0"
+  },
+  {
+    "id": "design-fsm-001",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "74e83bbcad68500a9b026b20b46d3303fae99cd51e44824f19cfac57110102e5",
+    "category": "05-设计模式",
+    "priority": "P0"
+  },
+  {
+    "id": "design-fsm-003",
+    "decks": [
+      "full"
+    ],
+    "source": "74e83bbcad68500a9b026b20b46d3303fae99cd51e44824f19cfac57110102e5",
+    "category": "05-设计模式",
+    "priority": "P1"
+  },
+  {
+    "id": "design-fsm-004",
+    "decks": [
+      "full"
+    ],
+    "source": "74e83bbcad68500a9b026b20b46d3303fae99cd51e44824f19cfac57110102e5",
+    "category": "05-设计模式",
+    "priority": "P1"
+  },
+  {
+    "id": "design-fsm-005",
+    "decks": [
+      "full"
+    ],
+    "source": "74e83bbcad68500a9b026b20b46d3303fae99cd51e44824f19cfac57110102e5",
+    "category": "05-设计模式",
+    "priority": "P2"
+  },
+  {
+    "id": "design-fsm-007",
+    "decks": [
+      "full"
+    ],
+    "source": "74e83bbcad68500a9b026b20b46d3303fae99cd51e44824f19cfac57110102e5",
+    "category": "05-设计模式",
+    "priority": "P1"
+  },
+  {
+    "id": "design-fsm-008",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "74e83bbcad68500a9b026b20b46d3303fae99cd51e44824f19cfac57110102e5",
+    "category": "05-设计模式",
+    "priority": "P0"
+  },
+  {
+    "id": "design-fsm-009",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "74e83bbcad68500a9b026b20b46d3303fae99cd51e44824f19cfac57110102e5",
+    "category": "05-设计模式",
+    "priority": "P0"
+  },
+  {
+    "id": "design-fsm-010",
+    "decks": [
+      "full"
+    ],
+    "source": "74e83bbcad68500a9b026b20b46d3303fae99cd51e44824f19cfac57110102e5",
+    "category": "05-设计模式",
+    "priority": "P2"
+  },
+  {
+    "id": "design-fsm-011",
+    "decks": [
+      "full"
+    ],
+    "source": "74e83bbcad68500a9b026b20b46d3303fae99cd51e44824f19cfac57110102e5",
+    "category": "05-设计模式",
+    "priority": "P1"
+  },
+  {
+    "id": "design-fsm-012",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "74e83bbcad68500a9b026b20b46d3303fae99cd51e44824f19cfac57110102e5",
+    "category": "05-设计模式",
+    "priority": "P0"
+  },
+  {
+    "id": "design-fsm-015",
+    "decks": [
+      "full"
+    ],
+    "source": "74e83bbcad68500a9b026b20b46d3303fae99cd51e44824f19cfac57110102e5",
+    "category": "05-设计模式",
+    "priority": "P1"
+  },
+  {
+    "id": "design-fsm-016",
+    "decks": [
+      "full"
+    ],
+    "source": "74e83bbcad68500a9b026b20b46d3303fae99cd51e44824f19cfac57110102e5",
+    "category": "05-设计模式",
+    "priority": "P2"
+  },
+  {
+    "id": "extended-ai-002",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "a4501ceb65307bb7b19f651daa1243bcb121dadc9deaf6573b1b8d1be446afd6",
+    "category": "08-算法与综合",
+    "priority": "P0"
+  },
+  {
+    "id": "extended-ai-006",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "a4501ceb65307bb7b19f651daa1243bcb121dadc9deaf6573b1b8d1be446afd6",
+    "category": "08-算法与综合",
+    "priority": "P0"
+  },
+  {
+    "id": "extended-harmonyos-arkts-stage-001",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "5d51677547e82e1c6460306830152986f6faaf5039eb7af398edec55188ae47a",
+    "category": "08-跨端与扩展技术",
+    "priority": "P0"
+  },
+  {
+    "id": "extended-harmonyos-arkts-stage-002",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "5d51677547e82e1c6460306830152986f6faaf5039eb7af398edec55188ae47a",
+    "category": "08-跨端与扩展技术",
+    "priority": "P0"
+  },
+  {
+    "id": "extended-harmonyos-arkts-stage-003",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "5d51677547e82e1c6460306830152986f6faaf5039eb7af398edec55188ae47a",
+    "category": "08-跨端与扩展技术",
+    "priority": "P0"
+  },
+  {
+    "id": "extended-harmonyos-arkts-stage-004",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "5d51677547e82e1c6460306830152986f6faaf5039eb7af398edec55188ae47a",
+    "category": "08-跨端与扩展技术",
+    "priority": "P0"
+  },
+  {
+    "id": "extended-harmonyos-arkts-stage-005",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "5d51677547e82e1c6460306830152986f6faaf5039eb7af398edec55188ae47a",
+    "category": "08-跨端与扩展技术",
+    "priority": "P0"
+  },
+  {
+    "id": "extended-harmonyos-arkts-stage-006",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "5d51677547e82e1c6460306830152986f6faaf5039eb7af398edec55188ae47a",
+    "category": "08-跨端与扩展技术",
+    "priority": "P0"
+  },
+  {
+    "id": "extended-harmonyos-arkts-stage-007",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "5d51677547e82e1c6460306830152986f6faaf5039eb7af398edec55188ae47a",
+    "category": "08-跨端与扩展技术",
+    "priority": "P0"
+  },
+  {
+    "id": "extended-harmonyos-arkts-stage-008",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "5d51677547e82e1c6460306830152986f6faaf5039eb7af398edec55188ae47a",
+    "category": "08-跨端与扩展技术",
+    "priority": "P0"
+  },
+  {
+    "id": "extended-kotlin-multiplatform-kmp-001",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "61d0cf1407936bad8e7aceefbce67605983199e3242ed3460ef4da24f3360874",
+    "category": "08-跨端与扩展技术",
+    "priority": "P0"
+  },
+  {
+    "id": "extended-kotlin-multiplatform-kmp-002",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "61d0cf1407936bad8e7aceefbce67605983199e3242ed3460ef4da24f3360874",
+    "category": "08-跨端与扩展技术",
+    "priority": "P0"
+  },
+  {
+    "id": "extended-kotlin-multiplatform-kmp-003",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "61d0cf1407936bad8e7aceefbce67605983199e3242ed3460ef4da24f3360874",
+    "category": "08-跨端与扩展技术",
+    "priority": "P0"
+  },
+  {
+    "id": "extended-kotlin-multiplatform-kmp-004",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "61d0cf1407936bad8e7aceefbce67605983199e3242ed3460ef4da24f3360874",
+    "category": "08-跨端与扩展技术",
+    "priority": "P0"
+  },
+  {
+    "id": "extended-kotlin-multiplatform-kmp-005",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "61d0cf1407936bad8e7aceefbce67605983199e3242ed3460ef4da24f3360874",
+    "category": "08-跨端与扩展技术",
+    "priority": "P0"
+  },
+  {
+    "id": "extended-kotlin-multiplatform-kmp-006",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "61d0cf1407936bad8e7aceefbce67605983199e3242ed3460ef4da24f3360874",
+    "category": "08-跨端与扩展技术",
+    "priority": "P0"
+  },
+  {
+    "id": "extended-kotlin-multiplatform-kmp-007",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "61d0cf1407936bad8e7aceefbce67605983199e3242ed3460ef4da24f3360874",
+    "category": "08-跨端与扩展技术",
+    "priority": "P0"
+  },
+  {
+    "id": "extended-kotlin-multiplatform-kmp-008",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "61d0cf1407936bad8e7aceefbce67605983199e3242ed3460ef4da24f3360874",
+    "category": "08-跨端与扩展技术",
+    "priority": "P0"
+  },
+  {
+    "id": "extended-kotlin-multiplatform-kmp-009",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "61d0cf1407936bad8e7aceefbce67605983199e3242ed3460ef4da24f3360874",
+    "category": "08-跨端与扩展技术",
+    "priority": "P0"
+  },
+  {
+    "id": "framework-arouter-001",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "4a34821cd9e6d9d865a89096b6ceba0ed2e16b9e4b45ae95f1b369d4402b2470",
+    "category": "03-开源框架",
+    "priority": "P0"
+  },
+  {
+    "id": "framework-arouter-003",
+    "decks": [
+      "full"
+    ],
+    "source": "4a34821cd9e6d9d865a89096b6ceba0ed2e16b9e4b45ae95f1b369d4402b2470",
+    "category": "03-开源框架",
+    "priority": "P1"
+  },
+  {
+    "id": "framework-arouter-004",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "4a34821cd9e6d9d865a89096b6ceba0ed2e16b9e4b45ae95f1b369d4402b2470",
+    "category": "03-开源框架",
+    "priority": "P0"
+  },
+  {
+    "id": "framework-arouter-006",
+    "decks": [
+      "full"
+    ],
+    "source": "4a34821cd9e6d9d865a89096b6ceba0ed2e16b9e4b45ae95f1b369d4402b2470",
+    "category": "03-开源框架",
+    "priority": "P1"
+  },
+  {
+    "id": "framework-arouter-008",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "4a34821cd9e6d9d865a89096b6ceba0ed2e16b9e4b45ae95f1b369d4402b2470",
+    "category": "03-开源框架",
+    "priority": "P0"
+  },
+  {
+    "id": "framework-arouter-011",
+    "decks": [
+      "full"
+    ],
+    "source": "4a34821cd9e6d9d865a89096b6ceba0ed2e16b9e4b45ae95f1b369d4402b2470",
+    "category": "03-开源框架",
+    "priority": "P1"
+  },
+  {
+    "id": "framework-arouter-012",
+    "decks": [
+      "full"
+    ],
+    "source": "4a34821cd9e6d9d865a89096b6ceba0ed2e16b9e4b45ae95f1b369d4402b2470",
+    "category": "03-开源框架",
+    "priority": "P1"
+  },
+  {
+    "id": "framework-arouter-013",
+    "decks": [
+      "full"
+    ],
+    "source": "4a34821cd9e6d9d865a89096b6ceba0ed2e16b9e4b45ae95f1b369d4402b2470",
+    "category": "03-开源框架",
+    "priority": "P1"
+  },
+  {
+    "id": "framework-arouter-016",
+    "decks": [
+      "full"
+    ],
+    "source": "4a34821cd9e6d9d865a89096b6ceba0ed2e16b9e4b45ae95f1b369d4402b2470",
+    "category": "03-开源框架",
+    "priority": "P2"
+  },
+  {
+    "id": "framework-arouter-017",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "4a34821cd9e6d9d865a89096b6ceba0ed2e16b9e4b45ae95f1b369d4402b2470",
+    "category": "03-开源框架",
+    "priority": "P0"
+  },
+  {
+    "id": "framework-coil-001",
+    "decks": [
+      "full"
+    ],
+    "source": "3f07d03e473c00af3ee574bfc36aa568c59d3ccadbd82d59ff01d39621582331",
+    "category": "03-开源框架",
+    "priority": "P1"
+  },
+  {
+    "id": "framework-coil-003",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "3f07d03e473c00af3ee574bfc36aa568c59d3ccadbd82d59ff01d39621582331",
+    "category": "03-开源框架",
+    "priority": "P0"
+  },
+  {
+    "id": "framework-coil-004",
+    "decks": [
+      "full"
+    ],
+    "source": "3f07d03e473c00af3ee574bfc36aa568c59d3ccadbd82d59ff01d39621582331",
+    "category": "03-开源框架",
+    "priority": "P1"
+  },
+  {
+    "id": "framework-coil-005",
+    "decks": [
+      "full"
+    ],
+    "source": "3f07d03e473c00af3ee574bfc36aa568c59d3ccadbd82d59ff01d39621582331",
+    "category": "03-开源框架",
+    "priority": "P1"
+  },
+  {
+    "id": "framework-coil-006",
+    "decks": [
+      "full"
+    ],
+    "source": "3f07d03e473c00af3ee574bfc36aa568c59d3ccadbd82d59ff01d39621582331",
+    "category": "03-开源框架",
+    "priority": "P1"
+  },
+  {
+    "id": "framework-coil-007",
+    "decks": [
+      "full"
+    ],
+    "source": "3f07d03e473c00af3ee574bfc36aa568c59d3ccadbd82d59ff01d39621582331",
+    "category": "03-开源框架",
+    "priority": "P1"
+  },
+  {
+    "id": "framework-coil-010",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "3f07d03e473c00af3ee574bfc36aa568c59d3ccadbd82d59ff01d39621582331",
+    "category": "03-开源框架",
+    "priority": "P0"
+  },
+  {
+    "id": "framework-coil-011",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "3f07d03e473c00af3ee574bfc36aa568c59d3ccadbd82d59ff01d39621582331",
+    "category": "03-开源框架",
+    "priority": "P0"
+  },
+  {
+    "id": "framework-coil-013",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "3f07d03e473c00af3ee574bfc36aa568c59d3ccadbd82d59ff01d39621582331",
+    "category": "03-开源框架",
+    "priority": "P0"
+  },
+  {
+    "id": "framework-coil-016",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "3f07d03e473c00af3ee574bfc36aa568c59d3ccadbd82d59ff01d39621582331",
+    "category": "03-开源框架",
+    "priority": "P0"
+  },
+  {
+    "id": "framework-glide-001",
+    "decks": [
+      "full"
+    ],
+    "source": "da8242cf3421298fdeb11fa9aed215f6d9d717f141e8f397dde73df3ef335239",
+    "category": "03-开源框架",
+    "priority": "P1"
+  },
+  {
+    "id": "framework-glide-002",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "da8242cf3421298fdeb11fa9aed215f6d9d717f141e8f397dde73df3ef335239",
+    "category": "03-开源框架",
+    "priority": "P0"
+  },
+  {
+    "id": "framework-glide-004",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "da8242cf3421298fdeb11fa9aed215f6d9d717f141e8f397dde73df3ef335239",
+    "category": "03-开源框架",
+    "priority": "P0"
+  },
+  {
+    "id": "framework-glide-005",
+    "decks": [
+      "full"
+    ],
+    "source": "da8242cf3421298fdeb11fa9aed215f6d9d717f141e8f397dde73df3ef335239",
+    "category": "03-开源框架",
+    "priority": "P1"
+  },
+  {
+    "id": "framework-glide-007",
+    "decks": [
+      "full"
+    ],
+    "source": "da8242cf3421298fdeb11fa9aed215f6d9d717f141e8f397dde73df3ef335239",
+    "category": "03-开源框架",
+    "priority": "P1"
+  },
+  {
+    "id": "framework-glide-008",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "da8242cf3421298fdeb11fa9aed215f6d9d717f141e8f397dde73df3ef335239",
+    "category": "03-开源框架",
+    "priority": "P0"
+  },
+  {
+    "id": "framework-glide-009",
+    "decks": [
+      "full"
+    ],
+    "source": "da8242cf3421298fdeb11fa9aed215f6d9d717f141e8f397dde73df3ef335239",
+    "category": "03-开源框架",
+    "priority": "P1"
+  },
+  {
+    "id": "framework-glide-010",
+    "decks": [
+      "full"
+    ],
+    "source": "da8242cf3421298fdeb11fa9aed215f6d9d717f141e8f397dde73df3ef335239",
+    "category": "03-开源框架",
+    "priority": "P1"
+  },
+  {
+    "id": "framework-glide-011",
+    "decks": [
+      "full"
+    ],
+    "source": "da8242cf3421298fdeb11fa9aed215f6d9d717f141e8f397dde73df3ef335239",
+    "category": "03-开源框架",
+    "priority": "P1"
+  },
+  {
+    "id": "framework-glide-013",
+    "decks": [
+      "full"
+    ],
+    "source": "da8242cf3421298fdeb11fa9aed215f6d9d717f141e8f397dde73df3ef335239",
+    "category": "03-开源框架",
+    "priority": "P1"
+  },
+  {
+    "id": "framework-glide-015",
+    "decks": [
+      "full"
+    ],
+    "source": "da8242cf3421298fdeb11fa9aed215f6d9d717f141e8f397dde73df3ef335239",
+    "category": "03-开源框架",
+    "priority": "P1"
+  },
+  {
+    "id": "framework-glide-016",
+    "decks": [
+      "full"
+    ],
+    "source": "da8242cf3421298fdeb11fa9aed215f6d9d717f141e8f397dde73df3ef335239",
+    "category": "03-开源框架",
+    "priority": "P1"
+  },
+  {
+    "id": "framework-glide-018",
+    "decks": [
+      "full"
+    ],
+    "source": "da8242cf3421298fdeb11fa9aed215f6d9d717f141e8f397dde73df3ef335239",
+    "category": "03-开源框架",
+    "priority": "P2"
+  },
+  {
+    "id": "framework-glide-019",
+    "decks": [
+      "full"
+    ],
+    "source": "da8242cf3421298fdeb11fa9aed215f6d9d717f141e8f397dde73df3ef335239",
+    "category": "03-开源框架",
+    "priority": "P1"
+  },
+  {
+    "id": "framework-glide-020",
+    "decks": [
+      "full"
+    ],
+    "source": "da8242cf3421298fdeb11fa9aed215f6d9d717f141e8f397dde73df3ef335239",
+    "category": "03-开源框架",
+    "priority": "P2"
+  },
+  {
+    "id": "framework-okhttp-001",
+    "decks": [
+      "full"
+    ],
+    "source": "3fa53e6029c3e718e9f46129649b896afbb2ce5ceac881c5fb06d1a527929732",
+    "category": "03-开源框架",
+    "priority": "P1"
+  },
+  {
+    "id": "framework-okhttp-003",
+    "decks": [
+      "full"
+    ],
+    "source": "3fa53e6029c3e718e9f46129649b896afbb2ce5ceac881c5fb06d1a527929732",
+    "category": "03-开源框架",
+    "priority": "P1"
+  },
+  {
+    "id": "framework-okhttp-004",
+    "decks": [
+      "full"
+    ],
+    "source": "3fa53e6029c3e718e9f46129649b896afbb2ce5ceac881c5fb06d1a527929732",
+    "category": "03-开源框架",
+    "priority": "P1"
+  },
+  {
+    "id": "framework-okhttp-005",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "3fa53e6029c3e718e9f46129649b896afbb2ce5ceac881c5fb06d1a527929732",
+    "category": "03-开源框架",
+    "priority": "P0"
+  },
+  {
+    "id": "framework-okhttp-006",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "3fa53e6029c3e718e9f46129649b896afbb2ce5ceac881c5fb06d1a527929732",
+    "category": "03-开源框架",
+    "priority": "P0"
+  },
+  {
+    "id": "framework-okhttp-007",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "3fa53e6029c3e718e9f46129649b896afbb2ce5ceac881c5fb06d1a527929732",
+    "category": "03-开源框架",
+    "priority": "P0"
+  },
+  {
+    "id": "framework-okhttp-008",
+    "decks": [
+      "full"
+    ],
+    "source": "3fa53e6029c3e718e9f46129649b896afbb2ce5ceac881c5fb06d1a527929732",
+    "category": "03-开源框架",
+    "priority": "P1"
+  },
+  {
+    "id": "framework-okhttp-009",
+    "decks": [
+      "full"
+    ],
+    "source": "3fa53e6029c3e718e9f46129649b896afbb2ce5ceac881c5fb06d1a527929732",
+    "category": "03-开源框架",
+    "priority": "P1"
+  },
+  {
+    "id": "framework-okhttp-010",
+    "decks": [
+      "full"
+    ],
+    "source": "3fa53e6029c3e718e9f46129649b896afbb2ce5ceac881c5fb06d1a527929732",
+    "category": "03-开源框架",
+    "priority": "P1"
+  },
+  {
+    "id": "framework-okhttp-011",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "3fa53e6029c3e718e9f46129649b896afbb2ce5ceac881c5fb06d1a527929732",
+    "category": "03-开源框架",
+    "priority": "P0"
+  },
+  {
+    "id": "framework-okhttp-012",
+    "decks": [
+      "full"
+    ],
+    "source": "3fa53e6029c3e718e9f46129649b896afbb2ce5ceac881c5fb06d1a527929732",
+    "category": "03-开源框架",
+    "priority": "P1"
+  },
+  {
+    "id": "framework-okhttp-015",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "3fa53e6029c3e718e9f46129649b896afbb2ce5ceac881c5fb06d1a527929732",
+    "category": "03-开源框架",
+    "priority": "P0"
+  },
+  {
+    "id": "framework-okhttp-017",
+    "decks": [
+      "full"
+    ],
+    "source": "3fa53e6029c3e718e9f46129649b896afbb2ce5ceac881c5fb06d1a527929732",
+    "category": "03-开源框架",
+    "priority": "P1"
+  },
+  {
+    "id": "framework-okhttp-019",
+    "decks": [
+      "full"
+    ],
+    "source": "3fa53e6029c3e718e9f46129649b896afbb2ce5ceac881c5fb06d1a527929732",
+    "category": "03-开源框架",
+    "priority": "P2"
+  },
+  {
+    "id": "framework-okhttp-021",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "3fa53e6029c3e718e9f46129649b896afbb2ce5ceac881c5fb06d1a527929732",
+    "category": "03-开源框架",
+    "priority": "P0"
+  },
+  {
+    "id": "framework-okhttp-022",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "3fa53e6029c3e718e9f46129649b896afbb2ce5ceac881c5fb06d1a527929732",
+    "category": "03-开源框架",
+    "priority": "P0"
+  },
+  {
+    "id": "framework-okhttp-023",
+    "decks": [
+      "full"
+    ],
+    "source": "3fa53e6029c3e718e9f46129649b896afbb2ce5ceac881c5fb06d1a527929732",
+    "category": "03-开源框架",
+    "priority": "P1"
+  },
+  {
+    "id": "framework-okhttp-024",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "3fa53e6029c3e718e9f46129649b896afbb2ce5ceac881c5fb06d1a527929732",
+    "category": "03-开源框架",
+    "priority": "P0"
+  },
+  {
+    "id": "framework-okhttp-025",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "3fa53e6029c3e718e9f46129649b896afbb2ce5ceac881c5fb06d1a527929732",
+    "category": "03-开源框架",
+    "priority": "P0"
+  },
+  {
+    "id": "framework-retrofit-001",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "4a2e79d51f7044107b399382f37b95ceccbefd58bc8d01f2215f7415220aeba3",
+    "category": "03-开源框架",
+    "priority": "P0"
+  },
+  {
+    "id": "framework-retrofit-003",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "4a2e79d51f7044107b399382f37b95ceccbefd58bc8d01f2215f7415220aeba3",
+    "category": "03-开源框架",
+    "priority": "P0"
+  },
+  {
+    "id": "framework-retrofit-004",
+    "decks": [
+      "full"
+    ],
+    "source": "4a2e79d51f7044107b399382f37b95ceccbefd58bc8d01f2215f7415220aeba3",
+    "category": "03-开源框架",
+    "priority": "P1"
+  },
+  {
+    "id": "framework-retrofit-005",
+    "decks": [
+      "full"
+    ],
+    "source": "4a2e79d51f7044107b399382f37b95ceccbefd58bc8d01f2215f7415220aeba3",
+    "category": "03-开源框架",
+    "priority": "P1"
+  },
+  {
+    "id": "framework-retrofit-006",
+    "decks": [
+      "full"
+    ],
+    "source": "4a2e79d51f7044107b399382f37b95ceccbefd58bc8d01f2215f7415220aeba3",
+    "category": "03-开源框架",
+    "priority": "P2"
+  },
+  {
+    "id": "framework-retrofit-007",
+    "decks": [
+      "full"
+    ],
+    "source": "4a2e79d51f7044107b399382f37b95ceccbefd58bc8d01f2215f7415220aeba3",
+    "category": "03-开源框架",
+    "priority": "P1"
+  },
+  {
+    "id": "framework-retrofit-008",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "4a2e79d51f7044107b399382f37b95ceccbefd58bc8d01f2215f7415220aeba3",
+    "category": "03-开源框架",
+    "priority": "P0"
+  },
+  {
+    "id": "framework-retrofit-010",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "4a2e79d51f7044107b399382f37b95ceccbefd58bc8d01f2215f7415220aeba3",
+    "category": "03-开源框架",
+    "priority": "P0"
+  },
+  {
+    "id": "jvm-jvm-gc-001",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "1e14ff3d0d881eaaa20808791c85e34bff44b78f1fd8db25da9444cdfc38fb40",
+    "category": "04-JVM虚拟机",
+    "priority": "P0"
+  },
+  {
+    "id": "jvm-jvm-gc-002",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "1e14ff3d0d881eaaa20808791c85e34bff44b78f1fd8db25da9444cdfc38fb40",
+    "category": "04-JVM虚拟机",
+    "priority": "P0"
+  },
+  {
+    "id": "jvm-jvm-gc-003",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "1e14ff3d0d881eaaa20808791c85e34bff44b78f1fd8db25da9444cdfc38fb40",
+    "category": "04-JVM虚拟机",
+    "priority": "P0"
+  },
+  {
+    "id": "jvm-jvm-gc-004",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "1e14ff3d0d881eaaa20808791c85e34bff44b78f1fd8db25da9444cdfc38fb40",
+    "category": "04-JVM虚拟机",
+    "priority": "P0"
+  },
+  {
+    "id": "jvm-jvm-gc-005",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "1e14ff3d0d881eaaa20808791c85e34bff44b78f1fd8db25da9444cdfc38fb40",
+    "category": "04-JVM虚拟机",
+    "priority": "P0"
+  },
+  {
+    "id": "jvm-jvm-gc-006",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "1e14ff3d0d881eaaa20808791c85e34bff44b78f1fd8db25da9444cdfc38fb40",
+    "category": "04-JVM虚拟机",
+    "priority": "P0"
+  },
+  {
+    "id": "jvm-jvm-gc-007",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "1e14ff3d0d881eaaa20808791c85e34bff44b78f1fd8db25da9444cdfc38fb40",
+    "category": "04-JVM虚拟机",
+    "priority": "P0"
+  },
+  {
+    "id": "kotlin-aqs-001",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "e4b7985de84036421f1f7942d7cc9745bb46565af6ab01e8fa1fe7f748599d7b",
+    "category": "01-Kotlin",
+    "priority": "P0"
+  },
+  {
+    "id": "kotlin-aqs-004",
+    "decks": [
+      "full"
+    ],
+    "source": "e4b7985de84036421f1f7942d7cc9745bb46565af6ab01e8fa1fe7f748599d7b",
+    "category": "01-Kotlin",
+    "priority": "P1"
+  },
+  {
+    "id": "kotlin-aqs-006",
+    "decks": [
+      "full"
+    ],
+    "source": "e4b7985de84036421f1f7942d7cc9745bb46565af6ab01e8fa1fe7f748599d7b",
+    "category": "01-Kotlin",
+    "priority": "P1"
+  },
+  {
+    "id": "kotlin-aqs-008",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "e4b7985de84036421f1f7942d7cc9745bb46565af6ab01e8fa1fe7f748599d7b",
+    "category": "01-Kotlin",
+    "priority": "P0"
+  },
+  {
+    "id": "kotlin-aqs-010",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "e4b7985de84036421f1f7942d7cc9745bb46565af6ab01e8fa1fe7f748599d7b",
+    "category": "01-Kotlin",
+    "priority": "P0"
+  },
+  {
+    "id": "kotlin-aqs-011",
+    "decks": [
+      "full"
+    ],
+    "source": "e4b7985de84036421f1f7942d7cc9745bb46565af6ab01e8fa1fe7f748599d7b",
+    "category": "01-Kotlin",
+    "priority": "P1"
+  },
+  {
+    "id": "kotlin-concurrentlinkedqueue-001",
+    "decks": [
+      "full"
+    ],
+    "source": "6aab81a53f46c4dd410b47e7523dafcf453ed82e94858577691a8b3e99499736",
+    "category": "01-Kotlin",
+    "priority": "P1"
+  },
+  {
+    "id": "kotlin-concurrentlinkedqueue-002",
+    "decks": [
+      "full"
+    ],
+    "source": "6aab81a53f46c4dd410b47e7523dafcf453ed82e94858577691a8b3e99499736",
+    "category": "01-Kotlin",
+    "priority": "P1"
+  },
+  {
+    "id": "kotlin-concurrentlinkedqueue-004",
+    "decks": [
+      "full"
+    ],
+    "source": "6aab81a53f46c4dd410b47e7523dafcf453ed82e94858577691a8b3e99499736",
+    "category": "01-Kotlin",
+    "priority": "P1"
+  },
+  {
+    "id": "kotlin-concurrentlinkedqueue-005",
+    "decks": [
+      "full"
+    ],
+    "source": "6aab81a53f46c4dd410b47e7523dafcf453ed82e94858577691a8b3e99499736",
+    "category": "01-Kotlin",
+    "priority": "P1"
+  },
+  {
+    "id": "kotlin-concurrentlinkedqueue-006",
+    "decks": [
+      "full"
+    ],
+    "source": "6aab81a53f46c4dd410b47e7523dafcf453ed82e94858577691a8b3e99499736",
+    "category": "01-Kotlin",
+    "priority": "P1"
+  },
+  {
+    "id": "kotlin-concurrentlinkedqueue-007",
+    "decks": [
+      "full"
+    ],
+    "source": "6aab81a53f46c4dd410b47e7523dafcf453ed82e94858577691a8b3e99499736",
+    "category": "01-Kotlin",
+    "priority": "P1"
+  },
+  {
+    "id": "kotlin-concurrentlinkedqueue-010",
+    "decks": [
+      "full"
+    ],
+    "source": "6aab81a53f46c4dd410b47e7523dafcf453ed82e94858577691a8b3e99499736",
+    "category": "01-Kotlin",
+    "priority": "P1"
+  },
+  {
+    "id": "kotlin-concurrentlinkedqueue-011",
+    "decks": [
+      "full"
+    ],
+    "source": "6aab81a53f46c4dd410b47e7523dafcf453ed82e94858577691a8b3e99499736",
+    "category": "01-Kotlin",
+    "priority": "P1"
+  },
+  {
+    "id": "kotlin-java-juc-003",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "5769c4f18b4f600fa2724fa1342d2b0f4d4af3cb5e813761d897ed9fb2ada575",
+    "category": "01-Kotlin",
+    "priority": "P0"
+  },
+  {
+    "id": "kotlin-java-juc-004",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "5769c4f18b4f600fa2724fa1342d2b0f4d4af3cb5e813761d897ed9fb2ada575",
+    "category": "01-Kotlin",
+    "priority": "P0"
+  },
+  {
+    "id": "kotlin-java-juc-005",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "5769c4f18b4f600fa2724fa1342d2b0f4d4af3cb5e813761d897ed9fb2ada575",
+    "category": "01-Kotlin",
+    "priority": "P0"
+  },
+  {
+    "id": "kotlin-java-juc-007",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "5769c4f18b4f600fa2724fa1342d2b0f4d4af3cb5e813761d897ed9fb2ada575",
+    "category": "01-Kotlin",
+    "priority": "P0"
+  },
+  {
+    "id": "kotlin-java-juc-013",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "5769c4f18b4f600fa2724fa1342d2b0f4d4af3cb5e813761d897ed9fb2ada575",
+    "category": "01-Kotlin",
+    "priority": "P0"
+  },
+  {
+    "id": "kotlin-java-juc-014",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "5769c4f18b4f600fa2724fa1342d2b0f4d4af3cb5e813761d897ed9fb2ada575",
+    "category": "01-Kotlin",
+    "priority": "P0"
+  },
+  {
+    "id": "kotlin-java-juc-028",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "5769c4f18b4f600fa2724fa1342d2b0f4d4af3cb5e813761d897ed9fb2ada575",
+    "category": "01-Kotlin",
+    "priority": "P0"
+  },
+  {
+    "id": "kotlin-java-juc-031",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "5769c4f18b4f600fa2724fa1342d2b0f4d4af3cb5e813761d897ed9fb2ada575",
+    "category": "01-Kotlin",
+    "priority": "P0"
+  },
+  {
+    "id": "kotlin-java-juc-033",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "5769c4f18b4f600fa2724fa1342d2b0f4d4af3cb5e813761d897ed9fb2ada575",
+    "category": "01-Kotlin",
+    "priority": "P0"
+  },
+  {
+    "id": "kotlin-java-juc-034",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "aecd79bd9bdadbb3d76fede027230d806f9eee495b6a5d4c19253c1111f69798",
+    "category": "01-Kotlin",
+    "priority": "P0"
+  },
+  {
+    "id": "kotlin-java-juc-035",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "aecd79bd9bdadbb3d76fede027230d806f9eee495b6a5d4c19253c1111f69798",
+    "category": "01-Kotlin",
+    "priority": "P0"
+  },
+  {
+    "id": "kotlin-java-juc-037",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "aecd79bd9bdadbb3d76fede027230d806f9eee495b6a5d4c19253c1111f69798",
+    "category": "01-Kotlin",
+    "priority": "P0"
+  },
+  {
+    "id": "kotlin-java-juc-038",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "aecd79bd9bdadbb3d76fede027230d806f9eee495b6a5d4c19253c1111f69798",
+    "category": "01-Kotlin",
+    "priority": "P0"
+  },
+  {
+    "id": "kotlin-java-juc-041",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "aecd79bd9bdadbb3d76fede027230d806f9eee495b6a5d4c19253c1111f69798",
+    "category": "01-Kotlin",
+    "priority": "P0"
+  },
+  {
+    "id": "kotlin-java-juc-043",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "9be92ded4d0d8a08f1790e5bbb6865c31473a0717af00e7f38f41ee9e614ae94",
+    "category": "01-Kotlin",
+    "priority": "P0"
+  },
+  {
+    "id": "kotlin-java-juc-046",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "9be92ded4d0d8a08f1790e5bbb6865c31473a0717af00e7f38f41ee9e614ae94",
+    "category": "01-Kotlin",
+    "priority": "P0"
+  },
+  {
+    "id": "kotlin-java-juc-050",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "5769c4f18b4f600fa2724fa1342d2b0f4d4af3cb5e813761d897ed9fb2ada575",
+    "category": "01-Kotlin",
+    "priority": "P0"
+  },
+  {
+    "id": "kotlin-java-juc-051",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "5769c4f18b4f600fa2724fa1342d2b0f4d4af3cb5e813761d897ed9fb2ada575",
+    "category": "01-Kotlin",
+    "priority": "P0"
+  },
+  {
+    "id": "kotlin-kotlin-001",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "9822bdae05233ed68cdf86ded8de4a7d8879814f7e335d7bd35f229e55e2ecc6",
+    "category": "01-Kotlin",
+    "priority": "P0"
+  },
+  {
+    "id": "kotlin-kotlin-002",
+    "decks": [
+      "full"
+    ],
+    "source": "9822bdae05233ed68cdf86ded8de4a7d8879814f7e335d7bd35f229e55e2ecc6",
+    "category": "01-Kotlin",
+    "priority": "P1"
+  },
+  {
+    "id": "kotlin-kotlin-003",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "9822bdae05233ed68cdf86ded8de4a7d8879814f7e335d7bd35f229e55e2ecc6",
+    "category": "01-Kotlin",
+    "priority": "P0"
+  },
+  {
+    "id": "kotlin-kotlin-004",
+    "decks": [
+      "full"
+    ],
+    "source": "9822bdae05233ed68cdf86ded8de4a7d8879814f7e335d7bd35f229e55e2ecc6",
+    "category": "01-Kotlin",
+    "priority": "P1"
+  },
+  {
+    "id": "kotlin-kotlin-005",
+    "decks": [
+      "full"
+    ],
+    "source": "9822bdae05233ed68cdf86ded8de4a7d8879814f7e335d7bd35f229e55e2ecc6",
+    "category": "01-Kotlin",
+    "priority": "P1"
+  },
+  {
+    "id": "kotlin-kotlin-006",
+    "decks": [
+      "full"
+    ],
+    "source": "9822bdae05233ed68cdf86ded8de4a7d8879814f7e335d7bd35f229e55e2ecc6",
+    "category": "01-Kotlin",
+    "priority": "P1"
+  },
+  {
+    "id": "kotlin-kotlin-007",
+    "decks": [
+      "full"
+    ],
+    "source": "9822bdae05233ed68cdf86ded8de4a7d8879814f7e335d7bd35f229e55e2ecc6",
+    "category": "01-Kotlin",
+    "priority": "P1"
+  },
+  {
+    "id": "kotlin-kotlin-008",
+    "decks": [
+      "full"
+    ],
+    "source": "9822bdae05233ed68cdf86ded8de4a7d8879814f7e335d7bd35f229e55e2ecc6",
+    "category": "01-Kotlin",
+    "priority": "P1"
+  },
+  {
+    "id": "kotlin-kotlin-009",
+    "decks": [
+      "full"
+    ],
+    "source": "9822bdae05233ed68cdf86ded8de4a7d8879814f7e335d7bd35f229e55e2ecc6",
+    "category": "01-Kotlin",
+    "priority": "P1"
+  },
+  {
+    "id": "kotlin-kotlin-010",
+    "decks": [
+      "full"
+    ],
+    "source": "9822bdae05233ed68cdf86ded8de4a7d8879814f7e335d7bd35f229e55e2ecc6",
+    "category": "01-Kotlin",
+    "priority": "P1"
+  },
+  {
+    "id": "kotlin-kotlin-011",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "9822bdae05233ed68cdf86ded8de4a7d8879814f7e335d7bd35f229e55e2ecc6",
+    "category": "01-Kotlin",
+    "priority": "P0"
+  },
+  {
+    "id": "kotlin-kotlin-012",
+    "decks": [
+      "full"
+    ],
+    "source": "9822bdae05233ed68cdf86ded8de4a7d8879814f7e335d7bd35f229e55e2ecc6",
+    "category": "01-Kotlin",
+    "priority": "P1"
+  },
+  {
+    "id": "kotlin-kotlin-013",
+    "decks": [
+      "full"
+    ],
+    "source": "9822bdae05233ed68cdf86ded8de4a7d8879814f7e335d7bd35f229e55e2ecc6",
+    "category": "01-Kotlin",
+    "priority": "P1"
+  },
+  {
+    "id": "kotlin-kotlin-014",
+    "decks": [
+      "full"
+    ],
+    "source": "9822bdae05233ed68cdf86ded8de4a7d8879814f7e335d7bd35f229e55e2ecc6",
+    "category": "01-Kotlin",
+    "priority": "P1"
+  },
+  {
+    "id": "kotlin-kotlin-015",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "9822bdae05233ed68cdf86ded8de4a7d8879814f7e335d7bd35f229e55e2ecc6",
+    "category": "01-Kotlin",
+    "priority": "P0"
+  },
+  {
+    "id": "kotlin-kotlin-016",
+    "decks": [
+      "full"
+    ],
+    "source": "9822bdae05233ed68cdf86ded8de4a7d8879814f7e335d7bd35f229e55e2ecc6",
+    "category": "01-Kotlin",
+    "priority": "P1"
+  },
+  {
+    "id": "kotlin-kotlin-017",
+    "decks": [
+      "full"
+    ],
+    "source": "9822bdae05233ed68cdf86ded8de4a7d8879814f7e335d7bd35f229e55e2ecc6",
+    "category": "01-Kotlin",
+    "priority": "P1"
+  },
+  {
+    "id": "kotlin-kotlin-019",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "9822bdae05233ed68cdf86ded8de4a7d8879814f7e335d7bd35f229e55e2ecc6",
+    "category": "01-Kotlin",
+    "priority": "P0"
+  },
+  {
+    "id": "kotlin-kotlin-020",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "9822bdae05233ed68cdf86ded8de4a7d8879814f7e335d7bd35f229e55e2ecc6",
+    "category": "01-Kotlin",
+    "priority": "P0"
+  },
+  {
+    "id": "kotlin-kotlin-021",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "9822bdae05233ed68cdf86ded8de4a7d8879814f7e335d7bd35f229e55e2ecc6",
+    "category": "01-Kotlin",
+    "priority": "P0"
+  },
+  {
+    "id": "kotlin-kotlin-022",
+    "decks": [
+      "full"
+    ],
+    "source": "9822bdae05233ed68cdf86ded8de4a7d8879814f7e335d7bd35f229e55e2ecc6",
+    "category": "01-Kotlin",
+    "priority": "P1"
+  },
+  {
+    "id": "kotlin-kotlin-023",
+    "decks": [
+      "full"
+    ],
+    "source": "9822bdae05233ed68cdf86ded8de4a7d8879814f7e335d7bd35f229e55e2ecc6",
+    "category": "01-Kotlin",
+    "priority": "P1"
+  },
+  {
+    "id": "kotlin-kotlin-024",
+    "decks": [
+      "full"
+    ],
+    "source": "9822bdae05233ed68cdf86ded8de4a7d8879814f7e335d7bd35f229e55e2ecc6",
+    "category": "01-Kotlin",
+    "priority": "P1"
+  },
+  {
+    "id": "kotlin-kotlin-025",
+    "decks": [
+      "full"
+    ],
+    "source": "9822bdae05233ed68cdf86ded8de4a7d8879814f7e335d7bd35f229e55e2ecc6",
+    "category": "01-Kotlin",
+    "priority": "P1"
+  },
+  {
+    "id": "kotlin-kotlin-026",
+    "decks": [
+      "full"
+    ],
+    "source": "9822bdae05233ed68cdf86ded8de4a7d8879814f7e335d7bd35f229e55e2ecc6",
+    "category": "01-Kotlin",
+    "priority": "P1"
+  },
+  {
+    "id": "kotlin-kotlin-027",
+    "decks": [
+      "full"
+    ],
+    "source": "9822bdae05233ed68cdf86ded8de4a7d8879814f7e335d7bd35f229e55e2ecc6",
+    "category": "01-Kotlin",
+    "priority": "P1"
+  },
+  {
+    "id": "kotlin-kotlin-028",
+    "decks": [
+      "full"
+    ],
+    "source": "9822bdae05233ed68cdf86ded8de4a7d8879814f7e335d7bd35f229e55e2ecc6",
+    "category": "01-Kotlin",
+    "priority": "P1"
+  },
+  {
+    "id": "kotlin-kotlin-029",
+    "decks": [
+      "full"
+    ],
+    "source": "9822bdae05233ed68cdf86ded8de4a7d8879814f7e335d7bd35f229e55e2ecc6",
+    "category": "01-Kotlin",
+    "priority": "P1"
+  },
+  {
+    "id": "kotlin-kotlin-030",
+    "decks": [
+      "full"
+    ],
+    "source": "9822bdae05233ed68cdf86ded8de4a7d8879814f7e335d7bd35f229e55e2ecc6",
+    "category": "01-Kotlin",
+    "priority": "P1"
+  },
+  {
+    "id": "kotlin-kotlin-031",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "9822bdae05233ed68cdf86ded8de4a7d8879814f7e335d7bd35f229e55e2ecc6",
+    "category": "01-Kotlin",
+    "priority": "P0"
+  },
+  {
+    "id": "kotlin-kotlin-032",
+    "decks": [
+      "full"
+    ],
+    "source": "9822bdae05233ed68cdf86ded8de4a7d8879814f7e335d7bd35f229e55e2ecc6",
+    "category": "01-Kotlin",
+    "priority": "P1"
+  },
+  {
+    "id": "kotlin-kotlin-033",
+    "decks": [
+      "full"
+    ],
+    "source": "9822bdae05233ed68cdf86ded8de4a7d8879814f7e335d7bd35f229e55e2ecc6",
+    "category": "01-Kotlin",
+    "priority": "P1"
+  },
+  {
+    "id": "kotlin-kotlin-034",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "9822bdae05233ed68cdf86ded8de4a7d8879814f7e335d7bd35f229e55e2ecc6",
+    "category": "01-Kotlin",
+    "priority": "P0"
+  },
+  {
+    "id": "kotlin-kotlin-035",
+    "decks": [
+      "full"
+    ],
+    "source": "9822bdae05233ed68cdf86ded8de4a7d8879814f7e335d7bd35f229e55e2ecc6",
+    "category": "01-Kotlin",
+    "priority": "P1"
+  },
+  {
+    "id": "kotlin-kotlin-036",
+    "decks": [
+      "full"
+    ],
+    "source": "9822bdae05233ed68cdf86ded8de4a7d8879814f7e335d7bd35f229e55e2ecc6",
+    "category": "01-Kotlin",
+    "priority": "P1"
+  },
+  {
+    "id": "kotlin-volatile-synchronized-001",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "ef9c4d9b9e8434bd441e5164e5128cf7da1c26e1dee88226f51a05d9b8ffc009",
+    "category": "01-Kotlin",
+    "priority": "P0"
+  },
+  {
+    "id": "kotlin-volatile-synchronized-002",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "ef9c4d9b9e8434bd441e5164e5128cf7da1c26e1dee88226f51a05d9b8ffc009",
+    "category": "01-Kotlin",
+    "priority": "P0"
+  },
+  {
+    "id": "kotlin-volatile-synchronized-003",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "ef9c4d9b9e8434bd441e5164e5128cf7da1c26e1dee88226f51a05d9b8ffc009",
+    "category": "01-Kotlin",
+    "priority": "P0"
+  },
+  {
+    "id": "kotlin-volatile-synchronized-005",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "ef9c4d9b9e8434bd441e5164e5128cf7da1c26e1dee88226f51a05d9b8ffc009",
+    "category": "01-Kotlin",
+    "priority": "P0"
+  },
+  {
+    "id": "kotlin-volatile-synchronized-007",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "ef9c4d9b9e8434bd441e5164e5128cf7da1c26e1dee88226f51a05d9b8ffc009",
+    "category": "01-Kotlin",
+    "priority": "P0"
+  },
+  {
+    "id": "kotlin-volatile-synchronized-009",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "ef9c4d9b9e8434bd441e5164e5128cf7da1c26e1dee88226f51a05d9b8ffc009",
+    "category": "01-Kotlin",
+    "priority": "P0"
+  },
+  {
+    "id": "kotlin-volatile-synchronized-010",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "ef9c4d9b9e8434bd441e5164e5128cf7da1c26e1dee88226f51a05d9b8ffc009",
+    "category": "01-Kotlin",
+    "priority": "P0"
+  },
+  {
+    "id": "kotlin-volatile-synchronized-011",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "ef9c4d9b9e8434bd441e5164e5128cf7da1c26e1dee88226f51a05d9b8ffc009",
+    "category": "01-Kotlin",
+    "priority": "P0"
+  },
+  {
+    "id": "kotlin-volatile-synchronized-012",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "ef9c4d9b9e8434bd441e5164e5128cf7da1c26e1dee88226f51a05d9b8ffc009",
+    "category": "01-Kotlin",
+    "priority": "P0"
+  },
+  {
+    "id": "kotlin-volatile-synchronized-015",
+    "decks": [
+      "full"
+    ],
+    "source": "ef9c4d9b9e8434bd441e5164e5128cf7da1c26e1dee88226f51a05d9b8ffc009",
+    "category": "01-Kotlin",
+    "priority": "P1"
+  },
+  {
+    "id": "network-6db9761a-001",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "0118c7e0b6b6fac4046eecf49067c86d9fe1d44153db87c149b822a1e95ed1cb",
+    "category": "06-网络",
+    "priority": "P0"
+  },
+  {
+    "id": "network-6db9761a-005",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "0118c7e0b6b6fac4046eecf49067c86d9fe1d44153db87c149b822a1e95ed1cb",
+    "category": "06-网络",
+    "priority": "P0"
+  },
+  {
+    "id": "network-coding-v3-001",
+    "decks": [
+      "full"
+    ],
+    "source": "0118c7e0b6b6fac4046eecf49067c86d9fe1d44153db87c149b822a1e95ed1cb",
+    "category": "06-网络",
+    "priority": "P1"
+  },
+  {
+    "id": "network-coding-v3-004",
+    "decks": [
+      "full"
+    ],
+    "source": "0118c7e0b6b6fac4046eecf49067c86d9fe1d44153db87c149b822a1e95ed1cb",
+    "category": "06-网络",
+    "priority": "P1"
+  },
+  {
+    "id": "network-coding-v3-005",
+    "decks": [
+      "full"
+    ],
+    "source": "0118c7e0b6b6fac4046eecf49067c86d9fe1d44153db87c149b822a1e95ed1cb",
+    "category": "06-网络",
+    "priority": "P1"
+  },
+  {
+    "id": "network-coding-v3-006",
+    "decks": [
+      "full"
+    ],
+    "source": "0118c7e0b6b6fac4046eecf49067c86d9fe1d44153db87c149b822a1e95ed1cb",
+    "category": "06-网络",
+    "priority": "P1"
+  },
+  {
+    "id": "network-coding-v3-007",
+    "decks": [
+      "full"
+    ],
+    "source": "0118c7e0b6b6fac4046eecf49067c86d9fe1d44153db87c149b822a1e95ed1cb",
+    "category": "06-网络",
+    "priority": "P1"
+  },
+  {
+    "id": "network-coding-v3-009",
+    "decks": [
+      "full"
+    ],
+    "source": "0118c7e0b6b6fac4046eecf49067c86d9fe1d44153db87c149b822a1e95ed1cb",
+    "category": "06-网络",
+    "priority": "P1"
+  },
+  {
+    "id": "network-coding-v3-010",
+    "decks": [
+      "full"
+    ],
+    "source": "0118c7e0b6b6fac4046eecf49067c86d9fe1d44153db87c149b822a1e95ed1cb",
+    "category": "06-网络",
+    "priority": "P1"
+  },
+  {
+    "id": "network-coding-v3-011",
+    "decks": [
+      "full"
+    ],
+    "source": "0118c7e0b6b6fac4046eecf49067c86d9fe1d44153db87c149b822a1e95ed1cb",
+    "category": "06-网络",
+    "priority": "P1"
+  },
+  {
+    "id": "network-coding-v3-012",
+    "decks": [
+      "full"
+    ],
+    "source": "0118c7e0b6b6fac4046eecf49067c86d9fe1d44153db87c149b822a1e95ed1cb",
+    "category": "06-网络",
+    "priority": "P1"
+  },
+  {
+    "id": "network-coding-v3-013",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "0118c7e0b6b6fac4046eecf49067c86d9fe1d44153db87c149b822a1e95ed1cb",
+    "category": "06-网络",
+    "priority": "P0"
+  },
+  {
+    "id": "network-coding-v3-014",
+    "decks": [
+      "full"
+    ],
+    "source": "0118c7e0b6b6fac4046eecf49067c86d9fe1d44153db87c149b822a1e95ed1cb",
+    "category": "06-网络",
+    "priority": "P1"
+  },
+  {
+    "id": "network-coding-v3-016",
+    "decks": [
+      "full"
+    ],
+    "source": "0118c7e0b6b6fac4046eecf49067c86d9fe1d44153db87c149b822a1e95ed1cb",
+    "category": "06-网络",
+    "priority": "P1"
+  },
+  {
+    "id": "network-coding-v3-017",
+    "decks": [
+      "full"
+    ],
+    "source": "0118c7e0b6b6fac4046eecf49067c86d9fe1d44153db87c149b822a1e95ed1cb",
+    "category": "06-网络",
+    "priority": "P1"
+  },
+  {
+    "id": "network-coding-v3-018",
+    "decks": [
+      "full"
+    ],
+    "source": "0118c7e0b6b6fac4046eecf49067c86d9fe1d44153db87c149b822a1e95ed1cb",
+    "category": "06-网络",
+    "priority": "P1"
+  },
+  {
+    "id": "network-coding-v3-019",
+    "decks": [
+      "full"
+    ],
+    "source": "0118c7e0b6b6fac4046eecf49067c86d9fe1d44153db87c149b822a1e95ed1cb",
+    "category": "06-网络",
+    "priority": "P1"
+  },
+  {
+    "id": "network-coding-v3-021",
+    "decks": [
+      "full"
+    ],
+    "source": "0118c7e0b6b6fac4046eecf49067c86d9fe1d44153db87c149b822a1e95ed1cb",
+    "category": "06-网络",
+    "priority": "P1"
+  },
+  {
+    "id": "network-coding-v3-022",
+    "decks": [
+      "full"
+    ],
+    "source": "0118c7e0b6b6fac4046eecf49067c86d9fe1d44153db87c149b822a1e95ed1cb",
+    "category": "06-网络",
+    "priority": "P1"
+  },
+  {
+    "id": "network-coding-v3-023",
+    "decks": [
+      "full"
+    ],
+    "source": "0118c7e0b6b6fac4046eecf49067c86d9fe1d44153db87c149b822a1e95ed1cb",
+    "category": "06-网络",
+    "priority": "P1"
+  },
+  {
+    "id": "network-coding-v3-024",
+    "decks": [
+      "full"
+    ],
+    "source": "0118c7e0b6b6fac4046eecf49067c86d9fe1d44153db87c149b822a1e95ed1cb",
+    "category": "06-网络",
+    "priority": "P1"
+  },
+  {
+    "id": "network-coding-v3-025",
+    "decks": [
+      "full"
+    ],
+    "source": "0118c7e0b6b6fac4046eecf49067c86d9fe1d44153db87c149b822a1e95ed1cb",
+    "category": "06-网络",
+    "priority": "P1"
+  },
+  {
+    "id": "network-coding-v3-026",
+    "decks": [
+      "full"
+    ],
+    "source": "0118c7e0b6b6fac4046eecf49067c86d9fe1d44153db87c149b822a1e95ed1cb",
+    "category": "06-网络",
+    "priority": "P1"
+  },
+  {
+    "id": "network-coding-v3-027",
+    "decks": [
+      "full"
+    ],
+    "source": "0118c7e0b6b6fac4046eecf49067c86d9fe1d44153db87c149b822a1e95ed1cb",
+    "category": "06-网络",
+    "priority": "P1"
+  },
+  {
+    "id": "network-coding-v3-028",
+    "decks": [
+      "full"
+    ],
+    "source": "0118c7e0b6b6fac4046eecf49067c86d9fe1d44153db87c149b822a1e95ed1cb",
+    "category": "06-网络",
+    "priority": "P1"
+  },
+  {
+    "id": "network-coding-v3-029",
+    "decks": [
+      "full"
+    ],
+    "source": "0118c7e0b6b6fac4046eecf49067c86d9fe1d44153db87c149b822a1e95ed1cb",
+    "category": "06-网络",
+    "priority": "P1"
+  },
+  {
+    "id": "network-coding-v3-030",
+    "decks": [
+      "full"
+    ],
+    "source": "0118c7e0b6b6fac4046eecf49067c86d9fe1d44153db87c149b822a1e95ed1cb",
+    "category": "06-网络",
+    "priority": "P1"
+  },
+  {
+    "id": "network-coding-v3-031",
+    "decks": [
+      "full"
+    ],
+    "source": "0118c7e0b6b6fac4046eecf49067c86d9fe1d44153db87c149b822a1e95ed1cb",
+    "category": "06-网络",
+    "priority": "P1"
+  },
+  {
+    "id": "network-coding-v3-032",
+    "decks": [
+      "full"
+    ],
+    "source": "0118c7e0b6b6fac4046eecf49067c86d9fe1d44153db87c149b822a1e95ed1cb",
+    "category": "06-网络",
+    "priority": "P1"
+  },
+  {
+    "id": "network-coding-v3-033",
+    "decks": [
+      "full"
+    ],
+    "source": "0118c7e0b6b6fac4046eecf49067c86d9fe1d44153db87c149b822a1e95ed1cb",
+    "category": "06-网络",
+    "priority": "P1"
+  },
+  {
+    "id": "network-coding-v3-034",
+    "decks": [
+      "full"
+    ],
+    "source": "0118c7e0b6b6fac4046eecf49067c86d9fe1d44153db87c149b822a1e95ed1cb",
+    "category": "06-网络",
+    "priority": "P1"
+  },
+  {
+    "id": "network-coding-v3-035",
+    "decks": [
+      "full"
+    ],
+    "source": "0118c7e0b6b6fac4046eecf49067c86d9fe1d44153db87c149b822a1e95ed1cb",
+    "category": "06-网络",
+    "priority": "P1"
+  },
+  {
+    "id": "network-coding-v3-036",
+    "decks": [
+      "full"
+    ],
+    "source": "0118c7e0b6b6fac4046eecf49067c86d9fe1d44153db87c149b822a1e95ed1cb",
+    "category": "06-网络",
+    "priority": "P1"
+  },
+  {
+    "id": "network-coding-v3-037",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "0118c7e0b6b6fac4046eecf49067c86d9fe1d44153db87c149b822a1e95ed1cb",
+    "category": "06-网络",
+    "priority": "P0"
+  },
+  {
+    "id": "network-coding-v3-038",
+    "decks": [
+      "full"
+    ],
+    "source": "0118c7e0b6b6fac4046eecf49067c86d9fe1d44153db87c149b822a1e95ed1cb",
+    "category": "06-网络",
+    "priority": "P1"
+  },
+  {
+    "id": "network-coding-v3-039",
+    "decks": [
+      "full"
+    ],
+    "source": "0118c7e0b6b6fac4046eecf49067c86d9fe1d44153db87c149b822a1e95ed1cb",
+    "category": "06-网络",
+    "priority": "P1"
+  },
+  {
+    "id": "network-coding-v3-040",
+    "decks": [
+      "full"
+    ],
+    "source": "0118c7e0b6b6fac4046eecf49067c86d9fe1d44153db87c149b822a1e95ed1cb",
+    "category": "06-网络",
+    "priority": "P1"
+  },
+  {
+    "id": "network-coding-v3-041",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "0118c7e0b6b6fac4046eecf49067c86d9fe1d44153db87c149b822a1e95ed1cb",
+    "category": "06-网络",
+    "priority": "P0"
+  },
+  {
+    "id": "network-coding-v3-042",
+    "decks": [
+      "full"
+    ],
+    "source": "0118c7e0b6b6fac4046eecf49067c86d9fe1d44153db87c149b822a1e95ed1cb",
+    "category": "06-网络",
+    "priority": "P1"
+  },
+  {
+    "id": "network-coding-v3-043",
+    "decks": [
+      "full"
+    ],
+    "source": "0118c7e0b6b6fac4046eecf49067c86d9fe1d44153db87c149b822a1e95ed1cb",
+    "category": "06-网络",
+    "priority": "P1"
+  },
+  {
+    "id": "network-coding-v3-044",
+    "decks": [
+      "full"
+    ],
+    "source": "0118c7e0b6b6fac4046eecf49067c86d9fe1d44153db87c149b822a1e95ed1cb",
+    "category": "06-网络",
+    "priority": "P1"
+  },
+  {
+    "id": "network-coding-v3-045",
+    "decks": [
+      "full"
+    ],
+    "source": "0118c7e0b6b6fac4046eecf49067c86d9fe1d44153db87c149b822a1e95ed1cb",
+    "category": "06-网络",
+    "priority": "P1"
+  },
+  {
+    "id": "network-coding-v3-046",
+    "decks": [
+      "full"
+    ],
+    "source": "0118c7e0b6b6fac4046eecf49067c86d9fe1d44153db87c149b822a1e95ed1cb",
+    "category": "06-网络",
+    "priority": "P1"
+  },
+  {
+    "id": "network-coding-v3-047",
+    "decks": [
+      "full"
+    ],
+    "source": "0118c7e0b6b6fac4046eecf49067c86d9fe1d44153db87c149b822a1e95ed1cb",
+    "category": "06-网络",
+    "priority": "P1"
+  },
+  {
+    "id": "network-coding-v3-048",
+    "decks": [
+      "full"
+    ],
+    "source": "0118c7e0b6b6fac4046eecf49067c86d9fe1d44153db87c149b822a1e95ed1cb",
+    "category": "06-网络",
+    "priority": "P1"
+  },
+  {
+    "id": "network-coding-v3-049",
+    "decks": [
+      "full"
+    ],
+    "source": "0118c7e0b6b6fac4046eecf49067c86d9fe1d44153db87c149b822a1e95ed1cb",
+    "category": "06-网络",
+    "priority": "P1"
+  },
+  {
+    "id": "network-coding-v3-050",
+    "decks": [
+      "full"
+    ],
+    "source": "0118c7e0b6b6fac4046eecf49067c86d9fe1d44153db87c149b822a1e95ed1cb",
+    "category": "06-网络",
+    "priority": "P1"
+  },
+  {
+    "id": "network-coding-v3-051",
+    "decks": [
+      "full"
+    ],
+    "source": "0118c7e0b6b6fac4046eecf49067c86d9fe1d44153db87c149b822a1e95ed1cb",
+    "category": "06-网络",
+    "priority": "P1"
+  },
+  {
+    "id": "network-coding-v3-052",
+    "decks": [
+      "full"
+    ],
+    "source": "0118c7e0b6b6fac4046eecf49067c86d9fe1d44153db87c149b822a1e95ed1cb",
+    "category": "06-网络",
+    "priority": "P1"
+  },
+  {
+    "id": "network-coding-v3-053",
+    "decks": [
+      "full"
+    ],
+    "source": "0118c7e0b6b6fac4046eecf49067c86d9fe1d44153db87c149b822a1e95ed1cb",
+    "category": "06-网络",
+    "priority": "P1"
+  },
+  {
+    "id": "network-coding-v3-054",
+    "decks": [
+      "full"
+    ],
+    "source": "0118c7e0b6b6fac4046eecf49067c86d9fe1d44153db87c149b822a1e95ed1cb",
+    "category": "06-网络",
+    "priority": "P1"
+  },
+  {
+    "id": "network-coding-v3-055",
+    "decks": [
+      "full"
+    ],
+    "source": "0118c7e0b6b6fac4046eecf49067c86d9fe1d44153db87c149b822a1e95ed1cb",
+    "category": "06-网络",
+    "priority": "P1"
+  },
+  {
+    "id": "network-coding-v3-056",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "0118c7e0b6b6fac4046eecf49067c86d9fe1d44153db87c149b822a1e95ed1cb",
+    "category": "06-网络",
+    "priority": "P0"
+  },
+  {
+    "id": "network-coding-v3-057",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "0118c7e0b6b6fac4046eecf49067c86d9fe1d44153db87c149b822a1e95ed1cb",
+    "category": "06-网络",
+    "priority": "P0"
+  },
+  {
+    "id": "network-coding-v3-058",
+    "decks": [
+      "full"
+    ],
+    "source": "0118c7e0b6b6fac4046eecf49067c86d9fe1d44153db87c149b822a1e95ed1cb",
+    "category": "06-网络",
+    "priority": "P1"
+  },
+  {
+    "id": "role-316aa023-001",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "d3b4809ea1c8ca6f451dcbdeeb63dceaa82c3e572018403688fe37169d925892",
+    "category": "09-岗位专项",
+    "priority": "P0"
+  },
+  {
+    "id": "role-work-positioning-001",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "d3b4809ea1c8ca6f451dcbdeeb63dceaa82c3e572018403688fe37169d925892",
+    "category": "09-岗位专项",
+    "priority": "P0"
+  },
+  {
+    "id": "scenario-unity-android-001",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "0f25badad3519e8193290332516f143c6731eefb7fca830317d9d3ecd4e3f0ea",
+    "category": "09-场景题",
+    "priority": "P0"
+  },
+  {
+    "id": "scenario-unity-android-002",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "0f25badad3519e8193290332516f143c6731eefb7fca830317d9d3ecd4e3f0ea",
+    "category": "09-场景题",
+    "priority": "P0"
+  },
+  {
+    "id": "scenario-unity-android-003",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "0f25badad3519e8193290332516f143c6731eefb7fca830317d9d3ecd4e3f0ea",
+    "category": "09-场景题",
+    "priority": "P0"
+  },
+  {
+    "id": "scenario-unity-android-004",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "0f25badad3519e8193290332516f143c6731eefb7fca830317d9d3ecd4e3f0ea",
+    "category": "09-场景题",
+    "priority": "P0"
+  },
+  {
+    "id": "scenario-unity-android-006",
+    "decks": [
+      "full"
+    ],
+    "source": "0f25badad3519e8193290332516f143c6731eefb7fca830317d9d3ecd4e3f0ea",
+    "category": "09-场景题",
+    "priority": "P1"
+  },
+  {
+    "id": "scenario-unity-android-007",
+    "decks": [
+      "full"
+    ],
+    "source": "0f25badad3519e8193290332516f143c6731eefb7fca830317d9d3ecd4e3f0ea",
+    "category": "09-场景题",
+    "priority": "P1"
+  },
+  {
+    "id": "scenario-unity-android-009",
+    "decks": [
+      "full"
+    ],
+    "source": "0f25badad3519e8193290332516f143c6731eefb7fca830317d9d3ecd4e3f0ea",
+    "category": "09-场景题",
+    "priority": "P1"
+  },
+  {
+    "id": "scenario-unity-android-010",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "0f25badad3519e8193290332516f143c6731eefb7fca830317d9d3ecd4e3f0ea",
+    "category": "09-场景题",
+    "priority": "P0"
+  },
+  {
+    "id": "scenario-unity-android-012",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "0f25badad3519e8193290332516f143c6731eefb7fca830317d9d3ecd4e3f0ea",
+    "category": "09-场景题",
+    "priority": "P0"
+  },
+  {
+    "id": "scenario-unity-android-013",
+    "decks": [
+      "full"
+    ],
+    "source": "0f25badad3519e8193290332516f143c6731eefb7fca830317d9d3ecd4e3f0ea",
+    "category": "09-场景题",
+    "priority": "P1"
+  },
+  {
+    "id": "scenario-unity-android-014",
+    "decks": [
+      "full"
+    ],
+    "source": "0f25badad3519e8193290332516f143c6731eefb7fca830317d9d3ecd4e3f0ea",
+    "category": "09-场景题",
+    "priority": "P1"
+  },
+  {
+    "id": "scenario-unity-android-015",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "0f25badad3519e8193290332516f143c6731eefb7fca830317d9d3ecd4e3f0ea",
+    "category": "09-场景题",
+    "priority": "P0"
+  },
+  {
+    "id": "scenario-unity-android-016",
+    "decks": [
+      "full"
+    ],
+    "source": "0f25badad3519e8193290332516f143c6731eefb7fca830317d9d3ecd4e3f0ea",
+    "category": "09-场景题",
+    "priority": "P1"
+  },
+  {
+    "id": "scenario-unity-android-018",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "0f25badad3519e8193290332516f143c6731eefb7fca830317d9d3ecd4e3f0ea",
+    "category": "09-场景题",
+    "priority": "P0"
+  },
+  {
+    "id": "scenario-unity-android-020",
+    "decks": [
+      "full"
+    ],
+    "source": "0f25badad3519e8193290332516f143c6731eefb7fca830317d9d3ecd4e3f0ea",
+    "category": "09-场景题",
+    "priority": "P1"
+  },
+  {
+    "id": "scenario-unity-android-021",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "0f25badad3519e8193290332516f143c6731eefb7fca830317d9d3ecd4e3f0ea",
+    "category": "09-场景题",
+    "priority": "P0"
+  },
+  {
+    "id": "scenario-unity-android-022",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "0f25badad3519e8193290332516f143c6731eefb7fca830317d9d3ecd4e3f0ea",
+    "category": "09-场景题",
+    "priority": "P0"
+  },
+  {
+    "id": "scenario-unity-android-023",
+    "decks": [
+      "full"
+    ],
+    "source": "0f25badad3519e8193290332516f143c6731eefb7fca830317d9d3ecd4e3f0ea",
+    "category": "09-场景题",
+    "priority": "P1"
+  },
+  {
+    "id": "scenario-unity-android-024",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "0f25badad3519e8193290332516f143c6731eefb7fca830317d9d3ecd4e3f0ea",
+    "category": "09-场景题",
+    "priority": "P0"
+  },
+  {
+    "id": "scenario-unity-android-027",
+    "decks": [
+      "full"
+    ],
+    "source": "0f25badad3519e8193290332516f143c6731eefb7fca830317d9d3ecd4e3f0ea",
+    "category": "09-场景题",
+    "priority": "P1"
+  },
+  {
+    "id": "scenario-unity-android-028",
+    "decks": [
+      "sprint",
+      "full"
+    ],
+    "source": "0f25badad3519e8193290332516f143c6731eefb7fca830317d9d3ecd4e3f0ea",
+    "category": "09-场景题",
+    "priority": "P0"
+  },
+  {
+    "id": "scenario-unity-android-029",
+    "decks": [
+      "full"
+    ],
+    "source": "0f25badad3519e8193290332516f143c6731eefb7fca830317d9d3ecd4e3f0ea",
+    "category": "09-场景题",
+    "priority": "P1"
+  }
+]
