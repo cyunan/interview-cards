@@ -50,7 +50,7 @@ a { color: var(--forest-soft); }
 .unlock-intro { color: var(--muted); line-height: 1.8; font-size: 14px; margin-bottom: 28px; }
 .unlock-card form { display: grid; }
 .field-label { font-size: 13px; margin-bottom: 10px; font-weight: 600; }
-input, select { min-width: 0; width: 100%; min-height: 48px; padding: 10px 12px; border: 1px solid #d3ddd8; border-radius: 10px; color: var(--ink); background: white; }
+input:not([type="checkbox"]):not([type="radio"]), select { min-width: 0; width: 100%; min-height: 48px; padding: 10px 12px; border: 1px solid #d3ddd8; border-radius: 10px; color: var(--ink); background: white; }
 .remember-device { display: flex; align-items: flex-start; gap: 10px; margin-top: 16px; color: var(--ink); font-size: 13px; line-height: 1.5; }
 .remember-device input { flex: 0 0 auto; width: 18px; min-height: 18px; margin: 2px 0 0; accent-color: var(--forest); }
 .remember-device span { display: grid; gap: 2px; }
@@ -241,6 +241,11 @@ input, select { min-width: 0; width: 100%; min-height: 48px; padding: 10px 12px;
 .markdown p, .markdown ul, .markdown ol, .markdown pre, .markdown blockquote, .markdown table { margin: 0 0 16px; }
 .markdown ul, .markdown ol { padding-left: 1.4em; }
 .markdown li + li { margin-top: 8px; }
+.markdown ul.contains-task-list { padding-inline-start: 0; }
+.markdown .task-list-item { position: relative; padding-inline-start: 1.65em; list-style: none; }
+.markdown .task-list-item > p:first-child { margin-top: 0; }
+.markdown .task-list-item > p:last-child { margin-bottom: 0; }
+.markdown .task-list-item input[type="checkbox"] { position: absolute; inset-inline-start: 0; top: .45em; width: 1em; height: 1em; min-width: 0; min-height: 0; margin: 0; padding: 0; accent-color: var(--forest); }
 .markdown code { padding: 2px 5px; border-radius: 4px; background: #edf1ef; color: #315e50; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .86em; }
 .markdown pre { max-width: 100%; overflow-x: auto; border-radius: 10px; padding: 16px; background: #f3f5f4; border: 1px solid var(--line); }
 .markdown pre code { padding: 0; background: transparent; color: var(--ink); overflow-wrap: normal; }
