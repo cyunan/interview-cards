@@ -574,3 +574,10 @@ input, select { min-width: 0; width: 100%; min-height: 48px; padding: 10px 12px;
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms!important; animation-iteration-count: 1!important; transition-duration: .01ms!important; scroll-behavior: auto!important; }
 }
+
+.markdown details { margin: 16px 0; border: 1px solid var(--line, #d9e5df); border-radius: 12px; padding: 14px; overflow-wrap: anywhere; }
+.markdown details > summary { cursor: pointer; font-weight: 650; color: var(--accent, #137e70); }
+.markdown details[open] > summary { margin-bottom: 14px; }
+
+.local-preview-root .route-reference-reader-overlay { top: var(--local-preview-notice-height, 0px); }
+.local-preview-root .mermaid-diagram.is-fullscreen { top: calc(var(--local-preview-notice-height, 0px) + 16px); }

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
-import rehypeSanitize from "rehype-sanitize";
+import rehypeSanitize, { defaultSchema } from "rehype-sanitize";
+import { remarkFoldedCallouts } from "./folded-callouts";
 import remarkGfm from "remark-gfm";
 import type { ReferenceImage } from "../content/payload";
 
@@ -325,8 +326,8 @@ export function Markdown({ children, className, images = [] }: MarkdownProps) {
   return (
     <div className={className ? `markdown ${className}` : "markdown"}>
       <ReactMarkdown
-        remarkPlugins={[remarkGfm]}
-        rehypePlugins={[rehypeSanitize]}
+        remarkPlugins={[remarkGfm, remarkFoldedCallouts]}
+        rehypePlugins={[[rehypeSanitize, { ...defaultSchema, attributes: { ...defaultSchema.attributes, details: ["open"] } }]]}
         skipHtml
         components={{
           a: ({ children: linkChildren, ...props }) => (

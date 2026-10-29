@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { ContentWorkspace } from "../app/App";
 import { parseCardsPayload, type ParsedCardsPayload } from "../content/payload";
 import { createProgressStore } from "../storage/progress";
@@ -9,6 +9,17 @@ export function PreviewApp() {
   const [payload, setPayload] = useState<ParsedCardsPayload>();
   const [error, setError] = useState("");
   const [partial, setPartial] = useState(true);
+  const notice = useRef<HTMLElement>(null);
+  const [noticeHeight, setNoticeHeight] = useState(0);
+  useEffect(() => {
+    const element = notice.current;
+    if (!element) return;
+    const measure = () => setNoticeHeight(element.getBoundingClientRect().height);
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, []);
   useEffect(() => {
     let active = true;
     let revision = "";
@@ -36,11 +47,11 @@ export function PreviewApp() {
     void poll();
     return () => { active = false; clearTimeout(timer); };
   }, []);
-  return <>
-    <aside className={error ? "local-preview-notice has-error" : "local-preview-notice"} role={error ? "alert" : "status"}>
+  return <div className="local-preview-root" style={{ "--local-preview-notice-height": `${noticeHeight}px` } as CSSProperties}>
+    <aside ref={notice} className={error ? "local-preview-notice has-error" : "local-preview-notice"} role={error ? "alert" : "status"}>
       <strong>本机内容预览</strong> · {partial ? "仅展示已迁移主题；发布时必须解锁并合并历史题库" : "完整题库已合并"}
       {error ? <p>编译失败，下面暂留上次成功内容：{error}</p> : <span> · 保存笔记后自动刷新 · 进度独立</span>}
     </aside>
     {payload ? <ContentWorkspace payload={payload} createStore={previewStore} now={now} onLock={() => window.location.reload()} /> : <main className="screen"><p>{error || "正在编译笔记…"}</p></main>}
-  </>;
+  </div>;
 }

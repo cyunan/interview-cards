@@ -29,7 +29,31 @@ beforeAll(() => {
   }
 });
 
+it("renders a plain callout title and body without exposing its authoring marker", () => {
+  const { container } = render(<Markdown>{"> [!warning] Imaginary caution\n> Keep **orbital** data."}</Markdown>);
+  expect(container.querySelector("blockquote strong")).toHaveTextContent("Imaginary caution");
+  expect(container.querySelector("blockquote")).toHaveTextContent("Keep orbital data.");
+  expect(container).not.toHaveTextContent("[!warning]");
+  expect(container.querySelector("details")).toBeNull();
+});
+
 describe("Markdown", () => {
+  it("renders explicit folded answers as closed native disclosures", () => {
+    const { container } = render(<Markdown>{"> [!success]- 练习答案\n> 示例校验说明\n>\n> - **第二步**：再比较结果"}</Markdown>);
+    const disclosure = container.querySelector("details")!;
+    expect(disclosure).not.toHaveAttribute("open");
+    expect(disclosure.querySelector("summary")).toHaveTextContent("练习答案");
+    expect(disclosure).toHaveTextContent("示例校验说明");
+    expect(disclosure.querySelector("strong")).toHaveTextContent("第二步");
+  });
+
+  it("honors expanded callouts without interpreting markers inside code", () => {
+    const { container } = render(<Markdown>{"> [!note]+ 补充说明\n> 示例正文\n\n~~~text\n> [!success]- literal\n~~~"}</Markdown>);
+    expect(container.querySelectorAll("details")).toHaveLength(1);
+    expect(container.querySelector("details")).toHaveAttribute("open");
+    expect(container.querySelector("code")).toHaveTextContent("[!success]- literal");
+  });
+
   it("does not render raw HTML, scripts, or event handlers", () => {
     const { container } = render(
       <Markdown>

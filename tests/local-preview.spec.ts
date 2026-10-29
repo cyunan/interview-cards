@@ -32,3 +32,28 @@ test("live note edits refresh real card content and invalid edits show a stale-c
   await page.getByRole("button", { name: "路线", exact: true }).click();
   await expect(page.getByText("Imaginary route", { exact: true })).toBeVisible();
 });
+
+
+test("preview notice leaves the reader close button accessible even when errors wrap", async ({ page }) => {
+  const filename = path.join(PREVIEW_VAULT, "02-Imaginary/note.md");
+  await writeFile(filename, PREVIEW_NOTE);
+  await page.goto("./");
+  await page.getByRole("button", { name: "路线", exact: true }).click();
+  await page.getByRole("button", { name: /Imaginary route/ }).click();
+  await page.getByRole("button", { name: "技术资料 · 1" }).click();
+  await page.getByRole("button", { name: /Imaginary reference/ }).last().click();
+  const reader = page.getByRole("dialog", { name: "技术资料阅读" });
+  await expect(reader).toBeVisible();
+  for (const broken of [false, true]) {
+    await writeFile(filename, broken ? PREVIEW_NOTE.replace("[!summary]", "[!note]") : PREVIEW_NOTE);
+    if (broken) await expect(page.getByRole("alert")).toContainText("编译失败");
+    await expect.poll(async () => {
+      const banner = await page.locator(".local-preview-notice").boundingBox();
+      const close = await page.getByRole("button", { name: "关闭阅读层" }).boundingBox();
+      return Boolean(banner && close && close.y >= banner.y + banner.height);
+    }).toBe(true);
+  }
+  await page.getByRole("button", { name: "关闭阅读层" }).click();
+  await expect(reader).not.toBeVisible();
+  await writeFile(filename, PREVIEW_NOTE);
+});
