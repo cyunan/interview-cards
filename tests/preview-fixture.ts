@@ -7,5 +7,6 @@ export const PREVIEW_NOTE = [
   "### Imaginary live question?", "", "> [!summary] Answer", "> Imaginary live answer version one.", "",
   "#### 深入理解", "", "| Part | Role |", "| --- | --- |", "| Orb | Spin |", "",
   "![[orb.png]]", "",
+  "![动态回放 · reduced motion fallback marker](orb.png)", "",
   "~~~mermaid", "flowchart LR", " A[Orb] --> B[Spin]", "~~~",
 ].join("\n");

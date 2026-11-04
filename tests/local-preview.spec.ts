@@ -13,6 +13,15 @@ test("live note edits refresh real card content and invalid edits show a stale-c
   await page.getByText("深入理解", { exact: true }).click();
   await expect(page.getByRole("table")).toBeVisible();
   await expect(page.getByRole("img", { name: "orb.png" })).toBeVisible();
+  await page.getByRole("button", { name: "放大查看：orb.png" }).click();
+  const imagePreview = page.getByRole("dialog", { name: "图片放大查看" });
+  await expect(imagePreview.getByRole("img", { name: "orb.png" })).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(imagePreview).not.toBeVisible();
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await expect(page.getByRole("button", { name: "放大查看：动态回放 · reduced motion fallback marker" })).toBeHidden();
+  await expect(page.getByRole("button", { name: "放大查看：orb.png" })).toBeVisible();
+  await page.emulateMedia({ reducedMotion: "no-preference" });
   await expect(page.locator("[data-mermaid-diagram] svg")).toBeVisible();
   await writeFile(filename, PREVIEW_NOTE.replace("version one.", "version two."));
   await expect(page.getByText("Imaginary live answer version two.")).toBeVisible({ timeout: 10000 });

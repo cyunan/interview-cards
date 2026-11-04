@@ -323,68 +323,111 @@ const REFERENCE_IMAGE_URL_PATTERN = /^https:\/\/interview-cards\.invalid\/refere
 
 export function Markdown({ children, className, images = [] }: MarkdownProps) {
   const imageMap = new Map(images.map((image) => [image.id, image]));
-  return (
-    <div className={className ? `markdown ${className}` : "markdown"}>
-      <ReactMarkdown
-        remarkPlugins={[remarkGfm, remarkFoldedCallouts]}
-        rehypePlugins={[[rehypeSanitize, { ...defaultSchema, attributes: { ...defaultSchema.attributes, details: ["open"] } }]]}
-        skipHtml
-        components={{
-          a: ({ children: linkChildren, ...props }) => (
-            <a {...props} rel="noreferrer noopener" target="_blank">
-              {linkChildren}
-            </a>
-          ),
-          img: ({ src, alt }) => {
-            const imageId = typeof src === "string" ? REFERENCE_IMAGE_URL_PATTERN.exec(src)?.[1] : undefined;
-            const packagedImage = imageId ? imageMap.get(imageId) : undefined;
-            if (packagedImage) {
-              return (
-                <span className="markdown-image">
-                  <img
-                    src={`data:${packagedImage.mimeType};base64,${packagedImage.data}`}
-                    alt={alt || packagedImage.alt}
-                    loading="lazy"
-                    decoding="async"
-                  />
-                </span>
-              );
-            }
-            if (!src) return <span className="markdown-image-missing">图示未加载：{alt || "未命名图片"}</span>;
-            return (
-              <span className="markdown-image">
-                <img src={src} alt={alt || ""} loading="lazy" decoding="async" referrerPolicy="no-referrer" />
-              </span>
-            );
-          },
-          code: ({ className, children: codeChildren, node: _node, ...props }) => {
-            const language = /language-(\w+)/.exec(className ?? "")?.[1];
-            const source = String(codeChildren).replace(/\n$/, "");
+  const [previewImage, setPreviewImage] = useState<{ src: string; alt: string } | null>(null);
+  const closePreviewRef = useRef<HTMLButtonElement>(null);
 
-            if (language === "mermaid") {
-              return <MermaidDiagram source={source} />;
-            }
+  useEffect(() => {
+    if (!previewImage) return;
+    const previousOverflow = document.body.style.overflow;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setPreviewImage(null);
+    };
+    document.body.style.overflow = "hidden";
+    document.addEventListener("keydown", onKeyDown);
+    closePreviewRef.current?.focus();
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [previewImage]);
 
-            return (
-              <code className={className} {...props}>
-                {codeChildren}
-              </code>
-            );
-          },
-          pre: ({ children: preChildren, node: preNode, ...props }) => {
-            const codeNode = preNode?.children?.[0];
-            const className = codeNode?.type === "element" ? codeNode.properties?.className : undefined;
-            const classes = Array.isArray(className) ? className.map(String) : [String(className ?? "")];
-            if (classes.includes("language-mermaid")) {
-              return preChildren;
-            }
-
-            return <pre {...props}>{preChildren}</pre>;
-          },
-        }}
+  const renderImage = (src: string, alt: string) => (
+    <span className="markdown-image">
+      <button
+        type="button"
+        className={`markdown-image-trigger${alt.includes("动态回放") ? " is-motion-media" : ""}`}
+        aria-label={`放大查看：${alt || "图片"}`}
+        onClick={() => setPreviewImage({ src, alt })}
       >
-        {children}
-      </ReactMarkdown>
-    </div>
+        <img src={src} alt={alt} loading="lazy" decoding="async" referrerPolicy="no-referrer" />
+      </button>
+    </span>
+  );
+
+  return (
+    <>
+      <div className={className ? `markdown ${className}` : "markdown"}>
+        <ReactMarkdown
+          remarkPlugins={[remarkGfm, remarkFoldedCallouts]}
+          rehypePlugins={[[rehypeSanitize, { ...defaultSchema, attributes: { ...defaultSchema.attributes, details: ["open"] } }]]}
+          skipHtml
+          components={{
+            a: ({ children: linkChildren, ...props }) => (
+              <a {...props} rel="noreferrer noopener" target="_blank">
+                {linkChildren}
+              </a>
+            ),
+            img: ({ src, alt }) => {
+              const imageId = typeof src === "string" ? REFERENCE_IMAGE_URL_PATTERN.exec(src)?.[1] : undefined;
+              const packagedImage = imageId ? imageMap.get(imageId) : undefined;
+              if (packagedImage) {
+                return renderImage(`data:${packagedImage.mimeType};base64,${packagedImage.data}`, alt || packagedImage.alt);
+              }
+              if (!src) return <span className="markdown-image-missing">图示未加载：{alt || "未命名图片"}</span>;
+              return renderImage(src, alt || "");
+            },
+            code: ({ className, children: codeChildren, node: _node, ...props }) => {
+              const language = /language-(\w+)/.exec(className ?? "")?.[1];
+              const source = String(codeChildren).replace(/\n$/, "");
+
+              if (language === "mermaid") {
+                return <MermaidDiagram source={source} />;
+              }
+
+              return (
+                <code className={className} {...props}>
+                  {codeChildren}
+                </code>
+              );
+            },
+            pre: ({ children: preChildren, node: preNode, ...props }) => {
+              const codeNode = preNode?.children?.[0];
+              const className = codeNode?.type === "element" ? codeNode.properties?.className : undefined;
+              const classes = Array.isArray(className) ? className.map(String) : [String(className ?? "")];
+              if (classes.includes("language-mermaid")) {
+                return preChildren;
+              }
+
+              return <pre {...props}>{preChildren}</pre>;
+            },
+          }}
+        >
+          {children}
+        </ReactMarkdown>
+      </div>
+      {previewImage ? (
+        <div
+          className="markdown-image-lightbox"
+          role="dialog"
+          aria-modal="true"
+          aria-label="图片放大查看"
+          onClick={() => setPreviewImage(null)}
+        >
+          <button
+            ref={closePreviewRef}
+            type="button"
+            className="markdown-image-lightbox-close"
+            aria-label="关闭图片预览"
+            onClick={() => setPreviewImage(null)}
+          >
+            ×
+          </button>
+          <figure onClick={(event) => event.stopPropagation()}>
+            <img src={previewImage.src} alt={previewImage.alt} />
+            {previewImage.alt ? <figcaption>{previewImage.alt}</figcaption> : null}
+          </figure>
+        </div>
+      ) : null}
+    </>
   );
 }

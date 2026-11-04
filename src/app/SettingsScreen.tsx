@@ -3,6 +3,7 @@ import { useRef, useState, type ChangeEvent } from "react";
 import type { CardV2 } from "../content/types";
 import type { DailyLimit, ProgressStore } from "../storage/progress";
 import { toLocalDateKey } from "../study/scheduler";
+import { forceRefreshLatestResources } from "../register-service-worker";
 
 interface SettingsScreenProps {
   buildId?: string;
@@ -29,6 +30,7 @@ export function SettingsScreen({
 }: SettingsScreenProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [status, setStatus] = useState<string>();
+  const [refreshingResources, setRefreshingResources] = useState(false);
 
   async function changeLimit(value: number): Promise<void> {
     if (!DAILY_LIMITS.includes(value as DailyLimit)) {
@@ -77,6 +79,17 @@ export function SettingsScreen({
     setStatus("本机学习进度已清空");
   }
 
+  async function refreshResources(): Promise<void> {
+    setRefreshingResources(true);
+    setStatus("正在检查并加载最新网页与题库资源…");
+    try {
+      await forceRefreshLatestResources();
+    } catch {
+      setRefreshingResources(false);
+      setStatus("检查更新失败。当前页面、离线题库和学习进度已保留，请联网后重试。");
+    }
+  }
+
   return (
     <main className="screen settings-screen">
       <section className="page-title">
@@ -114,6 +127,21 @@ export function SettingsScreen({
             onChange={(event) => void importProgress(event)}
           />
         </div>
+      </section>
+
+      <section className="settings-card settings-stack">
+        <div>
+          <h2>网页与题库更新</h2>
+          <p>手动检查并加载最新网页和题库。刷新后可能需要重新解锁，学习进度会保留。</p>
+        </div>
+        <button
+          className="secondary-button"
+          type="button"
+          disabled={refreshingResources}
+          onClick={() => void refreshResources()}
+        >
+          {refreshingResources ? "正在检查…" : "检查并刷新最新资源"}
+        </button>
       </section>
 
       <section className="settings-card settings-stack">
