@@ -22,6 +22,29 @@ const vault = vaultIndex < 0 ? "" : path.resolve(args[vaultIndex + 1] ?? "");
 const yaml = (value: object) => matter.stringify("", value).replace(/^---\n/, "").replace(/\n---\s*$/, "") + "\n";
 const shellQuote = (value: string) => "'" + value.replace(/'/g, "'\\''") + "'";
 const exists = async (file: string) => access(file).then(() => true, () => false);
+function portableLauncher(action: string) {
+  return `#!/bin/sh
+set -eu
+SCRIPT_DIR=$(CDPATH= cd "$(dirname "$0")" && pwd)
+VAULT_ROOT=$(CDPATH= cd "$SCRIPT_DIR/.." && pwd)
+CONFIG_FILE="$SCRIPT_DIR/本机配置.sh"
+if [ ! -r "$CONFIG_FILE" ]; then
+  printf '%s\\n' '本机尚未初始化。请在网站工程目录运行：npm run site -- init --vault <知识库路径>'
+  exit 1
+fi
+. "$CONFIG_FILE"
+if [ ! -x "$NODE_BINARY" ]; then
+  printf '%s\\n' '本机 Node 路径已失效。请安装 Node 24，并重新运行 npm run site -- init --vault <知识库路径>'
+  exit 1
+fi
+if [ ! -f "$SITE_REPOSITORY/scripts/maintain.ts" ]; then
+  printf '%s\\n' '网站工程路径已失效。请克隆 interview-cards，再重新运行 npm run site -- init --vault <知识库路径>'
+  exit 1
+fi
+cd "$SITE_REPOSITORY"
+exec "$NODE_BINARY" --import tsx scripts/maintain.ts ${action} --vault "$VAULT_ROOT"
+`;
+}
 async function run(binary: string, arguments_: string[]) {
   await new Promise<void>((resolve, reject) => {
     const child = spawn(binary, arguments_, { cwd: root, stdio: "inherit", env: { ...process.env, PATH: path.dirname(process.execPath) + path.delimiter + process.env.PATH } });
@@ -58,14 +81,45 @@ async function init() {
     legacyCardCount: JSON.parse(await readFile(path.join(root, "cards-baseline.json"), "utf8")).cards,
     ownedCardIds: [], ownedDocumentIds: [], approvedRemovals: [], approvedDocumentRemovals: [], routes: KNOWLEDGE_ROUTES,
   }));
-  await writeFile(path.join(directory, "本机配置.json"), JSON.stringify({ repository: root, vault, node: process.execPath }, null, 2) + "\n", { mode: 0o600 });
-  for (const [name, action] of [["预览网站.command", "preview --open"], ["发布网站.command", "publish"], ["新增问答.command", "add-card"], ["完整预览.command", "preview --with-legacy --open"]]) {
-    await writeFile(path.join(directory, name), "#!/bin/zsh\ncd -- " + shellQuote(root) + " || exit 1" +
-      "\n" + shellQuote(process.execPath) + " --import tsx scripts/maintain.ts " + action + " --vault " + shellQuote(vault) +
-      "\nresult=$?\nprintf '\\n按回车关闭窗口…'\nread -r\nexit $result\n", { mode: 0o700 });
+  await writeFile(path.join(directory, "本机配置.sh"),
+    "SITE_REPOSITORY=" + shellQuote(root) + "\nNODE_BINARY=" + shellQuote(process.execPath) + "\n", { mode: 0o600 });
+  const launchers = [
+    ["预览网站", "preview --open"],
+    ["发布网站", "publish"],
+    ["新增问答", "add-card"],
+    ["完整预览", "preview --with-legacy --open"],
+  ] as const;
+  for (const [name, action] of launchers) {
+    await writeFile(path.join(directory, name + ".sh"), portableLauncher(action), { mode: 0o755 });
+    const command = `#!/bin/zsh
+SCRIPT_DIR=$(CDPATH= cd "$(dirname "$0")" && pwd)
+CONFIG_FILE="$SCRIPT_DIR/本机配置.sh"
+if [[ ! -r "$CONFIG_FILE" ]]; then
+  print '本机尚未初始化。请在网站工程目录运行：npm run site -- init --vault <知识库路径>'
+  result=1
+else
+  source "$CONFIG_FILE"
+  VAULT_ROOT=$(CDPATH= cd "$SCRIPT_DIR/.." && pwd)
+  if [[ ! -x "$NODE_BINARY" ]]; then
+    print '本机 Node 路径已失效。请安装 Node 24，并重新运行初始化命令。'
+    result=1
+  elif [[ ! -f "$SITE_REPOSITORY/scripts/maintain.ts" ]]; then
+    print '网站工程路径已失效。请克隆 interview-cards，再重新运行初始化命令。'
+    result=1
+  else
+    cd "$SITE_REPOSITORY" || exit 1
+    "$NODE_BINARY" --import tsx scripts/maintain.ts ${action} --vault "$VAULT_ROOT"
+    result=$?
+  fi
+fi
+printf '\\n按回车关闭窗口…'
+read -r
+exit $result
+`;
+    await writeFile(path.join(directory, name + ".command"), command, { mode: 0o700 });
   }
-  await writeFile(path.join(directory, ".gitignore"), "本机配置.json\n*.command\n迁移暂存/\n迁移备份/\n");
-  console.log("本机入口已配置。双击知识库中的预览网站.command 或发布网站.command。");
+  await writeFile(path.join(directory, ".gitignore"), "本机配置.json\n本机配置.sh\n*.command\n迁移暂存/\n迁移备份/\n内容完善备份/\n");
+  console.log("已生成跨设备通用的 .sh 入口和本机 Finder .command 入口；本机路径只写入被忽略的配置文件。");
 }
 async function preview() {
   const portAt = args.indexOf("--port");
