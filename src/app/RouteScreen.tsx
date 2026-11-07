@@ -113,7 +113,7 @@ function RouteReferenceReader({
 
   useLayoutEffect(() => {
     const readerBody = readerBodyRef.current;
-    readerBody?.scrollTo({ top: 0 });
+    if (readerBody) readerBody.scrollTop = 0;
 
     const headings = readerBody?.querySelectorAll<HTMLElement>(
       ".route-reference-reader-content .markdown h2, .route-reference-reader-content .markdown h3, .route-reference-reader-content .markdown h4",
@@ -135,8 +135,13 @@ function RouteReferenceReader({
     if (!readerBody || !heading) return;
 
     const top = readerBody.scrollTop + heading.getBoundingClientRect().top - readerBody.getBoundingClientRect().top - 12;
-    const behavior = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth";
-    readerBody.scrollTo({ top, behavior });
+    const reduceMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
+    const behavior = reduceMotion ? "auto" : "smooth";
+    if (typeof readerBody.scrollTo === "function") {
+      readerBody.scrollTo({ top, behavior });
+    } else {
+      readerBody.scrollTop = top;
+    }
   };
 
   useEffect(() => {
