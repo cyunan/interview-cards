@@ -27,6 +27,13 @@ beforeAll(() => {
       left: 0,
     }) as DOMRect;
   }
+
+  const svgTextPrototype = SVGElement.prototype as unknown as {
+    getComputedTextLength?: () => number;
+  };
+  if (!svgTextPrototype.getComputedTextLength) {
+    svgTextPrototype.getComputedTextLength = () => 120;
+  }
 });
 
 it("renders a plain callout title and body without exposing its authoring marker", () => {
@@ -205,6 +212,25 @@ describe("Markdown", () => {
     expect(cluster).toHaveStyle({ fill: "#f4f7f5", stroke: "#b8cbc2" });
     expect(clusterLabel).toHaveStyle({ color: "#263b34", fill: "#263b34" });
     expect(svg?.style.getPropertyValue("background-color")).toBe("transparent");
+  });
+
+  it("keeps timeline nodes, labels, and connectors readable", async () => {
+    const { container } = render(
+      <Markdown>
+        {"```mermaid\ntimeline\n    title HTTP 能力演进（鸟瞰）\n    section 早期\n        HTTP/0.9 / 1.0\n        : 简单请求/响应\n        : 短连接为主，扩展有限\n    section 广泛应用\n        HTTP/1.1\n        : 持久连接、管线化（有限）\n        : Host、分块、缓存头体系\n        : 队头阻塞在应用层暴露\n    section 性能与多路复用\n        HTTP/2\n        : 二进制分帧、流与多路复用\n        : HPACK 头部压缩、服务器推送（可选）\n```"}
+      </Markdown>,
+    );
+
+    await waitFor(() => {
+      expect(container.querySelector("[data-mermaid-diagram] svg")).toBeInTheDocument();
+    });
+
+    const node = container.querySelector<SVGElement>(".timeline-node .node-bkg");
+    const label = container.querySelector<SVGTextElement>(".timeline-node text");
+    const connector = container.querySelector<SVGLineElement>(".lineWrapper line");
+    expect(node).toHaveStyle({ fill: "#edf7f2", stroke: "#79ae9a" });
+    expect(label).toHaveStyle({ fill: "#263b34" });
+    expect(connector).toHaveStyle({ stroke: "#5b756b" });
   });
 
   it("keeps sequence self-message arrowheads readable", async () => {

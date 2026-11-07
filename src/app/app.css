@@ -497,11 +497,29 @@ input:not([type="checkbox"]):not([type="radio"]), select { min-width: 0; width: 
 .route-reference-reader-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; padding: 28px clamp(24px, 6vw, 96px) 20px; border-bottom: 1px solid var(--line); background: var(--paper-bright); }
 .route-reference-reader-header .eyebrow { margin-bottom: 6px; color: var(--forest); }
 .route-reference-reader-header h2 { margin: 0; font-size: clamp(20px, 2.4vw, 28px); line-height: 1.4; }
+.route-reference-reader-navigation { display: flex; align-items: center; gap: 8px; margin-top: 12px; }
+.route-reference-reader-navigation button { min-height: 38px; padding: 7px 12px; border: 1px solid var(--line); border-radius: 9px; color: var(--forest-soft); background: var(--paper-bright); font-size: 12px; font-weight: 600; }
+.route-reference-reader-navigation button:hover:not(:disabled) { border-color: #b8d8cc; background: #edf7f3; }
+.route-reference-reader-navigation button:disabled { opacity: .5; cursor: not-allowed; }
+.route-reference-reader-navigation span { color: var(--muted); font-size: 11px; font-variant-numeric: tabular-nums; }
 .route-reference-reader-close { flex: none; width: 42px; height: 42px; border: 1px solid var(--line); border-radius: 10px; color: var(--muted); background: var(--paper-bright); font-size: 24px; line-height: 1; }
 .route-reference-reader-close:hover { color: var(--forest); border-color: #b8d8cc; background: #edf7f3; }
 .route-reference-reader-body { overflow: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; touch-action: pan-y; padding: 32px clamp(24px, 6vw, 96px) 72px; }
 .route-reference-reader-content { width: min(100%, 960px); margin: 0 auto; }
 .route-reference-reader-content .route-reference-reason { margin-bottom: 26px; font-size: 14px; line-height: 1.8; }
+.route-reference-toc { margin: 0 0 28px; overflow: hidden; border: 1px solid var(--line); border-radius: 12px; background: #f7faf8; }
+.route-reference-toc > summary { display: flex; align-items: center; gap: 10px; min-height: 48px; padding: 10px 16px; color: var(--forest); cursor: pointer; list-style: none; font-size: 13px; font-weight: 700; }
+.route-reference-toc > summary::-webkit-details-marker { display: none; }
+.route-reference-toc > summary::before { content: "▸"; color: var(--forest-soft); font-size: 12px; }
+.route-reference-toc[open] > summary::before { content: "▾"; }
+.route-reference-toc > summary small { margin-left: auto; color: var(--muted); font-size: 11px; font-weight: 500; }
+.route-reference-toc nav { max-height: min(42vh, 360px); overflow: auto; border-top: 1px solid var(--line); }
+.route-reference-toc ol { margin: 0; padding: 8px; list-style: none; }
+.route-reference-toc li[data-depth="3"] { padding-left: 16px; }
+.route-reference-toc li[data-depth="4"] { padding-left: 32px; }
+.route-reference-toc li button { display: block; width: 100%; min-height: 38px; padding: 8px 10px; border: 0; border-radius: 7px; color: #43534e; background: transparent; cursor: pointer; text-align: left; font-size: 12px; line-height: 1.5; }
+.route-reference-toc li button:hover { color: var(--forest); background: #eaf4ef; }
+.route-reference-toc li button:focus-visible { outline: 2px solid #167d71; outline-offset: -2px; }
 .route-reference-reader-content .markdown { color: #35443f; font-size: 15px; line-height: 1.9; }
 .route-reference-reader-content .markdown h1, .route-reference-reader-content .markdown h2, .route-reference-reader-content .markdown h3, .route-reference-reader-content .markdown h4 { margin: 28px 0 12px; line-height: 1.45; }
 .route-reference-reader-content .markdown h2 { font-size: 22px; }
@@ -532,6 +550,12 @@ input:not([type="checkbox"]):not([type="radio"]), select { min-width: 0; width: 
   .markdown .mermaid-diagram-actions { width: 100%; justify-content: flex-start; overflow-x: auto; padding-bottom: 2px; }
   .markdown .mermaid-diagram-viewport { max-height: 65dvh; padding: 12px; }
   .markdown .mermaid-diagram.is-fullscreen { inset: 8px; }
+  .route-reference-reader-header { gap: 12px; }
+  .route-reference-reader-navigation { flex-wrap: wrap; gap: 6px; }
+  .route-reference-reader-navigation button { min-height: 36px; padding: 6px 10px; }
+  .route-reference-reader-body { padding: 22px 18px 48px; }
+  .route-reference-toc { margin-bottom: 22px; }
+  .route-reference-toc nav { max-height: min(48dvh, 360px); }
   .route-stage-nav { display: none; }
   .route-navigation-dock { margin-bottom: 20px; }
   .route-navigation-dock .route-mobile-directory { position: relative; margin-top: 0; }

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import rehypeSanitize, { defaultSchema } from "rehype-sanitize";
 import { remarkFoldedCallouts } from "./folded-callouts";
@@ -9,9 +9,18 @@ let mermaidModulePromise: Promise<typeof import("mermaid")> | undefined;
 let mermaidInitialized = false;
 let mermaidRenderId = 0;
 
-const MERMAID_MIN_SCALE = 0.6;
-const MERMAID_MAX_SCALE = 2;
+const MERMAID_MIN_SCALE = 0.1;
+const MERMAID_MAX_SCALE = 4;
 const MERMAID_SCALE_STEP = 0.1;
+
+function mermaidFitScale(naturalWidth: number, viewportWidth: number): number | undefined {
+  if (naturalWidth <= 0 || viewportWidth <= 0) return undefined;
+  const availableWidth = Math.max(240, viewportWidth - 32);
+  return Math.min(
+    MERMAID_MAX_SCALE,
+    Math.max(MERMAID_MIN_SCALE, Number((availableWidth / naturalWidth).toFixed(2))),
+  );
+}
 
 function loadMermaid() {
   mermaidModulePromise ??= import("mermaid");
@@ -29,6 +38,7 @@ function MermaidDiagram({ source }: MermaidDiagramProps) {
   const [error, setError] = useState(false);
   const [rendered, setRendered] = useState(false);
   const [scale, setScale] = useState(1);
+  const [autoFit, setAutoFit] = useState(true);
   const [fullscreen, setFullscreen] = useState(false);
 
   useEffect(() => {
@@ -38,6 +48,7 @@ function MermaidDiagram({ source }: MermaidDiagramProps) {
     setError(false);
     setRendered(false);
     setScale(1);
+    setAutoFit(true);
     setFullscreen(false);
     void loadMermaid()
       .then(({ default: mermaid }) => {
@@ -216,6 +227,29 @@ function MermaidDiagram({ source }: MermaidDiagramProps) {
               { fill: "#5b756b", stroke: "#5b756b" },
             );
           }
+
+          // Timeline diagrams use unstyled paths for their cards and a plain
+          // black line for the vertical connectors. Keep those primitives
+          // readable even when the generated Mermaid stylesheet is ignored by
+          // the browser after the SVG is inserted with innerHTML.
+          if (svgElement.querySelector(".timeline-node")) {
+            setPresentationAttributes(
+              ".timeline-node .node-bkg",
+              { fill: "#edf7f2", stroke: "#79ae9a", "stroke-width": "1.2px" },
+            );
+            setPresentationAttributes(
+              ".timeline-node line",
+              { fill: "none", stroke: "#5b756b", "stroke-width": "1.4px" },
+            );
+            setPresentationAttributes(
+              ".timeline-node text, .timeline-node tspan",
+              { fill: "#263b34" },
+            );
+            setPresentationAttributes(
+              ".lineWrapper line",
+              { fill: "none", stroke: "#5b756b", "stroke-width": "2px" },
+            );
+          }
         }
         setRendered(true);
       })
@@ -229,7 +263,7 @@ function MermaidDiagram({ source }: MermaidDiagramProps) {
     };
   }, [source]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const svg = hostRef.current?.querySelector("svg");
     if (!svg) return;
 
@@ -241,10 +275,29 @@ function MermaidDiagram({ source }: MermaidDiagramProps) {
     naturalSizeRef.current = { width, height };
     svg.removeAttribute("width");
     svg.removeAttribute("height");
-    svg.style.width = `${Math.round(width * scale)}px`;
-    svg.style.height = `${Math.round(height * scale)}px`;
+    const applySize = () => {
+      const fittedScale = autoFit
+        ? mermaidFitScale(width, viewportRef.current?.clientWidth ?? 0)
+        : undefined;
+      const displayScale = fittedScale ?? scale;
+      svg.style.width = `${Math.round(width * displayScale)}px`;
+      svg.style.height = `${Math.round(height * displayScale)}px`;
+      if (fittedScale !== undefined && fittedScale !== scale) setScale(fittedScale);
+    };
+
+    applySize();
     svg.style.maxWidth = "none";
-  }, [rendered, scale]);
+    const viewport = viewportRef.current;
+    const observer = viewport && typeof ResizeObserver !== "undefined"
+      ? new ResizeObserver(applySize)
+      : undefined;
+    if (viewport) observer?.observe(viewport);
+    window.addEventListener("resize", applySize);
+    return () => {
+      observer?.disconnect();
+      window.removeEventListener("resize", applySize);
+    };
+  }, [rendered, scale, autoFit, fullscreen]);
 
   useEffect(() => {
     if (!fullscreen) return;
@@ -256,18 +309,16 @@ function MermaidDiagram({ source }: MermaidDiagramProps) {
   }, [fullscreen]);
 
   const zoom = (delta: number) => {
+    setAutoFit(false);
     setScale((current) => Math.min(MERMAID_MAX_SCALE, Math.max(MERMAID_MIN_SCALE, Number((current + delta).toFixed(2)))));
   };
 
   const fitToWidth = () => {
-    const naturalWidth = naturalSizeRef.current.width;
-    const viewportWidth = viewportRef.current?.clientWidth ?? 0;
-    if (!naturalWidth || !viewportWidth) {
-      setScale(1);
-      return;
-    }
-    const availableWidth = Math.max(240, viewportWidth - 32);
-    setScale(Math.min(1, Number((availableWidth / naturalWidth).toFixed(2))));
+    setAutoFit(true);
+    setScale(mermaidFitScale(
+      naturalSizeRef.current.width,
+      viewportRef.current?.clientWidth ?? 0,
+    ) ?? 1);
   };
 
   const closeFullscreen = () => setFullscreen(false);

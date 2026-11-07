@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useKnowledgeRoutes } from "../routes/context";
 import type { WheelEvent as ReactWheelEvent } from "react";
 
@@ -6,7 +6,7 @@ import type { CardV2 } from "../content/types";
 import type { ReferenceDocument } from "../content/payload";
 import type { CardProgress } from "../study/scheduler";
 import { Markdown } from "./Markdown";
-import { currentAppHistoryState, pushAppHistoryState } from "./navigation-history";
+import { currentAppHistoryState, pushAppHistoryState, replaceAppHistoryState } from "./navigation-history";
 import {
   getRouteProgress,
   resolveRouteCards,
@@ -94,11 +94,51 @@ function RouteReferenceList({
 
 function RouteReferenceReader({
   reference,
+  navigation,
+  onNavigate,
   onClose,
 }: {
   reference: ResolvedRouteDocument;
+  navigation: {
+    currentIndex: number;
+    total: number;
+    previous?: ResolvedRouteDocument;
+    next?: ResolvedRouteDocument;
+  };
+  onNavigate(reference: ResolvedRouteDocument): void;
   onClose(): void;
 }) {
+  const readerBodyRef = useRef<HTMLDivElement>(null);
+  const [articleHeadings, setArticleHeadings] = useState<Array<{ id: string; level: number; title: string }>>([]);
+
+  useLayoutEffect(() => {
+    const readerBody = readerBodyRef.current;
+    readerBody?.scrollTo({ top: 0 });
+
+    const headings = readerBody?.querySelectorAll<HTMLElement>(
+      ".route-reference-reader-content .markdown h2, .route-reference-reader-content .markdown h3, .route-reference-reader-content .markdown h4",
+    ) ?? [];
+    const nextHeadings = Array.from(headings).flatMap((heading, index) => {
+      const title = heading.textContent?.trim();
+      if (!title) return [];
+
+      const id = `route-article-heading-${index}`;
+      heading.id = id;
+      return [{ id, level: Number(heading.tagName.slice(1)), title }];
+    });
+    setArticleHeadings(nextHeadings);
+  }, [reference.document.id, reference.document.markdown]);
+
+  const navigateToHeading = (id: string) => {
+    const readerBody = readerBodyRef.current;
+    const heading = readerBody?.querySelector<HTMLElement>(`#${id}`);
+    if (!readerBody || !heading) return;
+
+    const top = readerBody.scrollTop + heading.getBoundingClientRect().top - readerBody.getBoundingClientRect().top - 12;
+    const behavior = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth";
+    readerBody.scrollTo({ top, behavior });
+  };
+
   useEffect(() => {
     const html = document.documentElement;
     const body = document.body;
@@ -146,12 +186,50 @@ function RouteReferenceReader({
           <div>
             <p className="eyebrow">FROM 小陈空间 · 当前阶段技术资料</p>
             <h2>{reference.document.title}</h2>
+            {navigation.total > 1 ? (
+              <nav className="route-reference-reader-navigation" aria-label="文章导航">
+                <button
+                  type="button"
+                  aria-label={navigation.previous ? `上一篇：${navigation.previous.document.title}` : "已经是第一篇"}
+                  disabled={!navigation.previous}
+                  onClick={() => navigation.previous && onNavigate(navigation.previous)}
+                >
+                  ← 上一篇
+                </button>
+                <span aria-live="polite">{navigation.currentIndex + 1} / {navigation.total}</span>
+                <button
+                  type="button"
+                  aria-label={navigation.next ? `下一篇：${navigation.next.document.title}` : "已经是最后一篇"}
+                  disabled={!navigation.next}
+                  onClick={() => navigation.next && onNavigate(navigation.next)}
+                >
+                  下一篇 →
+                </button>
+              </nav>
+            ) : null}
           </div>
           <button className="route-reference-reader-close" type="button" aria-label="关闭阅读层" onClick={onClose}>×</button>
         </header>
-        <div className="route-reference-reader-body" onWheel={handleReaderWheel}>
+        <div ref={readerBodyRef} className="route-reference-reader-body" onWheel={handleReaderWheel}>
           <article className="route-reference-reader-content">
             <p className="route-reference-reason">{reference.reason}</p>
+            {articleHeadings.length > 0 ? (
+              <details key={reference.document.id} className="route-reference-toc">
+                <summary>
+                  <span>文章目录</span>
+                  <small>{articleHeadings.length} 节</small>
+                </summary>
+                <nav aria-label="文章目录">
+                  <ol>
+                    {articleHeadings.map((heading) => (
+                      <li key={heading.id} data-depth={heading.level}>
+                        <button type="button" onClick={() => navigateToHeading(heading.id)}>{heading.title}</button>
+                      </li>
+                    ))}
+                  </ol>
+                </nav>
+              </details>
+            ) : null}
             <Markdown images={reference.document.images}>{reference.document.markdown}</Markdown>
             <div className="route-reference-reader-source">
               <span>来源：{reference.document.sourcePath}</span>
@@ -315,6 +393,15 @@ function RouteDetail({
   const [referenceCatalogOpen, setReferenceCatalogOpen] = useState(false);
   const [referenceId, setReferenceId] = useState<string>();
   const activeReference = activeReferences.find(({ document }) => document.id === referenceId);
+  const activeReferenceIndex = activeReference
+    ? activeReferences.findIndex(({ document }) => document.id === activeReference.document.id)
+    : -1;
+  const referenceNavigation = activeReferenceIndex >= 0 ? {
+    currentIndex: activeReferenceIndex,
+    total: activeReferences.length,
+    previous: activeReferences[activeReferenceIndex - 1],
+    next: activeReferences[activeReferenceIndex + 1],
+  } : undefined;
   const stageLabel = (index: number) => route.steps[index].shortTitle ?? route.steps[index].title.split("：")[0];
   function closeReference(): void {
     setReferenceId(undefined);
@@ -397,6 +484,15 @@ function RouteDetail({
   const openReference = (reference: ResolvedRouteDocument) => {
     setReferenceCatalogOpen(false);
     pushAppHistoryState({
+      view: "routes",
+      routeId: route.id,
+      layer: "reference",
+      referenceId: reference.document.id,
+    });
+    setReferenceId(reference.document.id);
+  };
+  const navigateReference = (reference: ResolvedRouteDocument) => {
+    replaceAppHistoryState({
       view: "routes",
       routeId: route.id,
       layer: "reference",
@@ -556,7 +652,14 @@ function RouteDetail({
               </div>
             </div>
           ) : null}
-          {activeReference ? <RouteReferenceReader reference={activeReference} onClose={closeReference} /> : null}
+          {activeReference && referenceNavigation ? (
+            <RouteReferenceReader
+              reference={activeReference}
+              navigation={referenceNavigation}
+              onNavigate={navigateReference}
+              onClose={closeReference}
+            />
+          ) : null}
         </>
       ) : null}
     </main>
