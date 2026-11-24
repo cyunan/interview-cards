@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { memo, useEffect, useLayoutEffect, useRef, useState, type HTMLAttributes, type ReactNode } from "react";
 import ReactMarkdown from "react-markdown";
 import rehypeSanitize, { defaultSchema } from "rehype-sanitize";
 import { remarkFoldedCallouts } from "./folded-callouts";
@@ -12,14 +12,43 @@ let mermaidRenderId = 0;
 const MERMAID_MIN_SCALE = 0.1;
 const MERMAID_MAX_SCALE = 4;
 const MERMAID_SCALE_STEP = 0.1;
+const CODE_BLOCK_COLLAPSE_LINE_THRESHOLD = 20;
 
-function mermaidFitScale(naturalWidth: number, viewportWidth: number): number | undefined {
+type MermaidFitMode = "diagram" | "width" | "manual";
+
+function mermaidFitWidthScale(naturalWidth: number, viewportWidth: number): number | undefined {
   if (naturalWidth <= 0 || viewportWidth <= 0) return undefined;
   const availableWidth = Math.max(240, viewportWidth - 32);
   return Math.min(
     MERMAID_MAX_SCALE,
     Math.max(MERMAID_MIN_SCALE, Number((availableWidth / naturalWidth).toFixed(2))),
   );
+}
+
+function mermaidFitDiagramScale(
+  naturalWidth: number,
+  naturalHeight: number,
+  viewport: HTMLElement,
+): number | undefined {
+  if (naturalWidth <= 0 || naturalHeight <= 0) return undefined;
+
+  const styles = window.getComputedStyle(viewport);
+  const pixels = (value: string) => {
+    const parsed = Number.parseFloat(value);
+    return Number.isFinite(parsed) ? parsed : 0;
+  };
+  const paddingX = pixels(styles.paddingLeft) + pixels(styles.paddingRight);
+  const paddingY = pixels(styles.paddingTop) + pixels(styles.paddingBottom);
+  const borderY = pixels(styles.borderTopWidth) + pixels(styles.borderBottomWidth);
+  const maxHeight = Number.parseFloat(styles.maxHeight);
+  const availableWidth = Math.max(1, viewport.clientWidth - paddingX);
+  const availableHeight = Math.max(
+    1,
+    Number.isFinite(maxHeight)
+      ? maxHeight - paddingY - borderY
+      : viewport.clientHeight - paddingY,
+  );
+  return Math.min(1, availableWidth / naturalWidth, availableHeight / naturalHeight);
 }
 
 function loadMermaid() {
@@ -31,24 +60,76 @@ interface MermaidDiagramProps {
   source: string;
 }
 
+interface MarkdownCodeBlockProps {
+  children: ReactNode;
+  language?: string;
+  lineCount: number;
+  preProps: HTMLAttributes<HTMLPreElement>;
+}
+
+function MarkdownCodeBlock({ children, language, lineCount, preProps }: MarkdownCodeBlockProps) {
+  const [open, setOpen] = useState(lineCount <= CODE_BLOCK_COLLAPSE_LINE_THRESHOLD);
+
+  return (
+    <details
+      className="markdown-code-disclosure"
+      open={open}
+      onToggle={(event) => setOpen(event.currentTarget.open)}
+    >
+      <summary>
+        <span className="markdown-code-heading">
+          <span className="markdown-code-icon" aria-hidden="true">&lt;/&gt;</span>
+          <span className="markdown-code-language">{language ? language.toUpperCase() : "TEXT"}</span>
+          <span className="markdown-code-caption">代码示例</span>
+        </span>
+        <span className="markdown-code-meta">
+          <small>{lineCount} 行</small>
+          <span className="markdown-code-disclosure-action">{open ? "收起代码" : "展开代码"}</span>
+        </span>
+      </summary>
+      <pre {...preProps}>{children}</pre>
+    </details>
+  );
+}
+
 function MermaidDiagram({ source }: MermaidDiagramProps) {
   const hostRef = useRef<HTMLDivElement>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
   const naturalSizeRef = useRef({ width: 0, height: 0 });
   const [error, setError] = useState(false);
   const [rendered, setRendered] = useState(false);
+  const [isNearViewport, setIsNearViewport] = useState(false);
   const [scale, setScale] = useState(1);
-  const [autoFit, setAutoFit] = useState(true);
+  const [fitMode, setFitMode] = useState<MermaidFitMode>("diagram");
   const [fullscreen, setFullscreen] = useState(false);
 
   useEffect(() => {
+    const viewport = viewportRef.current;
+    if (!viewport) return;
+    if (typeof IntersectionObserver === "undefined") {
+      setIsNearViewport(true);
+      return;
+    }
+
+    const readerBody = viewport.closest<HTMLElement>(".route-reference-reader-body");
+    const observer = new IntersectionObserver((entries) => {
+      if (!entries.some((entry) => entry.isIntersecting)) return;
+      setIsNearViewport(true);
+      observer.disconnect();
+    }, { root: readerBody, rootMargin: "400px 0px" });
+    observer.observe(viewport);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!isNearViewport) return;
     let active = true;
     const renderId = `mermaid-diagram-${++mermaidRenderId}`;
 
     setError(false);
     setRendered(false);
     setScale(1);
-    setAutoFit(true);
+    setFitMode("diagram");
     setFullscreen(false);
     void loadMermaid()
       .then(({ default: mermaid }) => {
@@ -261,7 +342,7 @@ function MermaidDiagram({ source }: MermaidDiagramProps) {
       active = false;
       hostRef.current?.replaceChildren();
     };
-  }, [source]);
+  }, [source, isNearViewport]);
 
   useLayoutEffect(() => {
     const svg = hostRef.current?.querySelector("svg");
@@ -276,12 +357,15 @@ function MermaidDiagram({ source }: MermaidDiagramProps) {
     svg.removeAttribute("width");
     svg.removeAttribute("height");
     const applySize = () => {
-      const fittedScale = autoFit
-        ? mermaidFitScale(width, viewportRef.current?.clientWidth ?? 0)
-        : undefined;
+      const viewport = viewportRef.current;
+      const fittedScale = fitMode === "diagram" && viewport
+        ? mermaidFitDiagramScale(width, height, viewport)
+        : fitMode === "width"
+          ? mermaidFitWidthScale(width, viewport?.clientWidth ?? 0)
+          : undefined;
       const displayScale = fittedScale ?? scale;
-      svg.style.width = `${Math.round(width * displayScale)}px`;
-      svg.style.height = `${Math.round(height * displayScale)}px`;
+      svg.style.width = `${width * displayScale}px`;
+      svg.style.height = `${height * displayScale}px`;
       if (fittedScale !== undefined && fittedScale !== scale) setScale(fittedScale);
     };
 
@@ -297,25 +381,35 @@ function MermaidDiagram({ source }: MermaidDiagramProps) {
       observer?.disconnect();
       window.removeEventListener("resize", applySize);
     };
-  }, [rendered, scale, autoFit, fullscreen]);
+  }, [rendered, scale, fitMode, fullscreen]);
 
   useEffect(() => {
     if (!fullscreen) return;
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setFullscreen(false);
+      if (event.key !== "Escape") return;
+      // Handle Escape before the article reader's window listener.
+      event.stopPropagation();
+      setFullscreen(false);
     };
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
   }, [fullscreen]);
 
   const zoom = (delta: number) => {
-    setAutoFit(false);
+    setFitMode("manual");
     setScale((current) => Math.min(MERMAID_MAX_SCALE, Math.max(MERMAID_MIN_SCALE, Number((current + delta).toFixed(2)))));
   };
 
+  const fitToDiagram = () => {
+    setFitMode("diagram");
+    const { width, height } = naturalSizeRef.current;
+    const viewport = viewportRef.current;
+    setScale(viewport ? mermaidFitDiagramScale(width, height, viewport) ?? 1 : 1);
+  };
+
   const fitToWidth = () => {
-    setAutoFit(true);
-    setScale(mermaidFitScale(
+    setFitMode("width");
+    setScale(mermaidFitWidthScale(
       naturalSizeRef.current.width,
       viewportRef.current?.clientWidth ?? 0,
     ) ?? 1);
@@ -335,6 +429,7 @@ function MermaidDiagram({ source }: MermaidDiagramProps) {
         <div className="mermaid-diagram-actions">
           <span className="mermaid-diagram-scale" aria-live="polite">{Math.round(scale * 100)}%</span>
           <button type="button" aria-label="缩小图示" onClick={() => zoom(-MERMAID_SCALE_STEP)} disabled={scale <= MERMAID_MIN_SCALE}>−</button>
+          <button type="button" aria-label="适应全图" onClick={fitToDiagram}>适应全图</button>
           <button type="button" aria-label="适应宽度" onClick={fitToWidth}>适应宽度</button>
           <button type="button" aria-label="放大图示" onClick={() => zoom(MERMAID_SCALE_STEP)} disabled={scale >= MERMAID_MAX_SCALE}>＋</button>
           <button type="button" aria-label={fullscreen ? "退出全屏图示" : "全屏查看图示"} onClick={() => setFullscreen((current) => !current)}>
@@ -345,7 +440,7 @@ function MermaidDiagram({ source }: MermaidDiagramProps) {
       <div ref={viewportRef} className="mermaid-diagram-viewport" data-mermaid-viewport tabIndex={0} aria-label="Mermaid 图示查看区域">
         {!rendered && !error ? (
           <span className="mermaid-loading" role="status">
-            正在绘制图示…
+            {isNearViewport ? "正在绘制图示…" : "进入视野后绘制图示"}
           </span>
         ) : null}
         {error ? (
@@ -372,7 +467,7 @@ interface MarkdownProps {
 
 const REFERENCE_IMAGE_URL_PATTERN = /^https:\/\/interview-cards\.invalid\/reference-image\/([a-f0-9]{16,64})$/;
 
-export function Markdown({ children, className, images = [] }: MarkdownProps) {
+export const Markdown = memo(function Markdown({ children, className, images = [] }: MarkdownProps) {
   const imageMap = new Map(images.map((image) => [image.id, image]));
   const [previewImage, setPreviewImage] = useState<{ src: string; alt: string } | null>(null);
   const closePreviewRef = useRef<HTMLButtonElement>(null);
@@ -381,7 +476,9 @@ export function Markdown({ children, className, images = [] }: MarkdownProps) {
     if (!previewImage) return;
     const previousOverflow = document.body.style.overflow;
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setPreviewImage(null);
+      if (event.key !== "Escape") return;
+      event.stopPropagation();
+      setPreviewImage(null);
     };
     document.body.style.overflow = "hidden";
     document.addEventListener("keydown", onKeyDown);
@@ -449,7 +546,14 @@ export function Markdown({ children, className, images = [] }: MarkdownProps) {
                 return preChildren;
               }
 
-              return <pre {...props}>{preChildren}</pre>;
+              const codeText = codeNode?.type === "element"
+                ? codeNode.children.map((child) => child.type === "text" ? child.value : "").join("")
+                : "";
+              const lineCount = codeText.trim()
+                ? codeText.replace(/\n$/, "").split("\n").length
+                : 0;
+              const language = classes.find((name) => name.startsWith("language-"))?.slice("language-".length);
+              return <MarkdownCodeBlock lineCount={lineCount} language={language} preProps={props}>{preChildren}</MarkdownCodeBlock>;
             },
           }}
         >
@@ -481,4 +585,4 @@ export function Markdown({ children, className, images = [] }: MarkdownProps) {
       ) : null}
     </>
   );
-}
+});

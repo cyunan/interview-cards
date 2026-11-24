@@ -17,7 +17,9 @@ export interface KnowledgeRouteStep {
   title: string;
   shortTitle?: string;
   purpose: string;
+  readingMd?: string;
   cardIds: string[];
+  featuredCardIds?: string[];
   transition: string;
   checkpoint?: RouteCheckpoint;
   referenceDocuments?: RouteDocumentReference[];

@@ -56,9 +56,26 @@ describe("Markdown", () => {
 
   it("honors expanded callouts without interpreting markers inside code", () => {
     const { container } = render(<Markdown>{"> [!note]+ 补充说明\n> 示例正文\n\n~~~text\n> [!success]- literal\n~~~"}</Markdown>);
-    expect(container.querySelectorAll("details")).toHaveLength(1);
-    expect(container.querySelector("details")).toHaveAttribute("open");
+    const callouts = container.querySelectorAll("details:not(.markdown-code-disclosure)");
+    expect(callouts).toHaveLength(1);
+    expect(callouts[0]).toHaveAttribute("open");
     expect(container.querySelector("code")).toHaveTextContent("[!success]- literal");
+  });
+
+  it("expands 20 lines of code and collapses 21 lines by default", () => {
+    const fence = (lineCount: number) => [
+      "~~~text",
+      ...Array.from({ length: lineCount }, (_, index) => `line ${index + 1}`),
+      "~~~",
+    ].join("\n");
+    const { container } = render(<Markdown>{[fence(20), fence(21)].join("\n\n")}</Markdown>);
+    const blocks = container.querySelectorAll("details.markdown-code-disclosure");
+
+    expect(blocks).toHaveLength(2);
+    expect(blocks[0]).toHaveAttribute("open");
+    expect(blocks[0].querySelector("summary")).toHaveTextContent("20 行");
+    expect(blocks[1]).not.toHaveAttribute("open");
+    expect(blocks[1].querySelector("summary")).toHaveTextContent("21 行");
   });
 
   it("does not render raw HTML, scripts, or event handlers", () => {
@@ -147,7 +164,7 @@ describe("Markdown", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "全屏查看图示" }));
     expect(container.querySelector('[data-mermaid-fullscreen="true"]')).toBeInTheDocument();
-    fireEvent.keyDown(window, { key: "Escape" });
+    fireEvent.keyDown(document.body, { key: "Escape" });
     expect(container.querySelector('[data-mermaid-fullscreen="true"]')).not.toBeInTheDocument();
   });
 

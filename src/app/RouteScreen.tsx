@@ -1,14 +1,13 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useKnowledgeRoutes } from "../routes/context";
-import type { WheelEvent as ReactWheelEvent } from "react";
+import type { UIEvent as ReactUIEvent, WheelEvent as ReactWheelEvent } from "react";
 
 import type { CardV2 } from "../content/types";
 import type { ReferenceDocument } from "../content/payload";
-import type { CardProgress } from "../study/scheduler";
 import { Markdown } from "./Markdown";
+import { plainText } from "./reading-data";
 import { currentAppHistoryState, pushAppHistoryState, replaceAppHistoryState } from "./navigation-history";
 import {
-  getRouteProgress,
   resolveRouteCards,
   resolveRouteCheckpoint,
   resolveRouteDocuments,
@@ -19,26 +18,24 @@ import {
 interface RouteScreenProps {
   cards: CardV2[];
   documents?: ReferenceDocument[];
-  progress: ReadonlyMap<string, CardProgress>;
   selectedRouteId?: string;
+  selectedStepId?: string;
   onSelectRoute(routeId?: string): void;
-  onPractice(route: KnowledgeRoute, stepIndex: number): void;
+  onOpenCard(id: string): void;
+  onOpenDocument?(id: string): void;
 }
 
-function masteryLabel(record: CardProgress | undefined): string {
-  if (!record) return "未学习";
-  if (record.level <= 1) return "需巩固";
-  if (record.level <= 3) return `学习中 · L${record.level}`;
-  return `已掌握 · L${record.level}`;
-}
-
-function RouteProgressBar({ completed, total }: { completed: number; total: number }) {
-  const value = total === 0 ? 0 : Math.round((completed / total) * 100);
+function RouteQuestion({ card, onOpenCard }: { card: CardV2; onOpenCard(id: string): void }) {
+  const [open, setOpen] = useState(false);
   return (
-    <div className="route-progress" aria-label={`已练过 ${completed} / ${total} 个阶段`}>
-      <div className="route-progress-track"><span style={{ width: `${value}%` }} /></div>
-      <small>{completed} / {total} 阶段已练过</small>
-    </div>
+    <details className="route-question" onToggle={event => setOpen(event.currentTarget.open)}>
+      <summary><span>{plainText(card.question)}</span><span className="route-question-chevron" aria-hidden="true" /></summary>
+      {open ? <div className="route-question-answer">
+        <p className="route-question-label">参考回答</p>
+        <Markdown images={card.images}>{card.quickAnswerMd}</Markdown>
+        <button className="reading-link" type="button" onClick={() => onOpenCard(card.id)}>查看完整问答</button>
+      </div> : null}
+    </details>
   );
 }
 
@@ -109,12 +106,19 @@ function RouteReferenceReader({
   onClose(): void;
 }) {
   const readerBodyRef = useRef<HTMLDivElement>(null);
+  const readerHeaderRef = useRef<HTMLElement>(null);
   const [articleHeadings, setArticleHeadings] = useState<Array<{ id: string; level: number; title: string }>>([]);
 
   useLayoutEffect(() => {
     const readerBody = readerBodyRef.current;
     if (readerBody) readerBody.scrollTop = 0;
+    readerHeaderRef.current?.style.setProperty("--reader-progress", "0%");
+    readerHeaderRef.current?.classList.remove("is-compact");
+    setArticleHeadings((current) => current.length === 0 ? current : []);
+  }, [reference.document.id]);
 
+  useEffect(() => {
+    const readerBody = readerBodyRef.current;
     const headings = readerBody?.querySelectorAll<HTMLElement>(
       ".route-reference-reader-content .markdown h2, .route-reference-reader-content .markdown h3, .route-reference-reader-content .markdown h4",
     ) ?? [];
@@ -179,6 +183,16 @@ function RouteReferenceReader({
     if (atTop || atBottom) event.preventDefault();
   };
 
+  const handleReaderScroll = (event: ReactUIEvent<HTMLDivElement>) => {
+    const { scrollTop, scrollHeight, clientHeight } = event.currentTarget;
+    const maxScroll = Math.max(0, scrollHeight - clientHeight);
+    const progress = maxScroll === 0 ? 0 : Math.max(0, Math.min(100, (scrollTop / maxScroll) * 100));
+    readerHeaderRef.current?.style.setProperty("--reader-progress", `${progress}%`);
+
+    const shouldCompact = scrollTop > 44;
+    readerHeaderRef.current?.classList.toggle("is-compact", shouldCompact);
+  };
+
   const copyPath = () => {
     if (typeof navigator !== "undefined" && navigator.clipboard) {
       void navigator.clipboard.writeText(reference.document.sourcePath);
@@ -187,7 +201,7 @@ function RouteReferenceReader({
   return (
     <div className="route-reference-reader-overlay" role="presentation" onClick={onClose}>
       <section className="route-reference-reader" role="dialog" aria-modal="true" aria-label="技术资料阅读" onClick={(event) => event.stopPropagation()}>
-        <header className="route-reference-reader-header">
+        <header ref={readerHeaderRef} className="route-reference-reader-header">
           <div>
             <p className="eyebrow">FROM 小陈空间 · 当前阶段技术资料</p>
             <h2>{reference.document.title}</h2>
@@ -215,7 +229,7 @@ function RouteReferenceReader({
           </div>
           <button className="route-reference-reader-close" type="button" aria-label="关闭阅读层" onClick={onClose}>×</button>
         </header>
-        <div ref={readerBodyRef} className="route-reference-reader-body" onWheel={handleReaderWheel}>
+        <div ref={readerBodyRef} className="route-reference-reader-body" onScroll={handleReaderScroll} onWheel={handleReaderWheel}>
           <article className="route-reference-reader-content">
             <p className="route-reference-reason">{reference.reason}</p>
             {articleHeadings.length > 0 ? (
@@ -287,7 +301,6 @@ function RouteContextPanel({
   route,
   step,
   stepIndex,
-  reviewed,
   total,
   references,
   onOpenDocument,
@@ -295,7 +308,6 @@ function RouteContextPanel({
   route: KnowledgeRoute;
   step: KnowledgeRoute["steps"][number];
   stepIndex: number;
-  reviewed: number;
   total: number;
   references: ResolvedRouteDocument[];
   onOpenDocument(reference: ResolvedRouteDocument): void;
@@ -305,7 +317,7 @@ function RouteContextPanel({
       <p className="eyebrow">当前阶段</p>
       <h2>{String(stepIndex + 1).padStart(2, "0")} · {step.shortTitle ?? step.title}</h2>
       <p className="route-context-purpose">{step.purpose}</p>
-      <div className="route-context-progress"><strong>{reviewed}/{total}</strong><span>张卡片已练过</span></div>
+      <div className="route-context-progress"><strong>{total}</strong><span>道问答</span></div>
       {references.length > 0 ? (
         <RouteReferencePanel references={references} embedded onOpenDocument={onOpenDocument} />
       ) : (
@@ -318,32 +330,26 @@ function RouteContextPanel({
   );
 }
 
-function RouteList({
-  cards,
-  progress,
-  onSelectRoute,
-}: Pick<RouteScreenProps, "cards" | "progress" | "onSelectRoute">) {
+function RouteList({ onSelectRoute }: Pick<RouteScreenProps, "onSelectRoute">) {
   const KNOWLEDGE_ROUTES = useKnowledgeRoutes();
   return (
     <main className="screen route-screen">
       <section className="page-title route-intro">
         <p className="eyebrow">KNOWLEDGE ROUTES</p>
         <h1>沿路线建立理解</h1>
-        <p>冲刺和完整题库解决“今天刷什么”；路线解决“为什么这些题要放在一起”。先沿一条链路学，再回到题库复习。</p>
+        <p>从一个具体问题出发，按阶段读原理、问答和技术资料。</p>
       </section>
 
       <section className="route-guide" aria-label="路线学习方法">
         <span className="route-guide-mark" aria-hidden="true">↗</span>
         <div>
           <strong>一条路线 = 一条可口述的因果链</strong>
-          <p>每个阶段复用已有卡片，只增加顺序、过渡和阶段检查题；练习时仍按原有进度排期。</p>
+          <p>每个阶段说明一个技术环节，读完后沿着过渡进入下一阶段。</p>
         </div>
       </section>
 
       <section className="route-grid" aria-label="学习路线列表">
-        {KNOWLEDGE_ROUTES.map((route, index) => {
-          const summary = getRouteProgress(route, cards, progress);
-          return (
+        {KNOWLEDGE_ROUTES.map((route, index) => (
             <button
               type="button"
               className="route-card"
@@ -351,14 +357,12 @@ function RouteList({
               onClick={() => onSelectRoute(route.id)}
             >
               <span className="route-index">{String(index + 1).padStart(2, "0")}</span>
-              <span className="route-card-meta">{route.level} · 约 {route.estimatedMinutes} 分钟</span>
+              <span className="route-card-meta">{route.level} · {route.steps.length} 个阶段 · 约 {route.estimatedMinutes} 分钟</span>
               <strong>{route.title}</strong>
               <small>{route.summary}</small>
-              <RouteProgressBar completed={summary.completedSteps} total={route.steps.length} />
-              <span className="route-card-action">{summary.reviewedCards > 0 ? "继续这条路线" : "开始这条路线"} <span aria-hidden="true">→</span></span>
+              <span className="route-card-action">阅读路线 <span aria-hidden="true">→</span></span>
             </button>
-          );
-        })}
+        ))}
       </section>
     </main>
   );
@@ -368,23 +372,28 @@ function RouteDetail({
   route,
   cards,
   documents,
-  progress,
+  selectedStepId,
   onSelectRoute,
-  onPractice,
-}: {
+  onOpenCard,
+  onOpenDocument,
+}: Pick<RouteScreenProps, "cards" | "selectedStepId" | "onSelectRoute" | "onOpenCard" | "onOpenDocument"> & {
   route: KnowledgeRoute;
-  cards: CardV2[];
   documents: ReferenceDocument[];
-  progress: ReadonlyMap<string, CardProgress>;
-  onSelectRoute(routeId?: string): void;
-  onPractice(route: KnowledgeRoute, stepIndex: number): void;
 }) {
-  const summary = useMemo(() => getRouteProgress(route, cards, progress), [cards, progress, route]);
-  const indexFromHash = () => route.steps.findIndex((step) => window.location.hash === `#route-${step.id}`);
-  const [selectedIndex, setSelectedIndex] = useState(() => {
-    const index = indexFromHash();
-    return index >= 0 ? index : summary.nextStepIndex;
-  });
+  const indexFromHash = () => route.steps.findIndex(step => window.location.hash === `#route-${step.id}`);
+  const [selectedIndex, setSelectedIndex] = useState(() =>
+    Math.max(0, selectedStepId ? route.steps.findIndex(step => step.id === selectedStepId) : indexFromHash())
+  );
+  const questionCount = new Set(route.steps.flatMap(step => resolveRouteCards(step, cards).map(card => card.id))).size;
+  useLayoutEffect(() => {
+    if (!selectedStepId) return;
+    const index = route.steps.findIndex(step => step.id === selectedStepId);
+    if (index < 0) return;
+    setSelectedIndex(index);
+    if (index > 0 || window.location.hash === `#route-${selectedStepId}`) {
+      document.getElementById(`route-${selectedStepId}`)?.scrollIntoView?.({ block: "start" });
+    }
+  }, [route, selectedStepId]);
   const directoryRef = useRef<HTMLDetailsElement>(null);
   const navigationRef = useRef<HTMLDivElement>(null);
   const currentIndex = Math.min(selectedIndex, route.steps.length - 1);
@@ -394,7 +403,6 @@ function RouteDetail({
   );
   const activeStep = route.steps[currentIndex];
   const activeStepCards = resolveRouteCards(activeStep, cards);
-  const activeStepReviewed = activeStepCards.filter((card) => (progress.get(card.id)?.reviewCount ?? 0) > 0).length;
   const [referenceCatalogOpen, setReferenceCatalogOpen] = useState(false);
   const [referenceId, setReferenceId] = useState<string>();
   const activeReference = activeReferences.find(({ document }) => document.id === referenceId);
@@ -487,6 +495,10 @@ function RouteDetail({
     requestAnimationFrame(() => document.getElementById(`route-${route.steps[index].id}`)?.focus({ preventScroll: true }));
   };
   const openReference = (reference: ResolvedRouteDocument) => {
+    if (onOpenDocument) {
+      onOpenDocument(reference.document.id);
+      return;
+    }
     setReferenceCatalogOpen(false);
     pushAppHistoryState({
       view: "routes",
@@ -509,15 +521,13 @@ function RouteDetail({
     pushAppHistoryState({ view: "routes", routeId: route.id, layer: "reference-catalog", referenceId: undefined });
     setReferenceCatalogOpen(true);
   };
-  const stageLinks = () => route.steps.map((step, index) => {
-    const complete = step.cardIds.length > 0 && step.cardIds.every((id) => cards.some((card) => card.id === id) && (progress.get(id)?.reviewCount ?? 0) > 0);
-    return <a key={step.id} href={`#route-${step.id}`} onClick={() => selectStage(index)}
-      aria-current={index === currentIndex ? "step" : undefined}
-      className={complete ? "is-reviewed" : undefined}>
-      <span className="route-stage-number" aria-hidden="true">{complete ? "✓" : String(index + 1).padStart(2, "0")}</span>
-      <span>{stageLabel(index)}{complete ? <small>已练习</small> : null}</span>
-    </a>;
-  });
+  const stageLinks = () => route.steps.map((step, index) => (
+    <a key={step.id} href={`#route-${step.id}`} onClick={() => selectStage(index)}
+      aria-current={index === currentIndex ? "step" : undefined}>
+      <span className="route-stage-number" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
+      <span>{stageLabel(index)}</span>
+    </a>
+  ));
 
   return (
     <main className="screen route-detail-screen">
@@ -527,19 +537,14 @@ function RouteDetail({
         </button>
       </div>
       <section className="route-detail-hero">
-        <p className="eyebrow">{route.level} · {route.steps.length} 个阶段 · {summary.totalCards} 张卡 · 约 {route.estimatedMinutes} 分钟</p>
+        <p className="eyebrow">{route.level} · {route.steps.length} 个阶段 · {questionCount} 道问答 · 约 {route.estimatedMinutes} 分钟</p>
         <h1>{route.title}</h1>
         <p>{route.summary}</p>
-        <div className="route-detail-stats">
-          <strong>{summary.reviewedCards}<small> / {summary.totalCards} 张练过</small></strong>
-          <RouteProgressBar completed={summary.completedSteps} total={route.steps.length} />
-        </div>
         {route.scenario ? <details className="route-learning-guide"><summary>学习场景与目标 <span className="route-teaching-label">教学场景</span></summary>
           <div><p>{route.scenario}</p>
             {route.outcomes ? <ul>{route.outcomes.map((outcome) => <li key={outcome}>{outcome}</li>)}</ul> : null}
-            <p className="route-progress-note">练过表示完成过评分，不等于已经掌握；薄弱卡片仍按原有排期复习。</p>
           </div>
-        </details> : <p className="route-progress-note">练过表示完成过评分，不等于已经掌握。</p>}
+        </details> : null}
       </section>
       <nav className="route-desktop-stage-rail" aria-label="桌面路线阶段">
         <p className="eyebrow">当前路线</p>
@@ -567,14 +572,18 @@ function RouteDetail({
       <section className="route-timeline" aria-label={`${route.title}学习阶段`}>
         {route.steps.map((step, index) => {
           const stepCards = resolveRouteCards(step, cards);
+          const featuredIds = step.featuredCardIds ?? [];
+          const featuredCards = featuredIds.flatMap(id => {
+            const card = stepCards.find(item => item.id === id);
+            return card ? [card] : [];
+          });
+          const otherCards = stepCards.filter(card => !featuredIds.includes(card.id));
           const checkpoint = resolveRouteCheckpoint(step, cards);
-          const stepReviewed = stepCards.filter((card) => (progress.get(card.id)?.reviewCount ?? 0) > 0).length;
-          const complete = step.cardIds.length > 0 && stepReviewed === step.cardIds.length;
           const active = index === currentIndex;
           return (
-            <div tabIndex={-1} id={`route-${step.id}`} className={active ? "route-step is-active" : complete ? "route-step is-complete" : "route-step"} key={step.id}>
+            <div tabIndex={-1} id={`route-${step.id}`} className={active ? "route-step is-active" : "route-step"} key={step.id}>
               <div className="route-step-rail" aria-hidden="true">
-                <span>{complete ? "✓" : String(index + 1).padStart(2, "0")}</span>
+                <span>{String(index + 1).padStart(2, "0")}</span>
               </div>
               <article className="route-step-body">
                 <div className="route-step-heading">
@@ -582,21 +591,18 @@ function RouteDetail({
                     <p className="eyebrow">阶段 {index + 1}</p>
                     <h2>{step.title}</h2>
                   </div>
-                  <span className="route-step-count">{stepReviewed}/{step.cardIds.length} 张练过</span>
+                  <span className="route-step-count">{stepCards.length} 道问答</span>
                 </div>
                 <p className="route-step-purpose">{step.purpose}</p>
+                {step.readingMd ? <div className="route-step-reading"><Markdown>{step.readingMd}</Markdown></div> : null}
                 <div className="route-step-cards">
-                  {stepCards.length > 0 ? stepCards.map((card) => (
-                    <div className="route-card-row" key={card.id}>
-                      <span className="route-card-dot" aria-hidden="true" />
-                      <span>{card.question}</span>
-                      <small>{masteryLabel(progress.get(card.id))}</small>
-                    </div>
-                  )) : (
-                    <p className="route-missing-copy">当前密文版本暂未包含本阶段卡片，更新题库后会自动出现。</p>
-                  )}
+                  {featuredCards.length ? <h3 className="route-question-heading">高频考点</h3> : null}
+                  {featuredCards.map(card => <RouteQuestion key={card.id} card={card} onOpenCard={onOpenCard} />)}
+                  {featuredCards.length && otherCards.length ? <h3 className="route-question-heading route-extra-heading">更多问答</h3> : null}
+                  {otherCards.map(card => <RouteQuestion key={card.id} card={card} onOpenCard={onOpenCard} />)}
+                  {!stepCards.length ? <p className="route-missing-copy">当前密文版本暂未包含本阶段卡片，更新题库后会自动出现。</p> : null}
                 </div>
-                {stepCards.length > 0 && stepCards.length < step.cardIds.length ? <p className="route-missing-copy">本阶段缺少 {step.cardIds.length - stepCards.length} 张卡片，请更新题库后再完整练习。</p> : null}
+                {stepCards.length > 0 && stepCards.length < step.cardIds.length ? <p className="route-missing-copy">本阶段缺少 {step.cardIds.length - stepCards.length} 张卡片，更新题库后可阅读完整问答。</p> : null}
                 {step.checkpoint ? (
                   <details className="route-checkpoint">
                     <summary>{checkpoint?.question.startsWith("阶段复述：") ? checkpoint.question : `${step.checkpoint.followUpIndex !== undefined ? "阶段复述" : "阶段检查"}：${checkpoint?.question ?? "等待题库更新"}`}</summary>
@@ -607,17 +613,6 @@ function RouteDetail({
                     )}
                   </details>
                 ) : null}
-                <div className="route-step-footer">
-                  <button
-                    className="primary-button"
-                    type="button"
-                    disabled={stepCards.length === 0}
-                    onClick={() => onPractice(route, index)}
-                  >
-                    {complete ? "再练一遍" : active ? "练习本阶段" : "练习这一阶段"}
-                  </button>
-                  <span>{stepCards.length > 0 ? "评分会沿用到原题库进度" : "等待题库更新"}</span>
-                </div>
                 {index < route.steps.length - 1 ? <p className="route-transition"><span aria-hidden="true">↓</span>{step.transition}</p> : null}
               </article>
             </div>
@@ -629,8 +624,7 @@ function RouteDetail({
         route={route}
         step={activeStep}
         stepIndex={currentIndex}
-        reviewed={activeStepReviewed}
-        total={activeStep.cardIds.length}
+        total={activeStepCards.length}
         references={activeReferences}
         onOpenDocument={openReference}
       />
@@ -674,10 +668,11 @@ function RouteDetail({
 export function RouteScreen({
   cards,
   documents = [],
-  progress,
   selectedRouteId,
+  selectedStepId,
   onSelectRoute,
-  onPractice,
+  onOpenCard,
+  onOpenDocument,
 }: RouteScreenProps) {
   const KNOWLEDGE_ROUTES = useKnowledgeRoutes();
   const route = selectedRouteId
@@ -685,7 +680,7 @@ export function RouteScreen({
     : undefined;
 
   if (!route) {
-    return <RouteList cards={cards} progress={progress} onSelectRoute={onSelectRoute} />;
+    return <RouteList onSelectRoute={onSelectRoute} />;
   }
 
   return (
@@ -694,9 +689,10 @@ export function RouteScreen({
       route={route}
       cards={cards}
       documents={documents}
-      progress={progress}
+      selectedStepId={selectedStepId}
       onSelectRoute={onSelectRoute}
-      onPractice={onPractice}
+      onOpenCard={onOpenCard}
+      onOpenDocument={onOpenDocument}
     />
   );
 }

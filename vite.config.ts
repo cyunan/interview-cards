@@ -32,9 +32,9 @@ export default defineConfig(({ command }) => {
         "apple-touch-icon.png",
       ],
       manifest: {
-        name: "私有面试卡片",
-        short_name: "面试卡片",
-        description: "本机解密、离线可用的私有面试复习卡片",
+        name: "私有技术面试工作台",
+        short_name: "面试工作台",
+        description: "本机解密、离线可用的面试问答与技术文档",
         theme_color: "#167d71",
         background_color: "#f7f8fa",
         display: "standalone",

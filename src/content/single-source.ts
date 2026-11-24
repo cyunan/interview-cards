@@ -9,6 +9,7 @@ import { parseCardsPayload, validateRouteReferences, type CardsPayloadV3, type P
 import type { CardV2 } from "./types";
 import type { KnowledgeRoute } from "../routes/routes";
 import { structuralLines } from "./structure";
+import { documentLinkResolver, extendReadingManifest, walkNotes } from "./reading-library";
 
 export const MAINTENANCE_DIRECTORY = "网站维护";
 const configSchema = z.object({
@@ -37,16 +38,6 @@ export async function readLegacyEnvelope(vault: string, config: SiteConfig): Pro
   const source = await readFile(path.join(vault, MAINTENANCE_DIRECTORY, config.legacyFile), "utf8");
   if (digest(source) !== config.legacySha256) throw new Error("历史题库快照校验失败；请恢复初始化时的只读快照。");
   return JSON.parse(source);
-}
-async function walk(directory: string): Promise<string[]> {
-  const files: string[] = [];
-  for (const entry of await readdir(directory, { withFileTypes: true })) {
-    if (entry.name.startsWith(".")) continue;
-    const absolute = path.join(directory, entry.name);
-    if (entry.isDirectory()) files.push(...await walk(absolute));
-    else if (entry.isFile() && entry.name.endsWith(".md")) files.push(absolute);
-  }
-  return files.sort();
 }
 export function extractInlineCards(source: string, sourcePath: string, category: string, topic: string): CardV2[] {
   const lines = source.split(/\r?\n/);
@@ -79,11 +70,11 @@ export function extractInlineCards(source: string, sourcePath: string, category:
 export interface CompiledSite {
   payload: CardsPayloadV3; inlineCards: CardV2[]; config: SiteConfig; partial: boolean;
 }
-export async function compileSite(vault: string, legacy?: ParsedCardsPayload): Promise<CompiledSite> {
+export async function compileSite(vault: string, legacy?: ParsedCardsPayload, options: { fullLibrary?: boolean } = {}): Promise<CompiledSite> {
   const config = await readSiteConfig(vault);
   if (legacy && config.legacyCardCount !== undefined && legacy.cards.length !== config.legacyCardCount) throw new Error("历史卡片数量与冻结快照基线不符");
   const roots = (await readdir(vault, { withFileTypes: true })).filter((entry) => entry.isDirectory() && /^0[1-9]-/.test(entry.name));
-  const files = (await Promise.all(roots.map((entry) => walk(path.join(vault, entry.name))))).flat();
+  const files = (await Promise.all(roots.map((entry) => walkNotes(path.join(vault, entry.name))))).flat();
   const notes: Array<{ path: string; source: string; data: Record<string, unknown> }> = [];
   for (const filename of files) {
     const source = await readFile(filename, "utf8");
@@ -98,11 +89,17 @@ export async function compileSite(vault: string, legacy?: ParsedCardsPayload): P
     sourcePath: note.path, reason: String(note.data.site_reason ?? "对应主题的技术笔记与面试问答"),
   }));
   if (new Set(manifest.map((entry) => entry.id)).size !== manifest.length) throw new Error("site_doc_id 重复");
-  const documents = await compileReferenceDocuments(vault, manifest);
+  const catalogue = options.fullLibrary ? await extendReadingManifest(vault, files, manifest) : manifest;
+  const documents = await compileReferenceDocuments(vault, catalogue, {
+    resolveLink: documentLinkResolver(catalogue),
+    includeEmpty: options.fullLibrary,
+  });
   const presentDocuments = new Set(documents.map((document) => document.id));
   for (const id of config.ownedDocumentIds) if (!presentDocuments.has(id) && !config.approvedDocumentRemovals.includes(id)) throw new Error("已接管资料缺失，不能回退旧文档: " + id);
+  const markedNotes = new Map(notes.map((note) => [note.path, note]));
   const inlineCards = documents.flatMap((document) => {
-    const note = notes.find((item) => item.path === document.sourcePath)!;
+    const note = markedNotes.get(document.sourcePath);
+    if (!note) return [];
     return extractInlineCards(document.markdown, note.path,
       String(note.data.card_category ?? note.path.split("/")[0]), String(note.data.card_topic ?? document.title),
     );
@@ -132,6 +129,7 @@ export async function compileSite(vault: string, legacy?: ParsedCardsPayload): P
     const docs = new Set(combinedDocuments.map((document) => document.id));
     routes = routes.map((route) => ({ ...route, steps: route.steps.map((step) => ({
       ...step, cardIds: step.cardIds.filter((id) => ids.has(id)),
+      featuredCardIds: step.featuredCardIds?.filter((id) => ids.has(id)),
       referenceDocuments: step.referenceDocuments?.filter((reference) => docs.has(reference.documentId)),
       checkpoint: step.checkpoint && ids.has(step.checkpoint.cardId) ? step.checkpoint : undefined,
     })).filter((step) => step.cardIds.length > 0) })).filter((route) => route.steps.length > 0);

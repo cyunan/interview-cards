@@ -4,6 +4,7 @@ import { UnlockError } from "../crypto/envelope";
 import { CARD_ID_PATTERN } from "./card-id";
 import type { CardV1, CardV2 } from "./types";
 import type { KnowledgeRoute } from "../routes/routes";
+import { structuralLines } from "./structure";
 
 export interface CardsPayloadV1 {
   schema: "cards-v1";
@@ -76,7 +77,7 @@ const referenceImageTokenPattern = /^https:\/\/interview-cards\.invalid\/referen
 const referenceImageOriginPattern = /^https:\/\/cdn\.nlark\.com\//;
 function hasOnlySupportedReferenceImages(markdown: string): boolean {
   const imagePattern = /!\[[^\]]*\]\(([^)]+)\)|!\[[^\]]+\]/g;
-  for (const match of markdown.matchAll(imagePattern)) {
+  for (const match of structuralLines(markdown.split(/\r?\n/)).join("\n").matchAll(imagePattern)) {
     const target = match[1];
     if (!target || (!referenceImageTokenPattern.test(target) && !referenceImageOriginPattern.test(target))) return false;
   }
@@ -100,7 +101,10 @@ const routeSchema = z.object({
   scenario: z.string().optional(), outcomes: z.array(z.string()).optional(),
   steps: z.array(z.object({
     id: z.string().regex(CARD_ID_PATTERN), title: z.string().min(1), shortTitle: z.string().optional(), purpose: z.string(), transition: z.string(),
-    cardIds: z.array(z.string().regex(CARD_ID_PATTERN)).min(1), checkpoint: checkpointSchema.optional(),
+    readingMd: z.string().trim().min(1).optional(),
+    cardIds: z.array(z.string().regex(CARD_ID_PATTERN)).min(1),
+    featuredCardIds: z.array(z.string().regex(CARD_ID_PATTERN)).optional(),
+    checkpoint: checkpointSchema.optional(),
     referenceDocuments: z.array(z.object({ documentId: z.string().regex(CARD_ID_PATTERN), reason: z.string().optional() }).strict()).optional(),
   }).strict()).min(1),
 }).strict();
@@ -118,6 +122,9 @@ export function validateRouteReferences(payload: Pick<ParsedCardsPayload, "cards
       if (stepIds.has(step.id)) throw new Error(`重复阶段 ID: ${step.id}`);
       stepIds.add(step.id);
       for (const id of step.cardIds) if (!cards.has(id)) throw new Error(`路线引用不存在的卡片: ${id}`);
+      const featuredIds = new Set(step.featuredCardIds);
+      if (featuredIds.size !== (step.featuredCardIds?.length ?? 0)) throw new Error(`阶段高频考点重复: ${step.id}`);
+      for (const id of featuredIds) if (!step.cardIds.includes(id)) throw new Error(`高频考点不在阶段内: ${id}`);
       for (const reference of step.referenceDocuments ?? []) if (!docs.has(reference.documentId)) throw new Error(`路线引用不存在的资料: ${reference.documentId}`);
       if (step.checkpoint) {
         const card = cards.get(step.checkpoint.cardId);

@@ -142,10 +142,10 @@ async function preview() {
   async function refresh() {
     const current = ++generation;
     try {
-      const compiled = await compileSite(vault, legacy);
+      const compiled = await compileSite(vault, legacy, { fullLibrary: true });
       if (generation === current) state = { payload: compiled.payload, partial: compiled.partial };
     } catch (error) {
-      if (generation === current) state = { error: error instanceof Error ? error.message : "编译失败" };
+      if (generation === current) state = { ...state, error: error instanceof Error ? error.message : "编译失败" };
     }
   }
   await refresh();

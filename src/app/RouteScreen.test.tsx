@@ -33,29 +33,35 @@ const documents = [{
 
 describe("route detail", () => {
   it("shows seven stages with collapsed recap answers from the payload", () => {
-    const { container } = render(<RouteScreen cards={cards} progress={new Map()} selectedRouteId={route.id} onSelectRoute={vi.fn()} onPractice={vi.fn()} />);
+    const { container } = render(<RouteScreen cards={cards} selectedRouteId={route.id} onSelectRoute={vi.fn()} onOpenCard={vi.fn()} />);
     expect(container.querySelectorAll(".route-step")).toHaveLength(7);
     expect(container.querySelectorAll(".route-checkpoint[open]")).toHaveLength(0);
     expect(screen.getByText("虚构完整回答 1-1")).toBeInTheDocument();
     expect(screen.getByText("阶段复述：虚构复述 1-1")).toBeInTheDocument();
     expect(screen.queryByText(/阶段复述：阶段复述/)).not.toBeInTheDocument();
     expect(screen.queryByText("虚构短答")).not.toBeInTheDocument();
-    expect(screen.getByText(/练过表示完成过评分/)).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /练习本阶段/ })).not.toBeInTheDocument();
     const links = screen.getByRole("navigation", { name: "跳转学习阶段" }).querySelectorAll("a");
     expect(links).toHaveLength(7);
     for (const link of links) expect(container.querySelector(link.hash)).not.toBeNull();
   });
 
-  it("starts a chosen stage with its index and keeps missing answers explicit", () => {
-    const practice = vi.fn();
-    render(<RouteScreen cards={cards.map((card) => ({ ...card, followUps: [] }))} progress={new Map()} selectedRouteId={route.id} onSelectRoute={vi.fn()} onPractice={practice} />);
-    fireEvent.click(screen.getAllByRole("button", { name: "练习这一阶段" })[0]);
-    expect(practice).toHaveBeenCalledWith(route, 1);
-    expect(screen.getAllByText("当前题库缺少对应参考回答，更新题库后再试。")).toHaveLength(7);
+  it("reveals the current question inline and opens its complete answer on request", () => {
+    const openCard = vi.fn();
+    render(<RouteScreen cards={cards} selectedRouteId={route.id} onSelectRoute={vi.fn()} onOpenCard={openCard} />);
+    const summary = screen.getByText("虚构练习 0", { exact: true }).closest("summary")!;
+    const question = summary.parentElement as HTMLDetailsElement;
+    expect(question.open).toBe(false);
+    question.open = true;
+    fireEvent(question, new Event("toggle"));
+    expect(within(question).getByText("虚构短答")).toBeVisible();
+    expect(openCard).not.toHaveBeenCalled();
+    fireEvent.click(within(question).getByRole("button", { name: "查看完整问答" }));
+    expect(openCard).toHaveBeenCalledWith(cards[0].id);
   });
 
   it("shows the current stage's technical documents behind a floating entry", () => {
-    render(<RouteScreen cards={cards} documents={documents} progress={new Map()} selectedRouteId={route.id} onSelectRoute={vi.fn()} onPractice={vi.fn()} />);
+    render(<RouteScreen cards={cards} documents={documents} selectedRouteId={route.id} onSelectRoute={vi.fn()} onOpenCard={vi.fn()} />);
     const context = screen.getByRole("complementary", { name: "路线阶段上下文" });
     expect(within(context).getByRole("button", { name: /应用启动：冷启动与热启动/ })).toBeInTheDocument();
     const trigger = screen.getByRole("button", { name: "技术资料 · 1" });
@@ -67,7 +73,7 @@ describe("route detail", () => {
   });
 
   it("opens one technical document in a full-screen reader instead of rendering it inside the sidebar", () => {
-    render(<RouteScreen cards={cards} documents={documents} progress={new Map()} selectedRouteId={route.id} onSelectRoute={vi.fn()} onPractice={vi.fn()} />);
+    render(<RouteScreen cards={cards} documents={documents} selectedRouteId={route.id} onSelectRoute={vi.fn()} onOpenCard={vi.fn()} />);
     const context = screen.getByRole("complementary", { name: "路线阶段上下文" });
     expect(context.querySelector(".markdown")).not.toBeInTheDocument();
 
@@ -102,7 +108,7 @@ describe("route detail", () => {
 
   it("returns from a technical document to the route detail on browser back", () => {
     const pushState = vi.spyOn(window.history, "pushState");
-    render(<RouteScreen cards={cards} documents={documents} progress={new Map()} selectedRouteId={route.id} onSelectRoute={vi.fn()} onPractice={vi.fn()} />);
+    render(<RouteScreen cards={cards} documents={documents} selectedRouteId={route.id} onSelectRoute={vi.fn()} onOpenCard={vi.fn()} />);
 
     fireEvent.click(screen.getByRole("button", { name: /应用启动：冷启动与热启动/ }));
     expect(screen.getByRole("dialog", { name: "技术资料阅读" })).toBeVisible();
@@ -121,7 +127,7 @@ describe("route detail", () => {
   });
 
   it("keeps a useful context sidebar when the current stage has no documents", () => {
-    render(<RouteScreen cards={cards} progress={new Map()} selectedRouteId={route.id} onSelectRoute={vi.fn()} onPractice={vi.fn()} />);
+    render(<RouteScreen cards={cards} selectedRouteId={route.id} onSelectRoute={vi.fn()} onOpenCard={vi.fn()} />);
     const context = screen.getByRole("complementary", { name: "路线阶段上下文" });
     expect(context).toHaveTextContent("当前阶段");
     expect(context).toHaveTextContent("01 · 页面启动");
@@ -129,7 +135,7 @@ describe("route detail", () => {
   });
 
   it("exposes the stage index as a desktop route rail", () => {
-    render(<RouteScreen cards={cards} progress={new Map()} selectedRouteId={route.id} onSelectRoute={vi.fn()} onPractice={vi.fn()} />);
+    render(<RouteScreen cards={cards} selectedRouteId={route.id} onSelectRoute={vi.fn()} onOpenCard={vi.fn()} />);
     const rail = screen.getByRole("navigation", { name: "桌面路线阶段" });
     expect(rail).toBeInTheDocument();
     expect(rail.querySelectorAll("a")).toHaveLength(7);

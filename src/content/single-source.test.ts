@@ -85,6 +85,17 @@ it("rejects duplicate IDs and unresolved full-bank routes", async () => {
   config.routes = [{ id: "orbit-route", title: "Orbit", summary: "", level: "", estimatedMinutes: 1, steps: [{ id: "orbit-step", title: "Step", purpose: "", transition: "", cardIds: ["not-present"], referenceDocuments: [] }] }];
   await writeFile(configPath, JSON.stringify(config));
   await expect(compileSite(root, legacy([]))).rejects.toThrow("不存在的卡片");
+  config.routes[0].steps[0].cardIds = ["orbit-demo-001"];
+  config.routes[0].steps[0].readingMd = "**Orbit mechanism**";
+  config.routes[0].steps[0].featuredCardIds = ["orbit-other-002"];
+  await writeFile(configPath, JSON.stringify(config));
+  await expect(compileSite(root, legacy([]))).rejects.toThrow("高频考点不在阶段内");
+  config.routes[0].steps[0].featuredCardIds = ["orbit-demo-001"];
+  await writeFile(configPath, JSON.stringify(config));
+  const { payload } = await compileSite(root, legacy([]));
+  expect(payload.routes[0].steps[0]).toMatchObject({
+    readingMd: "**Orbit mechanism**", featuredCardIds: ["orbit-demo-001"],
+  });
 });
 it("publishes v3 only with a complete legacy bank and can restore both release files", async () => {
   const root = await fixture();

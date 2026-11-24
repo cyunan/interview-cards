@@ -1,9 +1,10 @@
 import { createHash } from "node:crypto";
-import { access, readFile } from "node:fs/promises";
+import { readFile, realpath, stat } from "node:fs/promises";
 import path from "node:path";
 
 import type { ReferenceDocument, ReferenceImage } from "./payload";
 import { normalizeObsidianMarkdown } from "./markdown";
+import { structuralLines } from "./structure";
 
 export interface ReferenceDocumentManifestEntry {
   id: string;
@@ -237,10 +238,27 @@ export function normalizeReferenceMarkdown(
   markdown: string,
   sourcePath = "",
   localImages: ReadonlyMap<string, string> = new Map(),
+  resolveLink?: (from: string, target: string) => string | undefined,
 ): string {
-  return normalizeObsidianMarkdown(replaceImageReferences(stripFrontmatter(markdown), sourcePath, localImages))
-    .replace(/\n{3,}/g, "\n\n")
-    .trim();
+  const lines = stripFrontmatter(markdown).split(/\r?\n/);
+  const structure = structuralLines(lines);
+  return lines.map((line, index) => {
+    if (!structure[index]) return line;
+    const withLinks = resolveLink ? line
+      .replace(/(?<!!)\[\[([^\]\n]+)\]\]/g, (original, value: string) => {
+        const [target, label] = value.replace(/\\\|/g, "|").split("|");
+        const href = resolveLink(sourcePath, target);
+        const visible = label || target.split("/").at(-1) || target;
+        return href ? `[${visible.replace(/[\[\]]/g, "")}](${href})` : original;
+      })
+      .replace(/(?<!!)\[([^\]\n]+)\]\((<[^>]+>|[^)\s]+)\)/g, (original, label, target: string) => {
+        if (!target.startsWith("#") && !/\.md(?:#|>|$)/i.test(target)) return original;
+        const href = resolveLink(sourcePath, target.replace(/^<|>$/g, ""));
+        return href ? `[${label}](${href})` : original;
+      }) : line;
+    const replaced = replaceImageReferences(withLinks, sourcePath, localImages);
+    return replaced.replace(/\[\[([^\]\n]+)\]\]/g, (value) => normalizeObsidianMarkdown(value));
+  }).join("\n").trim();
 }
 
 function mimeTypeForTarget(target: string): ReferenceImage["mimeType"] | undefined {
@@ -272,8 +290,11 @@ async function resolveLocalImage(vaultRoot: string, sourceFile: string, target: 
   ].filter((candidate, index, all) => all.indexOf(candidate) === index && isInsideVault(vaultRoot, candidate));
   for (const candidate of candidates) {
     try {
-      await access(candidate);
-      const bytes = new Uint8Array(await readFile(candidate));
+      const actual = await realpath(candidate);
+      if (!isInsideVault(await realpath(vaultRoot), actual)) continue;
+      const file = await stat(actual);
+      if (!file.isFile() || file.size > MAX_REFERENCE_IMAGE_BYTES) continue;
+      const bytes = new Uint8Array(await readFile(actual));
       if (bytes.length > 0 && bytes.length <= MAX_REFERENCE_IMAGE_BYTES) return bytes;
     } catch {
       // Continue with the next vault-relative candidate.
@@ -313,7 +334,11 @@ async function packageReferenceImages(vaultRoot: string, sourcePath: string, sou
  * checkouts can still build a valid card bank. The real vault is checked by
  * the build output count before publishing.
  */
-export async function compileReferenceDocuments(vaultRoot: string, manifest: readonly ReferenceDocumentManifestEntry[] = REFERENCE_DOCUMENT_MANIFEST): Promise<ReferenceDocument[]> {
+export async function compileReferenceDocuments(
+  vaultRoot: string,
+  manifest: readonly ReferenceDocumentManifestEntry[] = REFERENCE_DOCUMENT_MANIFEST,
+  options: { resolveLink?: (from: string, target: string) => string | undefined; includeEmpty?: boolean } = {},
+): Promise<ReferenceDocument[]> {
   const results = await Promise.all(manifest.map(async (entry) => {
     try {
       const source = await readFile(path.join(vaultRoot, entry.sourcePath), "utf8");
@@ -322,15 +347,15 @@ export async function compileReferenceDocuments(vaultRoot: string, manifest: rea
         const target = collectImageReferences(stripFrontmatter(source)).find((reference) => image.id === imageId(entry.sourcePath, reference.target))?.target;
         return [target ?? image.id, image.id] as const;
       }));
-      const markdown = normalizeReferenceMarkdown(source, entry.sourcePath, localImageIds);
-      if (!markdown) return undefined;
+      const markdown = normalizeReferenceMarkdown(source, entry.sourcePath, localImageIds, options.resolveLink);
+      if (!markdown && !options.includeEmpty) return undefined;
       return {
         id: entry.id,
         title: entry.title,
         sourcePath: entry.sourcePath,
         ...(entry.heading ? { heading: entry.heading } : {}),
         reason: entry.reason,
-        markdown,
+        markdown: markdown || "这篇笔记还没有正文。",
         ...(images.length > 0 ? { images } : {}),
       } satisfies ReferenceDocument;
     } catch (error) {

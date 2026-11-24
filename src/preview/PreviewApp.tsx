@@ -1,10 +1,6 @@
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { ContentWorkspace } from "../app/App";
 import { parseCardsPayload, type ParsedCardsPayload } from "../content/payload";
-import { createProgressStore } from "../storage/progress";
-
-const previewStore = () => createProgressStore("interview-cards-preview-progress");
-const now = () => new Date();
 export function PreviewApp() {
   const [payload, setPayload] = useState<ParsedCardsPayload>();
   const [error, setError] = useState("");
@@ -49,9 +45,9 @@ export function PreviewApp() {
   }, []);
   return <div className="local-preview-root" style={{ "--local-preview-notice-height": `${noticeHeight}px` } as CSSProperties}>
     <aside ref={notice} className={error ? "local-preview-notice has-error" : "local-preview-notice"} role={error ? "alert" : "status"}>
-      <strong>本机内容预览</strong> · {partial ? "仅展示已迁移主题；发布时必须解锁并合并历史题库" : "完整题库已合并"}
-      {error ? <p>编译失败，下面暂留上次成功内容：{error}</p> : <span> · 保存笔记后自动刷新 · 进度独立</span>}
+      <strong>本机内容预览</strong> · {!payload ? "正在读取知识库" : partial ? "仅展示已迁移主题" : "完整题库与技术文档"}
+      {error ? <p>编译失败，下面暂留上次成功内容：{error}</p> : <span> · 保存笔记后自动刷新</span>}
     </aside>
-    {payload ? <ContentWorkspace payload={payload} createStore={previewStore} now={now} onLock={() => window.location.reload()} /> : <main className="screen"><p>{error || "正在编译笔记…"}</p></main>}
+    {payload ? <ContentWorkspace payload={payload} /> : <main className="screen"><p>{error || "正在编译笔记…"}</p></main>}
   </div>;
 }

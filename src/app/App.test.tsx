@@ -107,27 +107,6 @@ class MemoryRememberedUnlockStore implements RememberedUnlockStore {
   close(): void {}
 }
 
-class DelayedMigrationStore extends MemoryProgressStore {
-  private migrationRelease!: () => void;
-  readonly migrationFinished: Promise<void>;
-
-  constructor() {
-    super();
-    this.migrationFinished = new Promise((resolve) => {
-      this.migrationRelease = resolve;
-    });
-  }
-
-  override async migrateLegacyIds(cards: ReadonlyArray<ProgressCardIdentity>): Promise<void> {
-    this.migrationCards = cards;
-    await this.migrationFinished;
-  }
-
-  releaseMigration(): void {
-    this.migrationRelease();
-  }
-}
-
 async function submitPassword(password: string, rememberDevice = false): Promise<void> {
   await screen.findByLabelText("题库密码");
   fireEvent.change(screen.getByLabelText("题库密码"), { target: { value: password } });
@@ -138,20 +117,29 @@ async function submitPassword(password: string, rememberDevice = false): Promise
 }
 
 describe("App", () => {
-  it("reads v3 route definitions from the unlocked payload while keeping the same progress identities", async () => {
-    const store = new MemoryProgressStore();
-    const remembered = new MemoryRememberedUnlockStore();
+  it("reads learning routes from the unlocked payload and opens an answer from a stage", async () => {
     const next: ParsedCardsPayload = { ...payload, schema: "cards-v3", routes: [{
       id: "fictional-private-route", title: "Fictional payload route", summary: "Route supplied by content", level: "Demo", estimatedMinutes: 1,
-      steps: [{ id: "fictional-private-step", title: "A payload step", purpose: "", transition: "", cardIds: [payload.cards[0].id] }],
+      steps: [{ id: "fictional-private-step", title: "A payload step", purpose: "", transition: "",
+        cardIds: [payload.cards[0].id], readingMd: "**Fictional route principle**", featuredCardIds: [payload.cards[0].id] }],
     }] };
-    render(<App unlockCards={async () => next} createStore={async () => store} createRememberedUnlockStore={async () => remembered} restoreRememberedCards={async () => undefined} />);
+    render(<App unlockCards={async () => next} createRememberedUnlockStore={async () => new MemoryRememberedUnlockStore()} restoreRememberedCards={async () => undefined} />);
     await submitPassword("fictional-password");
-    await screen.findByText("Fictional payload route");
-    fireEvent.click(screen.getByRole("button", { name: /^路线$/ }));
-    expect(screen.getAllByText("Fictional payload route").length).toBeGreaterThan(0);
-    expect(store.migrationCards?.map((card) => card.id)).toEqual(payload.cards.map((card) => card.id));
+    fireEvent.click(await screen.findByRole("button", { name: "学习路线" }));
+    fireEvent.click(screen.getByRole("button", { name: /Fictional payload route/ }));
+    expect(screen.getByText("Fictional route principle", { selector: "strong" })).toBeVisible();
+    expect(screen.getByRole("heading", { name: "高频考点" })).toBeVisible();
+    const question = screen.getByText("熵门是什么？", { exact: true, selector: "summary span" }).closest("details")!;
+    const routeHash = window.location.hash;
+    question.open = true;
+    fireEvent(question, new Event("toggle"));
+    expect(window.location.hash).toBe(routeHash);
+    fireEvent.click(screen.getByRole("button", { name: "查看完整问答" }));
+    expect(screen.getByRole("heading", { name: "熵门是什么？" })).toBeVisible();
+    window.history.back();
+    expect(await screen.findByRole("heading", { name: "A payload step" })).toBeVisible();
   });
+
   it("resets progressive sections when a card is repeated after Again", async () => {
     const store = new MemoryProgressStore();
     const { container } = render(
@@ -242,98 +230,6 @@ describe("App", () => {
     );
   });
 
-  it("does not show the workspace until progress migration finishes", async () => {
-    const store = new DelayedMigrationStore();
-
-    render(
-      <App
-        unlockCards={async () => payload}
-        createStore={async () => store}
-        createRememberedUnlockStore={async () => new MemoryRememberedUnlockStore()}
-      />,
-    );
-
-    await submitPassword("correct-password");
-    await waitFor(() => expect(store.migrationCards).toEqual(payload.cards));
-    expect(screen.queryByText("今日复习")).not.toBeInTheDocument();
-    expect(screen.getByText("正在读取本机进度…")).toBeInTheDocument();
-
-    store.releaseMigration();
-    expect(await screen.findByText("今日复习")).toBeInTheDocument();
-  });
-
-  it("migrates progress before showing the unlocked workspace", async () => {
-    const store = new MemoryProgressStore();
-    const migratedPayload: ParsedCardsPayload = {
-      ...payload,
-      cards: [{ ...payload.cards[0], legacyIds: ["old-quantum-widget-001"] }],
-    };
-
-    render(
-      <App
-        unlockCards={async () => migratedPayload}
-        createStore={async () => store}
-        createRememberedUnlockStore={async () => new MemoryRememberedUnlockStore()}
-      />,
-    );
-
-    await submitPassword("correct-password");
-    expect(await screen.findByText("今日复习")).toBeInTheDocument();
-    expect(store.migrationCards).toEqual(migratedPayload.cards);
-    const navigation = screen.getByRole("navigation", { name: "主导航" });
-    expect(navigation).toHaveClass("main-nav");
-    expect(navigation.querySelectorAll("button")).toHaveLength(4);
-    const sidebar = screen.getByRole("complementary", { name: "应用工作区" });
-    expect(sidebar).toContainElement(navigation);
-    expect(screen.getByTestId("app-content")).toHaveClass("app-content");
-  });
-
-  it("opens knowledge routes from the main navigation without changing the card source", async () => {
-    render(
-      <App
-        unlockCards={async () => payload}
-        createStore={async () => new MemoryProgressStore()}
-        createRememberedUnlockStore={async () => new MemoryRememberedUnlockStore()}
-      />,
-    );
-
-    await submitPassword("correct-password");
-    expect(await screen.findByText("今日复习")).toBeInTheDocument();
-    const navigation = screen.getByRole("navigation", { name: "主导航" });
-    fireEvent.click(navigation.querySelectorAll("button")[2]);
-
-    expect(await screen.findByRole("heading", { name: "沿路线建立理解" })).toBeInTheDocument();
-    expect(screen.getByText("Android 页面是怎样跑起来的？")).toBeInTheDocument();
-    expect(screen.queryByText("当前密文版本暂未包含本阶段卡片，更新题库后会自动出现。")).not.toBeInTheDocument();
-  });
-
-  it("restores the route hierarchy when the browser goes back", async () => {
-    render(
-      <App
-        unlockCards={async () => payload}
-        createStore={async () => new MemoryProgressStore()}
-        createRememberedUnlockStore={async () => new MemoryRememberedUnlockStore()}
-      />,
-    );
-
-    await submitPassword("correct-password");
-    await screen.findByText("今日复习");
-    fireEvent.click(screen.getByRole("button", { name: /^路线$/ }));
-    await screen.findByRole("heading", { name: "沿路线建立理解" });
-    fireEvent.click(screen.getAllByRole("button", { name: /Android 页面是怎样跑起来的/ })[0]);
-    expect(await screen.findByRole("heading", { name: "Android 页面是怎样跑起来的？" })).toBeInTheDocument();
-
-    const routeListState = { app: "interview-cards", view: "routes" };
-    window.history.replaceState(routeListState, "", "/");
-    fireEvent(window, new PopStateEvent("popstate", { state: routeListState }));
-    expect(await screen.findByRole("heading", { name: "沿路线建立理解" })).toBeInTheDocument();
-
-    const homeState = { app: "interview-cards", view: "home" };
-    window.history.replaceState(homeState, "", "/");
-    fireEvent(window, new PopStateEvent("popstate", { state: homeState }));
-    expect(await screen.findByRole("heading", { name: "今日复习" })).toBeInTheDocument();
-  });
-
   it("keeps card plaintext hidden until unlock and uses a generic failure message", async () => {
     const unlockCards = vi.fn(async (password: string) => {
       if (password !== "correct-password") {
@@ -344,9 +240,7 @@ describe("App", () => {
     render(
       <App
         unlockCards={unlockCards}
-        createStore={async () => new MemoryProgressStore()}
         createRememberedUnlockStore={async () => new MemoryRememberedUnlockStore()}
-        now={() => new Date(2026, 7, 31, 9)}
       />,
     );
 
@@ -357,60 +251,26 @@ describe("App", () => {
     expect(screen.queryByText("熵门是什么？")).not.toBeInTheDocument();
   });
 
-  it("runs a study session, records mastery, and forgets cards on manual lock", async () => {
-    const store = new MemoryProgressStore();
-    render(
-      <App
-        unlockCards={async () => payload}
-        createStore={async () => store}
-        createRememberedUnlockStore={async () => new MemoryRememberedUnlockStore()}
-        now={() => new Date(2026, 7, 31, 9)}
-      />,
-    );
-
+  it("shows the reference answer on unlock and removes private content on lock", async () => {
+    render(<App unlockCards={async () => payload} createRememberedUnlockStore={async () => new MemoryRememberedUnlockStore()} />);
     await submitPassword("correct-password");
-    expect(await screen.findByText("今日复习")).toBeInTheDocument();
-    expect(screen.queryByText("熵门是什么？")).not.toBeInTheDocument();
-
-    fireEvent.click(screen.getByRole("button", { name: "开始完整题库" }));
-    expect(await screen.findByText("熵门是什么？")).toBeInTheDocument();
-    const initialProgress = screen.getByRole("progressbar", { name: "本轮已完成 0 / 1" });
-    expect(initialProgress).toHaveValue(0);
-    expect(screen.getByText("已完成 0 / 1")).toBeInTheDocument();
-    expect(screen.queryByRole("heading", { name: "30 秒回答" })).not.toBeInTheDocument();
-
-    fireEvent.click(screen.getByRole("button", { name: "查看回答" }));
-    expect(screen.getByRole("heading", { name: "30 秒回答" }).parentElement).toHaveTextContent(
-      "熵门是虚构测试状态容器。",
-    );
-    fireEvent.click(screen.getByRole("button", { name: "掌握" }));
-
-    expect(await screen.findByText("本轮完成")).toBeInTheDocument();
-    await waitFor(() => {
-      expect(store.records.get("fictional-quantum-widget-001")).toMatchObject({
-        level: 1,
-        reviewCount: 1,
-      });
-    });
-
-    fireEvent.click(screen.getByRole("button", { name: "返回首页" }));
+    expect(await screen.findByRole("heading", { name: "熵门是什么？" })).toBeVisible();
+    expect(screen.getByLabelText("参考回答")).toHaveTextContent("熵门是虚构测试状态容器。");
+    expect(screen.queryByRole("button", { name: "开始完整题库" })).not.toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "锁定" }));
-    expect(await screen.findByText("解锁题库")).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: "解锁题库" })).toBeVisible();
     expect(screen.queryByText("熵门是什么？")).not.toBeInTheDocument();
   });
 
   it("starts locked again when the unlocked app is refreshed", async () => {
-    const store = new MemoryProgressStore();
     const appProps = {
       unlockCards: async () => payload,
-      createStore: async () => store,
       createRememberedUnlockStore: async () => new MemoryRememberedUnlockStore(),
-      now: () => new Date(2026, 7, 31, 9),
     };
 
     const firstRender = render(<App {...appProps} />);
     await submitPassword("correct-password");
-    expect(await screen.findByText("今日复习")).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: "熵门是什么？" })).toBeInTheDocument();
 
     firstRender.unmount();
     render(<App {...appProps} />);
@@ -421,20 +281,18 @@ describe("App", () => {
   });
 
   it("restores remembered cards before showing the password form", async () => {
-    const store = new MemoryProgressStore();
     const rememberedStore = new MemoryRememberedUnlockStore();
 
     render(
       <App
         unlockCards={async () => payload}
-        createStore={async () => store}
         createRememberedUnlockStore={async () => rememberedStore}
         restoreRememberedCards={async () => payload}
       />,
     );
 
     expect(screen.getByText("正在检查本机解锁…")).toBeInTheDocument();
-    expect(await screen.findByText("今日复习")).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: "熵门是什么？" })).toBeInTheDocument();
     expect(screen.queryByLabelText("题库密码")).not.toBeInTheDocument();
   });
 
@@ -446,13 +304,12 @@ describe("App", () => {
     render(
       <App
         unlockCards={async () => ({ payload, envelope, key })}
-        createStore={async () => new MemoryProgressStore()}
         createRememberedUnlockStore={async () => rememberedStore}
       />,
     );
 
     await submitPassword("correct-password", true);
-    expect(await screen.findByText("今日复习")).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: "熵门是什么？" })).toBeInTheDocument();
     expect(rememberedStore.record).toMatchObject({
       buildId: payload.buildId,
       salt: envelope.kdf.salt,
