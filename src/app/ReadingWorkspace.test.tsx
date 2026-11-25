@@ -98,7 +98,7 @@ it("opens a full document beside its catalogue and keeps the catalogue open when
   vi.spyOn(window, "scrollTo").mockImplementation(() => undefined);
   history.replaceState(null, "", "/#view=documents");
   const documents = [
-    { id: "first-note", title: "首篇文档", sourcePath: "02-Android/专题/first.md", reason: "知识库原文", markdown: "## 运行机制\n\n机制正文。" },
+    { id: "first-note", title: "first-note", sourcePath: "02-Android/专题/首篇文档.md", reason: "知识库原文", markdown: "## 运行机制\n\n机制正文。" },
     { id: "second-note", title: "第二篇文档", sourcePath: "02-Android/专题/second.md", reason: "知识库原文", markdown: "## 验证方法\n\n验证正文。" },
   ];
   render(<ContentWorkspace payload={{ schema: "cards-v3", buildId: "test-library", builtAt: "2026-11-24T00:00:00Z", cards: [], documents, routes: [] }} />);

@@ -2,7 +2,7 @@ import { useLayoutEffect, useMemo, useRef, useState } from "react";
 import type { ReferenceDocument } from "../content/payload";
 import { structuralLines } from "../content/structure";
 import { DocumentReading } from "./DocumentReading";
-import { plainText } from "./reading-data";
+import { documentTitle, plainText } from "./reading-data";
 
 interface DocumentLibraryProps {
   documents: ReferenceDocument[];
@@ -69,8 +69,9 @@ export function DocumentLibrary({ documents, selected, heading, onOpen }: Docume
   const results = useMemo(() => {
     if (!words.length) return [];
     return documents.flatMap(note => {
-      const title = searchText(note.title);
-      if (!words.every(word => searchText(note.title + " " + note.sourcePath + " " + note.markdown).includes(word))) return [];
+      const displayTitle = documentTitle(note);
+      const title = searchText(displayTitle);
+      if (!words.every(word => searchText(displayTitle + " " + note.sourcePath + " " + note.markdown).includes(word))) return [];
       const match = matchingHeading(note, words);
       return [{ note, heading: match, rank: words.every(word => title.includes(word)) ? 2 : match ? 1 : 0 }];
     }).sort((a, b) => b.rank - a.rank);
@@ -106,7 +107,7 @@ export function DocumentLibrary({ documents, selected, heading, onOpen }: Docume
           setChoosing(false);
           onOpen(note.id, match);
         }}>
-        {plainText(note.title)}
+        {documentTitle(note)}
         {match ? <small>跳到 · {match}</small> : null}
       </button>
     </li>;

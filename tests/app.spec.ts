@@ -74,16 +74,27 @@ test("keeps the reading layout usable on mobile and desktop under the production
     await page.setViewportSize({ width, height: 900 });
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
     const navigation = (await page.getByRole("navigation", { name: "主导航" }).boundingBox())!;
-    const directory = (await page.getByRole("navigation", { name: "问答目录" }).boundingBox())!;
+    const directory = page.getByRole("navigation", { name: "问答目录" });
     const article = (await page.locator(".reading-answer").boundingBox())!;
     const context = (await page.locator(".reading-context").boundingBox())!;
-    expect(navigation && directory && article && context).toBeTruthy();
-    expect(directory.y).toBeGreaterThan(navigation.y + navigation.height);
-    if (width >= 700) expect(article.x).toBeGreaterThan(directory.x + directory.width);
-    else expect(article.y).toBeGreaterThan(directory.y + directory.height);
+    expect(navigation && article && context).toBeTruthy();
+    if (width >= 700) {
+      const directoryBox = (await directory.boundingBox())!;
+      expect(directoryBox.y).toBeGreaterThan(navigation.y + navigation.height);
+      expect(article.x).toBeGreaterThan(directoryBox.x + directoryBox.width);
+      if (width === 1920) expect(context.x + context.width - directoryBox.x).toBeGreaterThan(width * 0.9);
+    } else {
+      await expect(directory).toBeHidden();
+      await expect(page.getByRole("region", { name: "参考回答" })).toBeInViewport();
+      await page.getByRole("button", { name: "换一道题" }).click();
+      await expect(directory).toBeVisible();
+      await page.getByRole("searchbox", { name: "搜索问答" }).fill("熵门");
+      await directory.getByRole("button", { name: question, exact: true }).click();
+      await expect(directory).toBeHidden();
+      await expect(page.getByRole("heading", { name: question })).toBeInViewport();
+    }
     if (width >= 1280) expect(context.x).toBeGreaterThan(article.x + article.width);
     else expect(context.y).toBeGreaterThan(article.y + article.height);
-    if (width === 1920) expect(context.x + context.width - directory.x).toBeGreaterThan(width * 0.9);
   }
   await expect(page.getByRole("region", { name: "参考回答" })).toBeVisible();
   await expect(page.getByRole("button", { name: "查看回答" })).toHaveCount(0);

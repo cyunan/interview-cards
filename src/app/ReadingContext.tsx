@@ -75,7 +75,7 @@ function SourceList({ sources, card, openDocument }: { sources: ReadingSource[];
     item => sectionText(item.document.markdown, item.heading),
   )].filter(Boolean).join("\n"));
   return (
-    <details className="reading-sources reading-paper">
+    <details id="reading-question-sources" className="reading-sources reading-paper">
       <summary>笔记与资料出处</summary>
       {sources.length > 0 ? <section className="reading-source-group">
         <h3>本地笔记</h3>

@@ -1,9 +1,9 @@
-import { useId, useLayoutEffect, useRef, useState, type MouseEvent, type Ref } from "react";
+import { useEffect, useId, useLayoutEffect, useRef, useState, type MouseEvent, type Ref } from "react";
 import type { ReferenceDocument } from "../content/payload";
 import { readingTarget } from "../content/reading-links";
 import { structuralLines } from "../content/structure";
 import { Markdown } from "./Markdown";
-import { headingKey, plainText } from "./reading-data";
+import { documentTitle, headingKey, plainText } from "./reading-data";
 
 interface DocumentReadingBase {
   document: ReferenceDocument;
@@ -26,7 +26,7 @@ export function DocumentReading({ document: note, heading, returnLabel, onBack, 
   const contentsId = useId();
   const lines = note.markdown.split(/\r?\n/);
   const titleIndex = structuralLines(lines).findIndex(line => /^#\s+\S/.test(line));
-  const title = titleIndex >= 0 ? plainText(lines[titleIndex].replace(/^#\s+/, "")) : note.title;
+  const title = titleIndex >= 0 ? plainText(lines[titleIndex].replace(/^#\s+/, "")) : documentTitle(note);
   let markdown = titleIndex >= 0 ? lines.filter((_, index) => index !== titleIndex).join("\n").trimStart() : note.markdown;
 
   // Keep the original linked scope as a disclosure and lead with the oral answer when both exist.
@@ -54,6 +54,19 @@ export function DocumentReading({ document: note, heading, returnLabel, onBack, 
     window.scrollTo(0, 0);
   }, [note.id, heading]);
 
+  useEffect(() => {
+    if (!contentsOpen) return;
+    const closeContents = (event: KeyboardEvent) => {
+      const button = contentsButton.current;
+      if (event.key !== "Escape" || event.defaultPrevented || !button?.getClientRects().length) return;
+      event.preventDefault();
+      setContentsOpen(false);
+      button.focus({ preventScroll: true });
+    };
+    window.addEventListener("keydown", closeContents, true);
+    return () => window.removeEventListener("keydown", closeContents, true);
+  }, [contentsOpen]);
+
   function followDocumentLink(event: MouseEvent<HTMLDivElement>) {
     if (!(event.target instanceof Element)) return;
     const anchor = event.target.closest("a");
@@ -69,36 +82,39 @@ export function DocumentReading({ document: note, heading, returnLabel, onBack, 
 
   const bodyContent = <div ref={body} onClick={followDocumentLink}><Markdown images={note.images}>{markdown}</Markdown></div>;
 
+  const firstLevel = Math.min(...titles.map(item => item.level));
+  const topTitles = titles.map((item, index) => ({ ...item, index })).filter(item =>
+    item.level === firstLevel || (heading && headingKey(item.name) === headingKey(heading))
+  );
+
+  function jumpFromContents(index: number) {
+    setContentsOpen(false);
+    contentsButton.current?.focus({ preventScroll: true });
+    requestAnimationFrame(() => elements.current[index]?.scrollIntoView?.({ block: "start" }));
+  }
+
+  const chapterNav = (className: string) => (
+    <nav id={contentsId} className={className} aria-label="本文目录" hidden={!contentsOpen}>
+      {topTitles.map(item => <a key={item.index} href={"#doc-heading-" + item.index} onClick={event => {
+        event.preventDefault();
+        jumpFromContents(item.index);
+      }}>{item.name}</a>)}
+    </nav>
+  );
+
   if (library) {
-    const firstLevel = Math.min(...titles.map(item => item.level));
-    const visibleTitles = titles.map((item, index) => ({ ...item, index })).filter(item =>
-      item.level === firstLevel || (heading && headingKey(item.name) === headingKey(heading))
-    );
     return (
       <main className="document-reader" aria-labelledby="reading-document-title">
-        <div className="document-article-bar" onKeyDown={event => {
-          if (event.key === "Escape" && contentsOpen) {
-            event.preventDefault();
-            setContentsOpen(false);
-            contentsButton.current?.focus();
-          }
-        }}>
+        <div className="document-article-bar">
           <div className="document-article-actions">
             <span className="document-breadcrumb">{library.breadcrumb}</span>
             <button type="button" className="document-action document-choose" onClick={library.onChoose}>☰ 换一篇</button>
-            {visibleTitles.length ? <button type="button" className="document-action" ref={contentsButton}
+            {topTitles.length ? <button type="button" className="document-action" ref={contentsButton}
               aria-expanded={contentsOpen} aria-controls={contentsId} onClick={() => setContentsOpen(!contentsOpen)}>
               本文目录 <span aria-hidden="true">{contentsOpen ? "▴" : "▾"}</span>
             </button> : null}
           </div>
-          <nav id={contentsId} className="document-chapters" aria-label="本文目录" hidden={!contentsOpen}>
-            {visibleTitles.map(item => <a key={item.index} href={"#doc-heading-" + item.index} onClick={event => {
-              event.preventDefault();
-              setContentsOpen(false);
-              contentsButton.current?.focus({ preventScroll: true });
-              requestAnimationFrame(() => elements.current[item.index]?.scrollIntoView?.({ block: "start" }));
-            }}>{item.name}</a>)}
-          </nav>
+          {chapterNav("document-chapters")}
         </div>
         <article className="document-article">
           <h1 ref={library.titleRef} tabIndex={-1} id="reading-document-title">{title}</h1>
@@ -112,8 +128,15 @@ export function DocumentReading({ document: note, heading, returnLabel, onBack, 
   return (
     <main className="reading-reader" aria-labelledby="reading-document-title">
       <div className="reading-reader-bar">
-        <button ref={back} className="reading-button" type="button" onClick={onBack}>← {returnLabel}</button>
-        <span>{note.sourcePath.split("/")[0]}</span>
+        <div className="reading-reader-actions">
+          <button ref={back} className="reading-button" type="button" onClick={onBack}>← {returnLabel}</button>
+          <span>{note.sourcePath.split("/")[0]}</span>
+          {topTitles.length > 0 ? <button ref={contentsButton} type="button" className="reading-button reading-overlay-toc"
+            aria-expanded={contentsOpen} aria-controls={contentsId} onClick={() => setContentsOpen(!contentsOpen)}>
+            本文目录 <span aria-hidden="true">{contentsOpen ? "▴" : "▾"}</span>
+          </button> : null}
+        </div>
+        {chapterNav("reading-overlay-chapters")}
       </div>
       <header className="reading-reader-title">
         <h1 id="reading-document-title">{title}</h1>
@@ -122,6 +145,7 @@ export function DocumentReading({ document: note, heading, returnLabel, onBack, 
       <div className="reading-reader-grid">
         <article className="reading-paper">
           {bodyContent}
+          <details className="reading-reader-source"><summary>文件出处</summary><p>{note.sourcePath}</p></details>
           <button className="reading-button reader-return" type="button" onClick={onBack}>← {returnLabel}</button>
         </article>
         {titles.length > 0 ? (

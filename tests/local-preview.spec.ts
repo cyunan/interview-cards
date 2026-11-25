@@ -69,6 +69,14 @@ test("preview notice leaves the reader close button accessible even when errors 
   await openRouteReference(page);
   const reader = page.getByRole("main", { name: "Imaginary reference" });
   await expect(reader).toBeVisible();
+  const chapters = reader.getByRole("button", { name: "本文目录" });
+  await expect(chapters).toHaveAttribute("aria-expanded", "false");
+  await expect(reader.getByRole("navigation", { name: "本文目录" })).toBeHidden();
+  await chapters.click();
+  await expect(reader.getByRole("navigation", { name: "本文目录" })).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(reader).toBeVisible();
+  await expect(chapters).toHaveAttribute("aria-expanded", "false");
   for (const broken of [false, true]) {
     await writeFile(filename, broken ? PREVIEW_NOTE.replace("[!summary]", "[!note]") : PREVIEW_NOTE);
     if (broken) await expect(page.getByRole("alert")).toContainText("编译失败");

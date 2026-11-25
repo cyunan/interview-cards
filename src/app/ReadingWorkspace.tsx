@@ -98,6 +98,13 @@ function QuestionReading({ card, docs, routes, onOpenDocument }: {
         <div className="reading-jumps" aria-label="从回答延伸">
           <button type="button" className="reading-button" onClick={() => jumpTo("reading-mechanism")}>看运行过程 ↓</button>
           <button type="button" className="reading-button" onClick={() => jumpTo("reading-concepts")}>看概念关系 ↓</button>
+          <button type="button" className="reading-button reading-mobile-action" onClick={() => {
+            const sources = document.getElementById("reading-question-sources") as HTMLDetailsElement | null;
+            if (!sources) return;
+            sources.open = true;
+            sources.querySelector("summary")?.focus({ preventScroll: true });
+            jumpTo(sources.id);
+          }}>看资料 ↓</button>
         </div>
         {card.detailMd ? <section className="reading-detail">
           <h2>沿着回答讲原理</h2>
@@ -140,6 +147,9 @@ function QuestionBrowser({ cards, location, query, docs, routes, onQueryChange, 
 }) {
   const listId = useId();
   const directory = useRef<HTMLElement>(null);
+  const chooser = useRef<HTMLButtonElement>(null);
+  const directoryScroll = useRef(0);
+  const [choosing, setChoosing] = useState(false);
   const [collapsedMatches, setCollapsedMatches] = useState<string[]>([]);
   const categories = useMemo(() => [...new Set(cards.map(card => card.category))].sort(), [cards]);
   const entries = useMemo(() => cards.map(card => {
@@ -182,6 +192,7 @@ function QuestionBrowser({ cards, location, query, docs, routes, onQueryChange, 
 
   function selectQuestion(card: CardV2, topic: string) {
     onNavigate({ category, topic, card: card.id });
+    setChoosing(false);
     requestAnimationFrame(() => {
       const title = document.getElementById("reading-question-title");
       if (!title) return;
@@ -196,20 +207,40 @@ function QuestionBrowser({ cards, location, query, docs, routes, onQueryChange, 
     });
   }
 
-  function returnToDirectory() {
-    const item = directory.current?.querySelector<HTMLElement>('[aria-current="true"]') ??
-      directory.current?.querySelector("select");
-    item?.focus({ preventScroll: true });
-    item?.scrollIntoView?.({ block: "center" });
+  function returnToAnswer() {
+    setChoosing(false);
+    requestAnimationFrame(() => {
+      chooser.current?.focus({ preventScroll: true });
+      window.scrollTo(0, directoryScroll.current);
+    });
+  }
+
+  function showDirectory() {
+    directoryScroll.current = window.scrollY;
+    setChoosing(true);
+    requestAnimationFrame(() => {
+      directory.current?.querySelector("h2")?.focus({ preventScroll: true });
+      window.scrollTo(0, 0);
+    });
   }
 
   return (
-    <main className="reading-body reading-questions">
+    <main className="reading-body reading-questions" data-choosing={choosing} onKeyDown={event => {
+      if (event.key === "Escape" && choosing && !event.defaultPrevented) {
+        event.preventDefault();
+        returnToAnswer();
+      }
+    }}>
       <WorkspaceHeading title="面试问答" description="展开专题，选一道题，从回答接着读原理和资料。" />
+      <div className="reading-mobile-chooser">
+        {choosing
+          ? <button type="button" className="reading-button" onClick={returnToAnswer}>← 返回回答</button>
+          : <button type="button" ref={chooser} className="reading-button" onClick={showDirectory}>☰ 换一道题</button>}
+      </div>
       <div className="reading-question-workspace">
         <nav className="reading-directory reading-paper" aria-label="问答目录" ref={directory}>
           <header className="reading-filter-heading">
-            <h2>问答目录</h2>
+            <h2 tabIndex={-1}>问答目录</h2>
             <span role="status">{count} 条问答</span>
           </header>
           <div className="reading-search-row reading-directory-fields">
@@ -247,10 +278,7 @@ function QuestionBrowser({ cards, location, query, docs, routes, onQueryChange, 
           </ul> : <p className="reading-directory-empty">没有匹配的问答。换个关键词，或选「全部分类」搜索全库。</p>}
         </nav>
         <div id="reading-answer-pane" className="reading-answer-pane">
-          {selected ? <>
-            <button type="button" className="reading-button reading-directory-return" onClick={returnToDirectory}>↑ 返回题目目录</button>
-            <QuestionReading key={selected.card.id} card={selected.card} docs={docs} routes={routes} onOpenDocument={onOpenDocument} />
-          </> : <div className="reading-paper reading-empty"><h2>暂无面试问答</h2></div>}
+          {selected ? <QuestionReading key={selected.card.id} card={selected.card} docs={docs} routes={routes} onOpenDocument={onOpenDocument} /> : <div className="reading-paper reading-empty"><h2>暂无面试问答</h2></div>}
         </div>
       </div>
     </main>

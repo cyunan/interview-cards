@@ -7,6 +7,11 @@ import type { KnowledgeRoute } from "../routes/routes";
 export function plainText(markdown: string): string {
   return markdown.replace(/!?\[([^\]]+)\]\([^)]+\)/g, "$1").replace(/[*_`]/g, "").trim();
 }
+export function documentTitle(note: ReferenceDocument): string {
+  const filename = note.sourcePath.split("/").at(-1)?.replace(/\.md$/i, "");
+  return plainText(note.title === note.id && filename ? filename : note.title);
+}
+
 export function textKey(text: string): string {
   return plainText(text).normalize("NFKC").toLowerCase().replace(/[^\p{L}\p{N}]+/gu, "");
 }
