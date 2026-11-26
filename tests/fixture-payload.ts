@@ -34,3 +34,32 @@ export const E2E_PAYLOAD: CardsPayloadV1 = {
     },
   ],
 };
+
+const editionDocument = {
+  id: "fictional-edition", title: "Sample résumé", sourcePath: "00-个人资料/完整版/示例简历.md",
+  reason: "Fictional edition", markdown: "# Sample résumé\n\nA sample for the reader.",
+};
+const sourceDocument = {
+  id: "fictional-handbook", title: "Sample field guide", sourcePath: "01-Imaginary/Field guide.md",
+  reason: "Fictional chapter", markdown: "# Sample field guide\n\n## Bench notes\n\nA spare moonstone restores the beacon.",
+};
+export const E2E_RESUME_BANK = {
+  ...E2E_PAYLOAD, schema: "cards-v3", cards: E2E_PAYLOAD.cards.map(card => ({ ...card, legacyIds: [] })),
+  documents: [editionDocument, sourceDocument], routes: [],
+  resumeEdition: {
+    documentId: editionDocument.id,
+    html: `<!doctype html><html><head><title>Sample résumé</title>
+      <style>.sample-tools { background-color: rgb(239, 245, 249); }</style></head><body>
+      <main><h1>Lunar beacon workshop</h1>
+      <p class="sample-tools"><span data-interview-topic="lamp">Prism</span> / <span data-interview-topic="dial">Moon dial</span></p>
+      <template id="resume-interview-topics">
+        <section data-topic="lamp"><h2>How does the prism glow?</h2><p>Turn the light toward the bench.</p>
+          <a href="https://interview-cards.invalid/document/fictional-handbook#Bench%20notes">Open the field guide</a>
+        </section>
+        <section data-topic="dial"><h2>How do crews read the moon dial?</h2><p>Compare the two notches.</p>
+          <details><summary>What if one notch fades?</summary><p>Read the spare moonstone.</p></details>
+          <a href="https://interview-cards.invalid/document/fictional-handbook#Bench%20notes">Open the field guide</a>
+        </section>
+      </template></main></body></html>`,
+  },
+};

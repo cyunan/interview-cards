@@ -1,6 +1,6 @@
 import { useEffect, useId, useLayoutEffect, useMemo, useRef, useState, type MouseEvent } from "react";
 import type { ParsedCardsPayload, ReferenceDocument } from "../content/payload";
-import { readingTarget } from "../content/reading-links";
+import { readingHref, readingTarget } from "../content/reading-links";
 import type { CardV2 } from "../content/types";
 import { KNOWLEDGE_ROUTES, type KnowledgeRoute } from "../routes/routes";
 import { KnowledgeRoutesContext } from "../routes/context";
@@ -10,11 +10,12 @@ import { Markdown } from "./Markdown";
 import { ReadingContext } from "./ReadingContext";
 import { RouteScreen } from "./RouteScreen";
 import { listQuestionTopics, questionTopic } from "./question-topics";
-import { plainText, relatedSources, textKey } from "./reading-data";
+import { isResumeDocument, plainText, relatedSources, textKey } from "./reading-data";
 import "./reading-workspace.css";
 import "./document-library.css";
 
-type WorkspaceView = "questions" | "documents" | "routes";
+type LibraryView = "documents" | "resume";
+type WorkspaceView = "questions" | LibraryView | "routes";
 interface QuestionScope {
   category?: string;
   topic?: string;
@@ -24,11 +25,12 @@ interface ReadingLocation extends QuestionScope {
   card?: string;
   doc?: string;
   heading?: string;
+  entry?: string;
   step?: string;
 }
 
-const viewLabels: Record<WorkspaceView, string> = { questions: "面试问答", documents: "技术文档", routes: "学习路线" };
-const viewIcons: Record<WorkspaceView, string> = { questions: "⌂", documents: "▤", routes: "↗" };
+const viewLabels: Record<WorkspaceView, string> = { questions: "面试问答", documents: "技术文档", routes: "学习路线", resume: "简历" };
+const viewIcons: Record<WorkspaceView, string> = { questions: "⌂", documents: "▤", routes: "↗", resume: "▧" };
 const emptyDocuments: ReferenceDocument[] = [];
 const allQuestions = "all";
 
@@ -38,9 +40,9 @@ function currentLocation(): ReadingLocation {
   const params = new URLSearchParams(hash);
   const current = params.get("view");
   return {
-    view: current === "documents" || current === "routes" ? current : "questions",
+    view: current === "documents" || current === "routes" || current === "resume" ? current : "questions",
     card: params.get("card") ?? undefined, doc: params.get("doc") ?? undefined,
-    heading: params.get("heading") ?? undefined, step: params.get("step") ?? undefined,
+    heading: params.get("heading") ?? undefined, entry: params.get("entry") ?? undefined, step: params.get("step") ?? undefined,
     category: params.get("category") ?? undefined, topic: params.get("topic") ?? undefined,
   };
 }
@@ -49,6 +51,25 @@ function locationHash(location: ReadingLocation) {
   const params = new URLSearchParams();
   for (const [key, value] of Object.entries(location)) if (value) params.set(key, value);
   return "#" + params.toString();
+}
+
+function isLibraryView(view: WorkspaceView): view is LibraryView {
+  return view === "documents" || view === "resume";
+}
+
+function documentView(note: ReferenceDocument): LibraryView {
+  return isResumeDocument(note) ? "resume" : "documents";
+}
+
+function resolveLibraryLocation(location: ReadingLocation, notesById: ReadonlyMap<string, ReferenceDocument>, editionId?: string): ReadingLocation {
+  if (!editionId) return location.view === "resume" ? { ...location, view: "documents", entry: undefined } : location;
+  if (!location.doc || !isLibraryView(location.view)) return location;
+  if (location.doc === "library-70b1dfbccf826530d778") {
+    const full = notesById.get(editionId);
+    if (full) return { view: "resume", doc: full.id };
+  }
+  const note = notesById.get(location.doc);
+  return note && documentView(note) !== location.view ? { ...location, view: documentView(note) } : location;
 }
 
 function categoryName(value: string) {
@@ -285,28 +306,51 @@ function QuestionBrowser({ cards, location, query, docs, routes, onQueryChange, 
   );
 }
 
-export function ReadingWorkspace({ payload, onLock }: { payload: ParsedCardsPayload; onLock?: () => void }) {
+export function ReadingWorkspace({ payload, onLock }: {
+  payload: ParsedCardsPayload;
+  onLock?: () => void;
+}) {
+  const documents = payload.documents ?? emptyDocuments;
+  const notesById = useMemo(() => new Map(documents.map(note => [note.id, note])), [documents]);
+  const edition = payload.resumeEdition;
+  const libraries = useMemo(() => {
+    const grouped: Record<LibraryView, ReferenceDocument[]> = { documents: [], resume: [] };
+    for (const note of documents) grouped[edition ? documentView(note) : "documents"].push(note);
+    return grouped;
+  }, [documents, edition]);
   const [navigation, setNavigation] = useState(() => {
-    const location = currentLocation();
+    const location = resolveLibraryLocation(currentLocation(), notesById, edition?.documentId);
     const lastQuestion: ReadingLocation = location.view === "questions"
       ? { ...location, doc: undefined, heading: undefined }
       : { view: "questions" };
-    return { location, lastQuestion, lastDocument: location.view === "documents" ? location : undefined };
+    const lastLibrary: Partial<Record<LibraryView, ReadingLocation>> = {};
+    if (isLibraryView(location.view)) lastLibrary[location.view] = location;
+    return { location, lastQuestion, lastLibrary };
   });
-  const { location, lastQuestion, lastDocument } = navigation;
+  const { location, lastQuestion, lastLibrary } = navigation;
   const [questionQuery, setQuestionQuery] = useState("");
-  const documents = payload.documents ?? emptyDocuments;
+  const questionLinks = useMemo(() => {
+    const notesByPath = new Map(documents.map(note => [note.sourcePath, note.id]));
+    const links = new Map<string, string>();
+    for (const card of payload.cards) {
+      const noteId = notesByPath.get(card.source.path);
+      if (noteId) links.set(readingHref(noteId, card.source.heading), card.id);
+    }
+    return links;
+  }, [payload.cards, documents]);
   const routes = payload.routes ?? KNOWLEDGE_ROUTES;
-  const linkedDocument = location.doc ? documents.find(note => note.id === location.doc) : undefined;
-  const documentsView = location.view === "documents";
-  const reader = documentsView ? undefined : linkedDocument;
-  const selectedDocument = linkedDocument ?? documents.find(note => note.id === "android-compose-rendering") ?? documents[0];
+  const linkedDocument = location.doc ? notesById.get(location.doc) : undefined;
+  const library = isLibraryView(location.view) ? location.view : undefined;
+  const reader = library ? undefined : linkedDocument;
+  const selectedDocument = linkedDocument ?? (library === "resume"
+    ? edition && notesById.get(edition.documentId)
+    : libraries.documents.find(note => note.id === "android-compose-rendering") ?? libraries.documents[0]);
   const returnPoint = useRef<{ element: HTMLElement | null; scroll: number }>(undefined);
 
   function applyLocation(next: ReadingLocation) {
     setNavigation(previous => ({
       location: next,
-      lastDocument: next.view === "documents" ? next : previous.lastDocument,
+      lastLibrary: isLibraryView(next.view) ? { ...previous.lastLibrary, [next.view]: next } : previous.lastLibrary,
       lastQuestion: next.view === "questions"
         ? { ...next, doc: undefined, heading: undefined }
         : previous.lastQuestion,
@@ -314,14 +358,20 @@ export function ReadingWorkspace({ payload, onLock }: { payload: ParsedCardsPayl
   }
 
   useEffect(() => {
-    const restore = () => applyLocation(currentLocation());
+    const restore = () => {
+      const requested = currentLocation();
+      const resolved = resolveLibraryLocation(requested, notesById, edition?.documentId);
+      if (resolved !== requested) window.history.replaceState(window.history.state, "", locationHash(resolved));
+      applyLocation(resolved);
+    };
+    restore();
     window.addEventListener("popstate", restore);
     window.addEventListener("hashchange", restore);
     return () => {
       window.removeEventListener("popstate", restore);
       window.removeEventListener("hashchange", restore);
     };
-  }, []);
+  }, [notesById, edition]);
 
   useLayoutEffect(() => {
     if (reader || !returnPoint.current) return;
@@ -331,21 +381,43 @@ export function ReadingWorkspace({ payload, onLock }: { payload: ParsedCardsPayl
     window.scrollTo(0, scroll);
   }, [reader]);
 
-  function navigate(next: ReadingLocation, replace = false) {
+  function navigate(next: ReadingLocation, replace = false, state: Record<string, unknown> | null = null) {
     if (locationHash(next) !== window.location.hash) {
-      window.history[replace ? "replaceState" : "pushState"](null, "", locationHash(next));
+      window.history[replace ? "replaceState" : "pushState"](state, "", locationHash(next));
     }
     applyLocation(next);
   }
 
+  function changeInterviewEntry(entry?: string) {
+    if (entry === location.entry) return;
+    if (!entry && window.history.state?.readingEntryOpened) {
+      window.history.back();
+      return;
+    }
+    navigate({ ...location, entry }, Boolean(location.entry), entry ? { readingEntryOpened: !location.entry } : null);
+  }
+
+  const resumeReturnDepth = Number(window.history.state?.resumeReturnDepth) || 0;
+  const returnToInterview = resumeReturnDepth > 0 ? () => window.history.go(-resumeReturnDepth) : undefined;
+
   function openDocument(id: string, heading?: string, opener?: HTMLElement) {
-    if (!documents.some(note => note.id === id)) return;
-    if (documentsView) {
-      navigate({ view: "documents", doc: id, heading });
+    const note = notesById.get(id);
+    if (!note) return;
+    if (library || location.entry) {
+      const depth = location.entry ? 1 : resumeReturnDepth > 0 ? resumeReturnDepth + 1 : 0;
+      navigate({ view: edition ? documentView(note) : "documents", doc: id, heading }, false, depth ? { resumeReturnDepth: depth } : null);
       return;
     }
     if (!reader) returnPoint.current = { element: opener ?? (document.activeElement instanceof HTMLElement ? document.activeElement : null), scroll: window.scrollY };
     navigate({ ...location, doc: id, heading }, Boolean(reader));
+  }
+
+  function openQuestion(card: string) {
+    returnPoint.current = undefined;
+    setQuestionQuery("");
+    navigate({ view: "questions", card });
+    window.scrollTo(0, 0);
+    requestAnimationFrame(() => document.getElementById("reading-question-title")?.focus({ preventScroll: true }));
   }
 
   function closeDocument() {
@@ -362,20 +434,20 @@ export function ReadingWorkspace({ payload, onLock }: { payload: ParsedCardsPayl
 
   function goToView(view: WorkspaceView) {
     if (view === location.view) return;
-    navigate(view === "questions" ? lastQuestion : view === "documents" ? lastDocument ?? { view } : { view });
+    navigate(view === "questions" ? lastQuestion : isLibraryView(view) ? lastLibrary[view] ?? { view } : { view });
     window.scrollTo(0, 0);
   }
 
   return (
     <div className="reading-workspace">
-      <div className={documentsView ? "reading-layout document-view" : "reading-layout"} hidden={Boolean(reader)}>
+      <div className={library ? "reading-layout document-view" : "reading-layout"} hidden={Boolean(reader)}>
         <header className="reading-header">
           <div className="reading-brand">
             <div className="mini-mark" aria-hidden="true"><span /><span /><span /></div>
             <strong>技术面试工作台</strong>
           </div>
           <nav aria-label="主导航">
-            {(Object.keys(viewLabels) as WorkspaceView[]).map(view => (
+            {(Object.keys(viewLabels) as WorkspaceView[]).filter(view => view !== "resume" || libraries.resume.length > 0).map(view => (
               <button type="button" key={view} aria-current={view === location.view ? "page" : undefined} onClick={() => goToView(view)}>
                 <span className="reading-nav-icon" aria-hidden="true">{viewIcons[view]}</span>{viewLabels[view]}
               </button>
@@ -389,7 +461,10 @@ export function ReadingWorkspace({ payload, onLock }: { payload: ParsedCardsPayl
             <QuestionBrowser cards={payload.cards} location={lastQuestion} query={questionQuery} docs={documents} routes={routes}
               onQueryChange={setQuestionQuery} onNavigate={scope => navigate({ view: "questions", ...scope })} onOpenDocument={openDocument} />
           </div>
-          {documentsView ? <DocumentLibrary documents={documents} selected={selectedDocument} heading={linkedDocument ? location.heading : undefined} onOpen={openDocument} /> : null}
+          {library ? <DocumentLibrary key={library} kind={library} documents={libraries[library]} questionLinks={questionLinks}
+            resumeHtml={selectedDocument && selectedDocument.id === edition?.documentId ? edition.html : undefined}
+            interviewEntry={location.entry} onInterviewEntryChange={changeInterviewEntry} onReturnToInterview={returnToInterview}
+            onOpenQuestion={openQuestion} selected={selectedDocument} heading={linkedDocument ? location.heading : undefined} onOpen={openDocument} /> : null}
           {location.view === "routes" ? (
             <KnowledgeRoutesContext.Provider value={routes}>
               <RouteScreen cards={payload.cards} documents={documents}
@@ -399,17 +474,13 @@ export function ReadingWorkspace({ payload, onLock }: { payload: ParsedCardsPayl
                   navigate({ view: "routes", step: routes.find(route => route.id === id)?.steps[0]?.id });
                   window.scrollTo(0, 0);
                 }}
-                onOpenCard={card => {
-                  setQuestionQuery("");
-                  navigate({ view: "questions", card });
-                  window.scrollTo(0, 0);
-                }}
+                onOpenCard={openQuestion}
                 onOpenDocument={id => openDocument(id)} />
             </KnowledgeRoutesContext.Provider>
           ) : null}
         </div>
       </div>
-      {reader ? <DocumentReading key={reader.id} document={reader} heading={location.heading} onOpen={openDocument} onBack={closeDocument}
+      {reader ? <DocumentReading key={reader.id} document={reader} interviewEntry={location.entry} onInterviewEntryChange={changeInterviewEntry} resumeHtml={reader.id === edition?.documentId ? edition.html : undefined} questionLinks={questionLinks} onOpenQuestion={openQuestion} heading={location.heading} onOpen={openDocument} onBack={closeDocument}
         returnLabel={location.view === "questions" ? "返回问答" : "返回路线"} /> : null}
     </div>
   );

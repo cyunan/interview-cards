@@ -13,6 +13,7 @@ import { readHiddenLine } from "../src/publish/hidden-input";
 import { validatePublicationPasswords } from "../src/publish/password";
 import { git, prepareRelease, replaceRelease, scanSiteRelease } from "../src/publish/site-release";
 import { KNOWLEDGE_ROUTES } from "../src/routes/routes";
+import { retainPublishedResume } from "./package-resume";
 
 const root = fileURLToPath(new URL("..", import.meta.url));
 const args = process.argv.slice(2);
@@ -200,6 +201,7 @@ async function publish() {
   const legacy = await unlockLegacy(password);
   const site = await compileSite(vault, legacy);
   const released = parseCardsPayload(await decryptEnvelope(JSON.parse(await readFile(path.join(root, "public/cards.enc.json"), "utf8")), password));
+  site.payload = retainPublishedResume(released, site.payload);
   const changes = membershipChanges(membership(released), membership(site.payload));
   if (changes.removed.some((id) => !site.config.approvedRemovals.includes(id))) throw new Error("存在未经批准的卡片删除");
   console.log("变更：" + JSON.stringify(changes));

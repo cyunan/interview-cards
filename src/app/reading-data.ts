@@ -7,6 +7,18 @@ import type { KnowledgeRoute } from "../routes/routes";
 export function plainText(markdown: string): string {
   return markdown.replace(/!?\[([^\]]+)\]\([^)]+\)/g, "$1").replace(/[*_`]/g, "").trim();
 }
+export function isResumeDocument(note: ReferenceDocument): boolean {
+  return note.sourcePath.startsWith("00-个人资料/");
+}
+
+export function isResumeProject(note: ReferenceDocument): boolean {
+  return isResumeDocument(note) && note.sourcePath.endsWith("-简历项目与面试口述.md");
+}
+
+export function resumeVersion(note: ReferenceDocument): string | undefined {
+  return isResumeDocument(note) && note.sourcePath.includes("/完整版/") && /简历[^/]*\.md$/.test(note.sourcePath) ? "完整版" : undefined;
+}
+
 export function documentTitle(note: ReferenceDocument): string {
   const filename = note.sourcePath.split("/").at(-1)?.replace(/\.md$/i, "");
   return plainText(note.title === note.id && filename ? filename : note.title);

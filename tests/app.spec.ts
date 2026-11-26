@@ -145,6 +145,66 @@ test("refreshes directly from an unlocked session back to the lock screen", asyn
   await expect(page.getByText("熵门如何保护测试状态？")).toHaveCount(0);
 });
 
+test("reads the encrypted résumé, follows a chapter, then reopens it offline after locking", async ({ page, context }) => {
+  const previewRequests: string[] = [];
+  page.on("request", request => {
+    if (request.url().includes("/__site/")) previewRequests.push(request.url());
+  });
+  await page.goto("./");
+  await page.evaluate(() => navigator.serviceWorker.ready);
+  await expect(page.getByRole("heading", { name: "解锁题库" })).toBeVisible();
+  await expect(page.locator("iframe")).toHaveCount(0);
+  const bank = await page.request.get("./cards.enc.json");
+  expect(await bank.text()).not.toContain("Read the spare moonstone.");
+  await unlock(page);
+  await page.getByRole("button", { name: "简历", exact: true }).click();
+
+  const frame = page.frameLocator("iframe");
+  await expect(frame.getByRole("heading", { name: "Lunar beacon workshop" })).toBeVisible();
+  const shell = await frame.owner().getAttribute("srcdoc");
+  expect(shell).toContain("default-src 'none'");
+  expect(shell).not.toContain("Lunar beacon workshop");
+  expect(await frame.owner().getAttribute("sandbox")).not.toContain("allow-scripts");
+  const tools = frame.locator(".sample-tools");
+  await expect(tools).toHaveCSS("background-color", "rgb(239, 245, 249)");
+  const prism = frame.getByRole("button", { name: "Prism", exact: true });
+  const dial = frame.getByRole("button", { name: "Moon dial", exact: true });
+  for (const width of [1440, 375]) {
+    await page.setViewportSize({ width, height: 900 });
+    const first = (await prism.boundingBox())!;
+    const second = (await dial.boundingBox())!;
+    expect(Math.abs(first.y - second.y)).toBeLessThan(2);
+    expect(second.x).toBeGreaterThan(first.x + first.width);
+  }
+  await prism.click();
+  await expect(page.getByRole("dialog", { name: "How does the prism glow?" })).toBeVisible();
+  await page.getByRole("button", { name: "关闭面试解读" }).click();
+  await dial.click();
+  const panel = page.getByRole("dialog", { name: "How do crews read the moon dial?" });
+  await panel.getByText("What if one notch fades?").click();
+  await expect(panel.getByText("Read the spare moonstone.")).toBeVisible();
+  await panel.getByRole("link", { name: /Open the field guide/ }).click();
+  await expect(page.getByRole("heading", { name: "Bench notes", exact: true })).toBeVisible();
+  await expect(page.getByText("A spare moonstone restores the beacon.")).toBeVisible();
+  await page.getByRole("button", { name: /返回简历问答/ }).click();
+  await expect(panel.getByText("Read the spare moonstone.")).toBeVisible();
+  await panel.getByRole("button", { name: "关闭面试解读" }).click();
+  await expect(dial).toBeFocused();
+
+  await page.getByRole("button", { name: "锁定" }).click();
+  await expect(page.locator("iframe")).toHaveCount(0);
+  await expect(page.getByRole("dialog")).toHaveCount(0);
+  await context.setOffline(true);
+  await page.goto("./#view=resume&doc=fictional-edition&entry=dial");
+  await page.evaluate(() => window.location.reload());
+  await expect(page.getByRole("heading", { name: "解锁题库" })).toBeVisible();
+  await page.getByLabel("题库密码").fill(E2E_PASSWORD);
+  await page.getByRole("button", { name: "解锁", exact: true }).click();
+  await expect(panel.getByText("Compare the two notches.")).toBeVisible();
+  await expect(tools).toHaveCSS("background-color", "rgb(239, 245, 249)");
+  expect(previewRequests).toEqual([]);
+});
+
 test("restores an opted-in device unlock after refresh", async ({ page }) => {
   await page.goto("./");
   await unlock(page, true);

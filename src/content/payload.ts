@@ -11,6 +11,8 @@ export interface CardsPayloadV1 {
   buildId: string;
   builtAt: string;
   cards: CardV1[];
+  documents?: ReferenceDocument[];
+  resumeEdition?: ResumeEdition;
 }
 
 export interface ReferenceDocument {
@@ -21,6 +23,11 @@ export interface ReferenceDocument {
   reason: string;
   markdown: string;
   images?: ReferenceImage[];
+}
+
+export interface ResumeEdition {
+  documentId: string;
+  html: string;
 }
 
 export interface ReferenceImage {
@@ -36,6 +43,7 @@ export interface CardsPayloadV2 {
   builtAt: string;
   cards: CardV2[];
   documents?: ReferenceDocument[];
+  resumeEdition?: ResumeEdition;
 }
 
 export type ParsedCardsPayload = {
@@ -45,6 +53,7 @@ export type ParsedCardsPayload = {
   cards: CardV2[];
   documents?: ReferenceDocument[];
   routes?: KnowledgeRoute[];
+  resumeEdition?: ResumeEdition;
 };
 
 export type CardsPayloadV3 = ParsedCardsPayload & { schema: "cards-v3"; routes: KnowledgeRoute[] };
@@ -93,8 +102,16 @@ const referenceDocumentSchema = z.object({
   images: z.array(referenceImageSchema).optional(),
 }).strict();
 const payloadBase = { buildId: z.string().min(1), builtAt: z.iso.datetime({ offset: true }) };
-const cardsPayloadV1Schema = z.object({ ...payloadBase, schema: z.literal("cards-v1"), cards: z.array(cardV1Schema) }).strict();
-const cardsPayloadV2Schema = z.object({ ...payloadBase, schema: z.literal("cards-v2"), cards: z.array(cardV2Schema), documents: z.array(referenceDocumentSchema).optional() }).strict();
+const resumeEditionSchema = z.object({
+  documentId: z.string().regex(/^[a-z0-9][a-z0-9-]{2,79}$/),
+  html: z.string().min(1),
+}).strict().optional();
+const readingExtras = { documents: z.array(referenceDocumentSchema).optional(), resumeEdition: resumeEditionSchema };
+const cardsPayloadV1Schema = z.object({
+  ...payloadBase, ...readingExtras, schema: z.literal("cards-v1"),
+  cards: z.array(cardV1Schema.extend({ legacyIds: z.tuple([]).optional() })),
+}).strict();
+const cardsPayloadV2Schema = z.object({ ...payloadBase, ...readingExtras, schema: z.literal("cards-v2"), cards: z.array(cardV2Schema) }).strict();
 const checkpointSchema = z.object({ cardId: z.string().regex(CARD_ID_PATTERN), followUpIndex: z.number().int().nonnegative().optional() }).strict();
 const routeSchema = z.object({
   id: z.string().regex(CARD_ID_PATTERN), title: z.string().min(1), summary: z.string(), level: z.string(), estimatedMinutes: z.number().positive(),
@@ -108,7 +125,7 @@ const routeSchema = z.object({
     referenceDocuments: z.array(z.object({ documentId: z.string().regex(CARD_ID_PATTERN), reason: z.string().optional() }).strict()).optional(),
   }).strict()).min(1),
 }).strict();
-const cardsPayloadV3Schema = z.object({ ...payloadBase, schema: z.literal("cards-v3"), cards: z.array(cardV2Schema.extend({ images: z.array(referenceImageSchema).optional() })), documents: z.array(referenceDocumentSchema), routes: z.array(routeSchema) }).strict();
+const cardsPayloadV3Schema = z.object({ ...payloadBase, resumeEdition: resumeEditionSchema, schema: z.literal("cards-v3"), cards: z.array(cardV2Schema.extend({ images: z.array(referenceImageSchema).optional() })), documents: z.array(referenceDocumentSchema), routes: z.array(routeSchema) }).strict();
 
 export function validateRouteReferences(payload: Pick<ParsedCardsPayload, "cards" | "documents" | "routes">): void {
   const cards = new Map(payload.cards.map((card) => [card.id, card]));
@@ -149,12 +166,13 @@ function ensureUniqueV2Ids(cards: CardV2[]): void {
   }
 }
 
-function ensureUniqueDocumentIds(documents: ReferenceDocument[]): void {
+function validateReadingDocuments(documents: ReferenceDocument[], edition?: ResumeEdition): void {
   const ids = new Set<string>();
   for (const document of documents) {
     if (ids.has(document.id)) throw new Error("duplicate reference document id");
     ids.add(document.id);
   }
+  if (edition && !ids.has(edition.documentId)) throw new Error("missing edition document");
 }
 
 export function parseCardsPayload(value: unknown): ParsedCardsPayload {
@@ -163,12 +181,13 @@ export function parseCardsPayload(value: unknown): ParsedCardsPayload {
     const schema = (value as { schema?: unknown }).schema;
     if (schema === "cards-v1") {
       const payload = cardsPayloadV1Schema.parse(value);
+      validateReadingDocuments(payload.documents ?? [], payload.resumeEdition);
       return { ...payload, cards: payload.cards.map((card) => ({ ...card, legacyIds: [] })) };
     }
     const payload = schema === "cards-v3" ? cardsPayloadV3Schema.parse(value) : cardsPayloadV2Schema.parse(value);
     ensureUniqueV2Ids(payload.cards);
     const documents = payload.documents ?? [];
-    ensureUniqueDocumentIds(documents);
+    validateReadingDocuments(documents, payload.resumeEdition);
     if (schema === "cards-v3") validateRouteReferences(payload);
     return { ...payload, documents };
   } catch {

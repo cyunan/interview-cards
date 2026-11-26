@@ -2,12 +2,20 @@ import { useEffect, useId, useLayoutEffect, useRef, useState, type MouseEvent, t
 import type { ReferenceDocument } from "../content/payload";
 import { readingTarget } from "../content/reading-links";
 import { structuralLines } from "../content/structure";
+import { ResumeInterview } from "./ResumeInterview";
+import { fillResumeFrame, resumeFrameShell } from "./resume-frame";
 import { Markdown } from "./Markdown";
-import { documentTitle, headingKey, plainText } from "./reading-data";
+import { documentTitle, headingKey, isResumeProject, plainText, resumeVersion } from "./reading-data";
 
 interface DocumentReadingBase {
   document: ReferenceDocument;
   heading?: string;
+  resumeHtml?: string;
+  interviewEntry?: string;
+  onInterviewEntryChange?(entry?: string): void;
+  onReturnToInterview?(): void;
+  questionLinks: ReadonlyMap<string, string>;
+  onOpenQuestion(id: string): void;
   onOpen(id: string, heading?: string): void;
 }
 
@@ -16,8 +24,22 @@ type DocumentReadingProps = DocumentReadingBase & (
   | { library?: never; returnLabel: string; onBack(): void }
 );
 
-export function DocumentReading({ document: note, heading, returnLabel, onBack, onOpen, library }: DocumentReadingProps) {
+export function DocumentReading(props: DocumentReadingProps) {
+  // An edition, revision or deep link opens with its own presentation and scroll target.
+  const key = props.resumeHtml ? JSON.stringify([props.document.id, props.heading]) : undefined;
+  return <ReadingContent key={key} {...props} />;
+}
+
+function ReadingContent({ document: note, heading, resumeHtml, interviewEntry, onInterviewEntryChange, onReturnToInterview, returnLabel, onBack, onOpen, questionLinks, onOpenQuestion, library }: DocumentReadingProps) {
+  const project = isResumeProject(note);
   const body = useRef<HTMLDivElement>(null);
+  const frame = useRef<HTMLIFrameElement>(null);
+  const initializedFrame = useRef<Document>(null);
+  const toolbar = useRef<HTMLDivElement>(null);
+  const [frameDocument, setFrameDocument] = useState<Document | null>(null);
+  const [presentation, setPresentation] = useState<"auto" | "text" | "original">("auto");
+  const [unavailable, setUnavailable] = useState(false);
+  const original = Boolean(resumeHtml && presentation !== "text" && !unavailable);
   const back = useRef<HTMLButtonElement>(null);
   const elements = useRef<HTMLElement[]>([]);
   const [titles, setTitles] = useState<{ name: string; level: number }[]>([]);
@@ -37,22 +59,54 @@ export function DocumentReading({ document: note, heading, returnLabel, onBack, 
     );
   }
 
+  function jumpToSection(target: HTMLElement | undefined) {
+    if (!target) return;
+    if (!frame.current || target.ownerDocument === document) {
+      target.scrollIntoView?.({ block: "start" });
+      return;
+    }
+    const bar = toolbar.current;
+    const covered = bar ? (parseFloat(getComputedStyle(bar).top) || 0) + bar.offsetHeight : 0;
+    window.scrollBy(0, frame.current.getBoundingClientRect().top + target.getBoundingClientRect().top - covered - 8);
+  }
+
   useLayoutEffect(() => {
-    const headings = Array.from(body.current?.querySelectorAll<HTMLElement>("h2,h3,h4,h5,h6") ?? []);
+    if (!original || !frameDocument || !frame.current) return;
+    const iframe = frame.current;
+    const fit = () => {
+      const paper = frameDocument.body;
+      const bottomMargin = parseFloat(frameDocument.defaultView?.getComputedStyle(paper).marginBottom ?? "") || 0;
+      const height = Math.ceil(paper.getBoundingClientRect().bottom + (frameDocument.defaultView?.scrollY ?? 0) + bottomMargin);
+      if (height > 0 && iframe.height !== String(height)) iframe.height = String(height);
+    };
+    fit();
+    let pending = 0;
+    const observer = new ResizeObserver(() => {
+      cancelAnimationFrame(pending);
+      pending = requestAnimationFrame(fit);
+    });
+    observer.observe(frameDocument.body);
+    return () => { observer.disconnect(); cancelAnimationFrame(pending); };
+  }, [original, frameDocument]);
+
+  useLayoutEffect(() => {
+    const content = original ? frameDocument?.body : body.current;
+    const headings = Array.from(content?.querySelectorAll<HTMLElement>("h2,h3,h4,h5,h6") ?? []);
     elements.current = headings;
-    headings.forEach((element, index) => { element.id = "doc-heading-" + index; });
+    if (!original) headings.forEach((element, index) => { element.id = "doc-heading-" + index; });
     setTitles(headings.map(element => ({ name: element.textContent ?? "", level: Number(element.tagName[1]) })));
     setContentsOpen(false);
     back.current?.focus({ preventScroll: true });
-    if (heading) {
+    if (heading && content) {
       const target = headings.find(element => headingKey(element.textContent ?? "") === headingKey(heading));
       if (target) {
-        target.scrollIntoView?.({ block: "start" });
+        jumpToSection(target);
         return;
       }
+      if (original && presentation === "auto") setPresentation("text");
     }
     window.scrollTo(0, 0);
-  }, [note.id, heading]);
+  }, [note.id, heading, original, frameDocument, presentation]);
 
   useEffect(() => {
     if (!contentsOpen) return;
@@ -71,6 +125,12 @@ export function DocumentReading({ document: note, heading, returnLabel, onBack, 
     if (!(event.target instanceof Element)) return;
     const anchor = event.target.closest("a");
     if (!anchor) return;
+    if (anchor.dataset.questionId) {
+      if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      event.preventDefault();
+      onOpenQuestion(anchor.dataset.questionId);
+      return;
+    }
     const target = readingTarget(anchor.href);
     if (!target) return;
     event.preventDefault();
@@ -80,7 +140,39 @@ export function DocumentReading({ document: note, heading, returnLabel, onBack, 
     } else onOpen(target.id, target.heading);
   }
 
-  const bodyContent = <div ref={body} onClick={followDocumentLink}><Markdown images={note.images}>{markdown}</Markdown></div>;
+  const editionTitle = (resumeVersion(note) ?? "") + "简历";
+  const bodyContent = original ? (
+    <>
+      {frameDocument?.querySelector<HTMLTemplateElement>("template#resume-interview-topics")?.content.querySelector("section[data-topic]") &&
+        <p className="resume-interview-hint">点项目或技术点，查看面试回答与追问</p>}
+      <iframe ref={frame} className="resume-html-frame" title={editionTitle + "原版"} srcDoc={resumeFrameShell}
+        sandbox="allow-same-origin allow-modals" onError={() => setUnavailable(true)} onLoad={event => {
+          const loaded = event.currentTarget.contentDocument;
+          if (loaded && loaded === initializedFrame.current) return;
+          if (loaded?.URL === "about:blank" && !loaded.documentElement.hasAttribute("data-resume-frame")) return;
+          if (loaded && resumeHtml && fillResumeFrame(loaded, resumeHtml)) {
+            initializedFrame.current = loaded;
+            setFrameDocument(loaded);
+          }
+          else setUnavailable(true);
+        }} />
+      {frameDocument && <ResumeInterview frameDocument={frameDocument} entry={interviewEntry}
+        onEntryChange={onInterviewEntryChange} onOpen={onOpen} />}
+    </>
+  ) : <div ref={body} onClick={followDocumentLink}>
+    {unavailable ? <p role="status">原版暂时无法打开，已显示文字版。</p> : null}
+    <Markdown images={note.images} questionLinks={project ? questionLinks : undefined}>{markdown}</Markdown>
+  </div>;
+  const interviewReturn = onReturnToInterview && <button type="button" className={library ? "document-action" : "reading-button"}
+    onClick={onReturnToInterview}>← 返回简历问答</button>;
+  const editionActions = resumeHtml && !unavailable ? <>
+    <button type="button" className={library ? "document-action" : "reading-button"} onClick={() => {
+      setFrameDocument(null);
+      setPresentation(original ? "text" : "original");
+    }}>{original ? "文字版" : "查看原版"}</button>
+    {original && <button type="button" className={library ? "document-action" : "reading-button"} disabled={!frameDocument}
+      onClick={() => frame.current?.contentWindow?.print()}>打印原稿</button>}
+  </> : null;
 
   const firstLevel = Math.min(...titles.map(item => item.level));
   const topTitles = titles.map((item, index) => ({ ...item, index })).filter(item =>
@@ -90,7 +182,7 @@ export function DocumentReading({ document: note, heading, returnLabel, onBack, 
   function jumpFromContents(index: number) {
     setContentsOpen(false);
     contentsButton.current?.focus({ preventScroll: true });
-    requestAnimationFrame(() => elements.current[index]?.scrollIntoView?.({ block: "start" }));
+    requestAnimationFrame(() => jumpToSection(elements.current[index]));
   }
 
   const chapterNav = (className: string) => (
@@ -105,10 +197,12 @@ export function DocumentReading({ document: note, heading, returnLabel, onBack, 
   if (library) {
     return (
       <main className="document-reader" aria-labelledby="reading-document-title">
-        <div className="document-article-bar">
-          <div className="document-article-actions">
+        <div className="document-article-bar" ref={toolbar}>
+          <div className={resumeHtml ? "document-article-actions document-edition-actions" : "document-article-actions"}>
+            {interviewReturn}
             <span className="document-breadcrumb">{library.breadcrumb}</span>
             <button type="button" className="document-action document-choose" onClick={library.onChoose}>☰ 换一篇</button>
+            {editionActions}
             {topTitles.length ? <button type="button" className="document-action" ref={contentsButton}
               aria-expanded={contentsOpen} aria-controls={contentsId} onClick={() => setContentsOpen(!contentsOpen)}>
               本文目录 <span aria-hidden="true">{contentsOpen ? "▴" : "▾"}</span>
@@ -116,10 +210,10 @@ export function DocumentReading({ document: note, heading, returnLabel, onBack, 
           </div>
           {chapterNav("document-chapters")}
         </div>
-        <article className="document-article">
-          <h1 ref={library.titleRef} tabIndex={-1} id="reading-document-title">{title}</h1>
+        <article className={original ? "resume-original" : "document-article"} data-resume-project={project || undefined}>
+          <h1 ref={library.titleRef} tabIndex={-1} id="reading-document-title">{original ? editionTitle : title}</h1>
           {bodyContent}
-          <details className="document-source"><summary>文件出处</summary><p>{note.sourcePath}</p></details>
+          {!original && <details className="document-source"><summary>文件出处</summary><p>{note.sourcePath}</p></details>}
         </article>
       </main>
     );
@@ -127,10 +221,12 @@ export function DocumentReading({ document: note, heading, returnLabel, onBack, 
 
   return (
     <main className="reading-reader" aria-labelledby="reading-document-title">
-      <div className="reading-reader-bar">
+      <div className="reading-reader-bar" ref={toolbar}>
         <div className="reading-reader-actions">
+          {interviewReturn}
           <button ref={back} className="reading-button" type="button" onClick={onBack}>← {returnLabel}</button>
           <span>{note.sourcePath.split("/")[0]}</span>
+          {editionActions}
           {topTitles.length > 0 ? <button ref={contentsButton} type="button" className="reading-button reading-overlay-toc"
             aria-expanded={contentsOpen} aria-controls={contentsId} onClick={() => setContentsOpen(!contentsOpen)}>
             本文目录 <span aria-hidden="true">{contentsOpen ? "▴" : "▾"}</span>
@@ -138,14 +234,14 @@ export function DocumentReading({ document: note, heading, returnLabel, onBack, 
         </div>
         {chapterNav("reading-overlay-chapters")}
       </div>
-      <header className="reading-reader-title">
-        <h1 id="reading-document-title">{title}</h1>
-        <p>{note.sourcePath}</p>
+      <header className={original ? "resume-original" : "reading-reader-title"}>
+        <h1 id="reading-document-title">{original ? editionTitle : title}</h1>
+        {!original && <p>{note.sourcePath}</p>}
       </header>
       <div className="reading-reader-grid">
-        <article className="reading-paper">
+        <article className={original ? "resume-original" : "reading-paper"}>
           {bodyContent}
-          <details className="reading-reader-source"><summary>文件出处</summary><p>{note.sourcePath}</p></details>
+          {!original && <details className="reading-reader-source"><summary>文件出处</summary><p>{note.sourcePath}</p></details>}
           <button className="reading-button reader-return" type="button" onClick={onBack}>← {returnLabel}</button>
         </article>
         {titles.length > 0 ? (
@@ -155,7 +251,7 @@ export function DocumentReading({ document: note, heading, returnLabel, onBack, 
               {titles.map(({ name }, index) => (
                 <a key={index} href={"#doc-heading-" + index} onClick={event => {
                   event.preventDefault();
-                  elements.current[index]?.scrollIntoView?.({ block: "start" });
+                  jumpToSection(elements.current[index]);
                 }}>{name}</a>
               ))}
             </nav>

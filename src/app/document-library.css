@@ -172,3 +172,47 @@
   .document-article { padding-inline: 16px; }
   .document-article .markdown { font-size: 15px; }
 }
+
+.document-projects {
+  padding: 10px 12px;
+  margin: 0 0 14px;
+  border: 1px solid #c5d7ca;
+  border-radius: 8px;
+  background: #f9fcf6;
+}
+.document-projects h3 { margin: 0 0 3px; font-size: 13px; color: var(--doc-muted); }
+.document-projects .document-note { padding-inline: 5px; border-left: 0; border-radius: 4px; color: var(--doc-action); font-weight: 650; }
+.document-article[data-resume-project] .markdown > blockquote:first-child {
+  border-left: 3px solid var(--doc-action);
+  background: #eef5ee;
+}
+.document-article[data-resume-project] .markdown > blockquote:first-child + p a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding-inline: 6px;
+  font-weight: 600;
+}
+
+.resume-html-frame {
+  display: block;
+  width: 100%;
+  min-height: 55vh;
+  border: 0;
+  background: white;
+}
+.resume-original > h1 {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+.document-edition-actions { flex-wrap: wrap; gap: 0 8px; }
+.document-edition-actions .document-breadcrumb { margin-inline-end: auto; }
+.document-edition-actions a.document-action { display: inline-flex; align-items: center; gap: 3px; text-decoration: none; }
+.document-edition-actions a.document-action:hover { text-decoration: underline; }
+
+@media (max-width: 679px) {
+  .document-edition-actions { justify-content: space-between; gap: 0 2px; }
+}

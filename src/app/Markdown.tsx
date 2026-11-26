@@ -463,11 +463,12 @@ interface MarkdownProps {
   children: string;
   className?: string;
   images?: readonly ReferenceImage[];
+  questionLinks?: ReadonlyMap<string, string>;
 }
 
 const REFERENCE_IMAGE_URL_PATTERN = /^https:\/\/interview-cards\.invalid\/reference-image\/([a-f0-9]{16,64})$/;
 
-export const Markdown = memo(function Markdown({ children, className, images = [] }: MarkdownProps) {
+export const Markdown = memo(function Markdown({ children, className, images = [], questionLinks }: MarkdownProps) {
   const imageMap = new Map(images.map((image) => [image.id, image]));
   const [previewImage, setPreviewImage] = useState<{ src: string; alt: string } | null>(null);
   const closePreviewRef = useRef<HTMLButtonElement>(null);
@@ -510,11 +511,12 @@ export const Markdown = memo(function Markdown({ children, className, images = [
           rehypePlugins={[[rehypeSanitize, { ...defaultSchema, attributes: { ...defaultSchema.attributes, details: ["open"] } }]]}
           skipHtml
           components={{
-            a: ({ children: linkChildren, ...props }) => (
-              <a {...props} rel="noreferrer noopener" target="_blank">
-                {linkChildren}
-              </a>
-            ),
+            a: ({ children: linkChildren, href, node: _node, ...props }) => {
+              const id = typeof linkChildren === "string" && /^接着问[：:]/.test(linkChildren)
+                ? questionLinks?.get(href ?? "") : undefined;
+              if (id) return <a {...props} href={"#view=questions&card=" + encodeURIComponent(id)} data-question-id={id}>{linkChildren}</a>;
+              return <a {...props} href={href} rel="noreferrer noopener" target="_blank">{linkChildren}</a>;
+            },
             img: ({ src, alt }) => {
               const imageId = typeof src === "string" ? REFERENCE_IMAGE_URL_PATTERN.exec(src)?.[1] : undefined;
               const packagedImage = imageId ? imageMap.get(imageId) : undefined;
